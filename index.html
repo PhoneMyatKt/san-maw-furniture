@@ -18,7 +18,6 @@
 
         .hidden { display: none !important; }
         
-        /* Premium Dashboard Gradient */
         .premium-card { 
             background: linear-gradient(135deg, #1e1b4b 0%, #312e81 100%); 
             box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.15);
@@ -34,7 +33,6 @@
             box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.1);
         }
 
-        /* Swipe to Delete Styling */
         .record-item {
             position: relative;
             overflow: hidden;
@@ -69,7 +67,6 @@
             transform: scale(0.97);
         }
 
-        /* Loading Spinner */
         .spinner {
             border: 3px solid rgba(255, 255, 255, 0.3);
             border-radius: 50%;
@@ -128,14 +125,12 @@
             </button>
         </header>
 
-        <!-- Stats Card -->
         <div class="premium-card rounded-[2.5rem] p-8 text-white mb-8 relative overflow-hidden shadow-2xl">
             <div class="relative z-10">
                 <div class="flex justify-between items-center mb-10">
                     <input type="date" id="main-date" class="bg-white/10 border-none text-[11px] font-bold p-2.5 rounded-xl text-white outline-none cursor-pointer">
                     <i class="fas fa-wallet opacity-30 text-xl"></i>
                 </div>
-                
                 <div class="grid grid-cols-2 gap-4 mb-10">
                     <div class="bg-white/5 p-4 rounded-2xl border border-white/10">
                         <p class="text-[9px] font-bold text-emerald-400 uppercase tracking-widest mb-1">ဝင်ငွေ</p>
@@ -146,7 +141,6 @@
                         <p id="total-exp" class="text-xl font-black">0</p>
                     </div>
                 </div>
-
                 <div>
                     <p class="text-[10px] font-bold text-white/40 uppercase tracking-[0.2em] mb-1">ကျန်ရှိသည့် အမြတ်ငွေ</p>
                     <div class="flex items-baseline gap-2">
@@ -155,11 +149,9 @@
                     </div>
                 </div>
             </div>
-            <!-- Decorative circle -->
             <div class="absolute -right-10 -bottom-10 w-32 h-32 bg-indigo-500/20 rounded-full blur-3xl"></div>
         </div>
 
-        <!-- Add Transaction Form -->
         <div class="bg-white p-6 rounded-[2.5rem] shadow-sm border border-slate-100 mb-8">
             <h3 class="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-4 ml-2">စာရင်းအသစ်ထည့်ရန်</h3>
             <div class="space-y-4">
@@ -177,15 +169,12 @@
             </div>
         </div>
 
-        <!-- History List -->
         <div class="flex items-center justify-between mb-4 px-2">
             <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest">ယနေ့စာရင်းမှတ်တမ်း</p>
             <div class="h-[1px] flex-1 bg-slate-200 ml-4"></div>
         </div>
         
-        <div id="data-list" class="space-y-3">
-            <!-- Items injected here -->
-        </div>
+        <div id="data-list" class="space-y-3"></div>
     </div>
 
     <script type="module">
@@ -193,16 +182,23 @@
         import { getAuth, signInAnonymously, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
         import { getFirestore, collection, addDoc, deleteDoc, doc, onSnapshot, serverTimestamp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
-        // Firebase Configuration (Automatically injected in this environment)
-        const firebaseConfig = JSON.parse(__firebase_config);
-        const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
-        const db = getFirestore(app);
-        const APP_COLLECTION = "san-maw-main-v1";
+        // CONFIG FIXED: Prevents script crash if environment config is missing
+        let firebaseConfig = {};
+        try {
+            firebaseConfig = JSON.parse(typeof __firebase_config !== 'undefined' ? __firebase_config : '{}');
+        } catch(e) { console.warn("Config load error"); }
 
+        let app, auth, db;
+        const APP_COLLECTION = "san-maw-main-v1";
         let localData = [];
 
-        // Auth Logic
+        // Try initializing only if config exists
+        if (firebaseConfig.apiKey) {
+            app = initializeApp(firebaseConfig);
+            auth = getAuth(app);
+            db = getFirestore(app);
+        }
+
         window.doLogin = () => {
             const u = document.getElementById('user-field').value;
             const p = document.getElementById('pass-field').value;
@@ -210,14 +206,14 @@
                 localStorage.setItem('sm_logged', 'true');
                 checkSession();
             } else {
-                alert("Login မအောင်မြင်ပါ။");
+                alert("Login မအောင်မြင်ပါ။ အသုံးပြုသူအမည် သို့မဟုတ် လျှို့ဝှက်နံပါတ် မှားယွင်းနေပါသည်။");
             }
         };
 
         window.doLogout = async () => {
             if(confirm("စနစ်မှ ထွက်မှာ သေချာပါသလား?")) {
                 localStorage.removeItem('sm_logged');
-                await signOut(auth);
+                if(auth) await signOut(auth);
                 location.reload();
             }
         };
@@ -226,30 +222,33 @@
             if(localStorage.getItem('sm_logged') === 'true') {
                 document.getElementById('login-screen').classList.add('hidden');
                 document.getElementById('main-app').classList.remove('hidden');
-                try {
-                    await signInAnonymously(auth);
-                } catch (e) { console.error(e); }
+                if(auth) {
+                    try {
+                        await signInAnonymously(auth);
+                    } catch (e) { console.error("Firebase Auth Error:", e); }
+                }
             }
         }
 
-        onAuthStateChanged(auth, (user) => {
-            if (user && localStorage.getItem('sm_logged') === 'true') {
-                const ref = collection(db, 'artifacts', APP_COLLECTION, 'public', 'data', 'records');
-                onSnapshot(ref, (snap) => {
-                    localData = snap.docs.map(d => ({ id: d.id, ...d.data() }));
-                    updateUI();
-                });
-            }
-        });
+        if(auth) {
+            onAuthStateChanged(auth, (user) => {
+                if (user && localStorage.getItem('sm_logged') === 'true') {
+                    const ref = collection(db, 'artifacts', APP_COLLECTION, 'public', 'data', 'records');
+                    onSnapshot(ref, (snap) => {
+                        localData = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+                        updateUI();
+                    }, (err) => { console.error("Firestore Listen Error:", err); });
+                }
+            });
+        }
 
-        // Data Logic
         document.getElementById('add-btn').onclick = async () => {
             const desc = document.getElementById('in-desc').value;
             const amt = document.getElementById('in-amt').value;
             const type = document.getElementById('in-type').value;
             const date = document.getElementById('main-date').value;
             
-            if(!desc || !amt) return;
+            if(!desc || !amt || !db) return;
 
             try {
                 const btn = document.getElementById('add-btn');
@@ -268,10 +267,9 @@
         };
 
         window.removeItem = async (id) => {
-            await deleteDoc(doc(db, 'artifacts', APP_ID, 'public', 'data', 'records', id));
+            if(db) await deleteDoc(doc(db, 'artifacts', APP_COLLECTION, 'public', 'data', 'records', id));
         };
 
-        // Swipe Handler
         let sx = 0;
         window.hStart = (e) => sx = e.touches[0].clientX;
         window.hMove = (e, id) => {
@@ -283,7 +281,6 @@
             document.getElementById(`box-${id}`).style.transform = dx > 60 ? `translateX(-80px)` : `translateX(0px)`;
         };
 
-        // UI Refresh
         function updateUI() {
             const filterD = document.getElementById('main-date').value;
             const filtered = localData.filter(x => x.date === filterD);
@@ -318,7 +315,6 @@
             `).join('') || '<div class="py-12 text-center text-slate-300 font-bold italic opacity-50">မှတ်တမ်းမရှိသေးပါ။</div>';
         }
 
-        // Init
         document.getElementById('main-date').value = new Date().toISOString().split('T')[0];
         document.getElementById('main-date').onchange = updateUI;
         checkSession();
