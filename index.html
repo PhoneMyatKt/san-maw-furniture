@@ -77,6 +77,12 @@
 </head>
 <body class="min-h-screen">
 
+    <!-- Loading Screen -->
+    <div id="loading-screen" class="fixed inset-0 z-[5000] bg-white flex flex-col items-center justify-center">
+        <div class="w-16 h-16 border-4 border-indigo-600 border-t-transparent rounded-full animate-spin mb-4"></div>
+        <p class="text-indigo-900 font-bold animate-pulse">Firebase နှင့် ချိတ်ဆက်နေသည်...</p>
+    </div>
+
     <!-- Edit Modal -->
     <div id="edit-modal" class="fixed inset-0 z-[3000] modal-overlay flex items-center justify-center p-6 hidden">
         <div class="w-full max-w-sm bg-white rounded-[2rem] p-8 shadow-2xl">
@@ -92,20 +98,6 @@
         </div>
     </div>
 
-    <!-- Welcome Screen -->
-    <div id="welcome-screen" class="fixed inset-0 z-[2000] bg-slate-900 flex items-center justify-center p-6">
-        <div class="w-full max-w-sm bg-white rounded-[2.5rem] p-10 text-center shadow-2xl">
-            <div class="w-24 h-24 bg-indigo-50 text-indigo-600 rounded-[2rem] flex items-center justify-center mx-auto mb-8 shadow-inner">
-                <i class="fas fa-couch text-4xl"></i>
-            </div>
-            <h2 class="text-3xl font-black text-slate-900 tracking-tight mb-2">စန်းမော်</h2>
-            <p class="text-indigo-600 font-bold text-sm mb-4">ပရိဘောဂ နှင့် အထွေထွေစာရင်းချုပ်</p>
-            <button onclick="startApp()" class="w-full bg-indigo-600 text-white font-black py-5 rounded-2xl shadow-xl shadow-indigo-200 btn-active transition-all text-lg flex items-center justify-center gap-3">
-                စတင်အသုံးပြုမည် <i class="fas fa-arrow-right text-sm"></i>
-            </button>
-        </div>
-    </div>
-
     <!-- Main Wrapper -->
     <div id="main-app" class="max-w-[480px] mx-auto px-4 pt-8 pb-32 hidden">
         
@@ -118,8 +110,8 @@
                 <div>
                     <h1 class="text-lg font-black text-slate-900">စန်းမော်</h1>
                     <div class="flex items-center gap-1.5">
-                        <span id="sync-dot" class="w-1.5 h-1.5 bg-slate-300 rounded-full"></span>
-                        <p id="sync-status" class="text-[9px] font-bold text-slate-400 uppercase">Offline Mode</p>
+                        <span id="sync-dot" class="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse"></span>
+                        <p id="sync-status" class="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Cloud Connected</p>
                     </div>
                 </div>
             </div>
@@ -130,7 +122,6 @@
 
         <!-- Home Page View -->
         <div id="view-home">
-            <!-- Stats Card -->
             <div class="premium-card rounded-[2.5rem] p-8 text-white mb-8 relative overflow-hidden shadow-2xl">
                 <div class="relative z-10">
                     <div class="flex justify-between items-center mb-10">
@@ -159,7 +150,6 @@
                 </div>
             </div>
 
-            <!-- Add Form -->
             <div class="bg-white p-6 rounded-[2.5rem] shadow-sm border border-slate-100">
                 <div class="space-y-4">
                     <input type="text" id="in-desc" placeholder="အကြောင်းအရာ..." class="w-full p-4 input-field rounded-2xl outline-none font-bold text-sm">
@@ -183,7 +173,7 @@
                 <i class="fas fa-history text-indigo-600 text-sm"></i>
                 စာရင်းမှတ်တမ်းချုပ်
             </h2>
-            <div id="grouped-list" class="space-y-8"></div>
+            <div id="grouped-list" class="space-y-8 pb-10"></div>
         </div>
 
         <!-- Bottom Navigation -->
@@ -204,86 +194,69 @@
     </div>
 
     <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-        import { getAuth, signInAnonymously, onAuthStateChanged, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-        import { getFirestore, collection, addDoc, updateDoc, doc, onSnapshot, serverTimestamp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-app.js";
+        import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-auth.js";
+        import { getFirestore, collection, addDoc, updateDoc, doc, onSnapshot, serverTimestamp } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-firestore.js";
 
-        // Firebase Configuration (will be provided at runtime)
-        const firebaseConfig = JSON.parse(__firebase_config);
+        const firebaseConfig = {
+            apiKey: "AIzaSyD3tkweZh5VKBvkciZ4Yv5MHXcW7DuMIsQ",
+            authDomain: "san-maw.firebaseapp.com",
+            projectId: "san-maw",
+            storageBucket: "san-maw.firebasestorage.app",
+            messagingSenderId: "857202315788",
+            appId: "1:857202315788:web:58c72fa9166e236af0d429",
+            measurementId: "G-EP1LW3DE43"
+        };
+
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
         const db = getFirestore(app);
-        const appId = typeof __app_id !== 'undefined' ? __app_id : 'san-maw-grouped-v2';
+        const COLLECTION_NAME = "records";
 
-        window.localData = JSON.parse(localStorage.getItem('sm_data_store') || '[]');
+        let localData = [];
         let currentEditId = null;
 
-        // Start Application
-        window.startApp = () => {
-            document.getElementById('welcome-screen').classList.add('hidden');
-            document.getElementById('main-app').classList.remove('hidden');
-            updateUI();
-            
-            const initAuth = async () => {
-                if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
-                    await signInWithCustomToken(auth, __initial_auth_token);
-                } else {
-                    await signInAnonymously(auth);
-                }
-            };
-            initAuth();
-        };
-
-        // Firebase Auth State Listener
         onAuthStateChanged(auth, (user) => {
             if (user) {
-                document.getElementById('sync-dot').className = "w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse";
-                document.getElementById('sync-status').innerText = "Live Cloud";
-                
-                // Real-time Firestore Listener
-                onSnapshot(collection(db, 'artifacts', appId, 'public', 'data', 'records'), (snap) => {
-                    window.localData = snap.docs.map(d => ({ id: d.id, ...d.data() }));
-                    localStorage.setItem('sm_data_store', JSON.stringify(window.localData));
+                document.getElementById('loading-screen').classList.add('hidden');
+                document.getElementById('main-app').classList.remove('hidden');
+
+                onSnapshot(collection(db, COLLECTION_NAME), (snap) => {
+                    localData = snap.docs.map(d => ({ id: d.id, ...d.data() }));
                     updateUI();
                 });
             }
         });
 
-        // View Switching Logic
+        signInAnonymously(auth).catch(err => console.error("Auth Failed:", err));
+
         window.switchView = (view) => {
             document.getElementById('view-home').classList.add('hidden');
             document.getElementById('view-records').classList.add('hidden');
             document.getElementById('nav-home').classList.remove('active');
             document.getElementById('nav-records').classList.remove('active');
-
             document.getElementById(`view-${view}`).classList.remove('hidden');
             document.getElementById(`nav-${view}`).classList.add('active');
-            
             if(view === 'records') updateGroupedRecords();
         };
 
-        // Add New Record (Always adds as new, even with same name)
         document.getElementById('add-btn').onclick = async () => {
             const desc = document.getElementById('in-desc').value;
             const amt = document.getElementById('in-amt').value;
             const type = document.getElementById('in-type').value;
             const date = document.getElementById('main-date').value;
             if(!desc || !amt) return;
-
             try {
-                await addDoc(collection(db, 'artifacts', appId, 'public', 'data', 'records'), {
+                await addDoc(collection(db, COLLECTION_NAME), {
                     desc, amt: parseFloat(amt), type, date, createdAt: serverTimestamp()
                 });
                 document.getElementById('in-desc').value = '';
                 document.getElementById('in-amt').value = '';
-            } catch (e) {
-                console.error("Error adding document: ", e);
-            }
+            } catch (e) { console.error(e); }
         };
 
-        // Edit Functions
         window.openEditModal = (id) => {
-            const record = window.localData.find(x => x.id === id);
+            const record = localData.find(x => x.id === id);
             if(!record) return;
             currentEditId = id;
             document.getElementById('edit-desc').value = record.desc;
@@ -300,61 +273,44 @@
             if(!currentEditId) return;
             const newDesc = document.getElementById('edit-desc').value;
             const newAmt = parseFloat(document.getElementById('edit-amt').value);
-
             if(!newDesc || isNaN(newAmt)) return;
-
             try {
-                const docRef = doc(db, 'artifacts', appId, 'public', 'data', 'records', currentEditId);
-                await updateDoc(docRef, { desc: newDesc, amt: newAmt });
+                await updateDoc(doc(db, COLLECTION_NAME, currentEditId), { desc: newDesc, amt: newAmt });
                 closeEditModal();
-            } catch(e) {
-                console.error("Error updating document: ", e);
-            }
+            } catch(e) { console.error(e); }
         };
 
-        // UI Refresh
         function updateUI() {
             const selDate = document.getElementById('main-date').value;
-            const filtered = window.localData.filter(x => x.date === selDate);
-            
+            const filtered = localData.filter(x => x.date === selDate);
             const inc = filtered.filter(x => x.type === 'income').reduce((a, b) => a + b.amt, 0);
             const exp = filtered.filter(x => x.type === 'expense').reduce((a, b) => a + b.amt, 0);
-
             document.getElementById('total-inc').innerText = inc.toLocaleString();
             document.getElementById('total-exp').innerText = exp.toLocaleString();
             document.getElementById('total-profit').innerText = (inc - exp).toLocaleString();
-            
-            if (!document.getElementById('view-records').classList.contains('hidden')) {
-                updateGroupedRecords();
-            }
+            if (!document.getElementById('view-records').classList.contains('hidden')) updateGroupedRecords();
         }
 
-        // History View with Date Grouping
         function updateGroupedRecords() {
             const groupedContainer = document.getElementById('grouped-list');
-            
-            const groups = window.localData.reduce((acc, item) => {
+            const groups = localData.reduce((acc, item) => {
                 if (!acc[item.date]) acc[item.date] = [];
                 acc[item.date].push(item);
                 return acc;
             }, {});
-
             const sortedDates = Object.keys(groups).sort((a, b) => new Date(b) - new Date(a));
-
             groupedContainer.innerHTML = sortedDates.map(date => {
-                const records = groups[date].sort((a,b) => (b.createdAt?.seconds || 0) - (a.createdAt?.seconds || 0));
-                
+                const items = groups[date].sort((a, b) => (b.createdAt?.seconds || 0) - (a.createdAt?.seconds || 0));
                 const d = new Date(date);
                 const dateDisplay = d.toLocaleDateString('my-MM', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
-
                 return `
                     <div class="space-y-2">
                         <div class="date-header">
                             <h3 class="text-[11px] font-black text-indigo-500 uppercase tracking-widest">${dateDisplay}</h3>
                         </div>
                         <div class="space-y-2 px-1">
-                            ${records.map(item => `
-                                <div class="record-item p-4 flex items-center justify-between">
+                            ${items.map(item => `
+                                <div class="record-item p-4 flex items-center justify-between shadow-sm">
                                     <div class="flex items-center gap-4">
                                         <div class="w-9 h-9 rounded-xl flex items-center justify-center ${item.type === 'income' ? 'bg-emerald-50 text-emerald-600' : 'bg-rose-50 text-rose-600'}">
                                             <i class="fas ${item.type === 'income' ? 'fa-arrow-down' : 'fa-arrow-up'} text-[9px]"></i>
@@ -364,10 +320,10 @@
                                             <p class="text-[8px] font-bold text-slate-400 uppercase mt-1">${item.type === 'income' ? 'ဝင်ငွေ' : 'သုံးငွေ'}</p>
                                         </div>
                                     </div>
-                                    <div class="flex items-center gap-3">
-                                        <p class="font-black text-sm ${item.type === 'income' ? 'text-emerald-600' : 'text-slate-800'}">${item.amt.toLocaleString()}</p>
-                                        <button onclick="openEditModal('${item.id}')" class="w-7 h-7 bg-slate-50 text-slate-300 rounded-lg flex items-center justify-center btn-active">
-                                            <i class="fas fa-pen text-[9px]"></i>
+                                    <div class="flex items-center gap-2">
+                                        <p class="font-black text-sm ${item.type === 'income' ? 'text-emerald-600' : 'text-slate-800'} mr-1">${item.amt.toLocaleString()}</p>
+                                        <button onclick="openEditModal('${item.id}')" class="w-8 h-8 bg-slate-50 text-slate-300 rounded-lg flex items-center justify-center btn-active">
+                                            <i class="fas fa-pen text-[10px]"></i>
                                         </button>
                                     </div>
                                 </div>
@@ -378,7 +334,6 @@
             }).join('') || '<div class="py-20 text-center text-slate-300 font-bold italic opacity-50">မှတ်တမ်းမရှိသေးပါ။</div>';
         }
 
-        // Initialize Date
         document.getElementById('main-date').value = new Date().toISOString().split('T')[0];
         document.getElementById('main-date').onchange = updateUI;
     </script>
