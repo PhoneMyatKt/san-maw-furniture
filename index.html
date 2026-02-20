@@ -14,6 +14,7 @@
             background: #f1f5f9; 
             color: #0f172a;
             -webkit-tap-highlight-color: transparent;
+            overflow-x: hidden;
         }
 
         .hidden { display: none !important; }
@@ -34,79 +35,81 @@
         }
 
         .record-item {
-            position: relative;
-            overflow: hidden;
-            border-radius: 1.25rem;
-            margin-bottom: 0.75rem;
-            background: #ef4444; 
-        }
-
-        .record-content {
-            position: relative;
-            z-index: 10;
             background: white;
-            transition: transform 0.3s cubic-bezier(0.25, 1, 0.5, 1);
             border-radius: 1.25rem;
+            margin-bottom: 0.5rem;
             border: 1px solid #f1f5f9;
-        }
-
-        .del-action {
-            position: absolute;
-            right: 0;
-            top: 0;
-            bottom: 0;
-            width: 70px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            z-index: 5;
         }
 
         .btn-active:active {
             transform: scale(0.97);
         }
-
-        .spinner {
-            border: 3px solid rgba(255, 255, 255, 0.3);
-            border-radius: 50%;
-            border-top: 3px solid #fff;
-            width: 20px;
-            height: 20px;
-            animation: spin 1s linear infinite;
+        
+        .modal-overlay {
+            background: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(4px);
         }
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+        .nav-btn {
+            background: white;
+            border-radius: 1rem;
+            padding: 0.75rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #64748b;
+        }
+
+        .nav-btn.active {
+            color: #6366f1;
+            background: #eff6ff;
+        }
+
+        .date-header {
+            position: sticky;
+            top: 0;
+            z-index: 20;
+            background: #f1f5f9;
+            padding: 1rem 0.5rem;
+        }
     </style>
 </head>
 <body class="min-h-screen">
 
-    <!-- Login Overlay -->
-    <div id="login-screen" class="fixed inset-0 z-[2000] bg-slate-900 flex items-center justify-center p-6">
-        <div class="w-full max-w-sm bg-white rounded-[2.5rem] p-8 text-center shadow-2xl">
-            <div class="w-20 h-20 bg-indigo-50 text-indigo-600 rounded-3xl flex items-center justify-center mx-auto mb-6">
-                <i class="fas fa-couch text-3xl"></i>
-            </div>
-            <h2 class="text-2xl font-black text-slate-900 tracking-tight">စန်းမော် ပရိဘောဂ</h2>
-            <p class="text-slate-400 text-[10px] mt-1 mb-8 uppercase tracking-[0.2em] font-bold">Admin Portal Login</p>
-            
-            <div class="space-y-4 text-left">
-                <div>
-                    <label class="text-[10px] font-bold text-slate-400 uppercase ml-2 mb-1 block">အသုံးပြုသူအမည်</label>
-                    <input type="text" id="user-field" class="w-full p-4 input-field rounded-2xl outline-none font-bold text-slate-700">
+    <!-- Edit Modal -->
+    <div id="edit-modal" class="fixed inset-0 z-[3000] modal-overlay flex items-center justify-center p-6 hidden">
+        <div class="w-full max-w-sm bg-white rounded-[2rem] p-8 shadow-2xl">
+            <h3 class="text-xl font-black text-slate-900 mb-6">စာရင်းပြင်ဆင်ရန်</h3>
+            <div class="space-y-4">
+                <input type="text" id="edit-desc" placeholder="အကြောင်းအရာ..." class="w-full p-4 input-field rounded-2xl outline-none font-bold text-sm">
+                <input type="number" id="edit-amt" placeholder="ပမာဏ" class="w-full p-4 input-field rounded-2xl outline-none font-black text-xl">
+                <div class="flex gap-3 pt-2">
+                    <button onclick="closeEditModal()" class="flex-1 bg-slate-100 text-slate-600 font-bold py-4 rounded-2xl btn-active">မလုပ်တော့ပါ</button>
+                    <button id="save-edit-btn" class="flex-1 bg-indigo-600 text-white font-bold py-4 rounded-2xl shadow-lg shadow-indigo-100 btn-active">ပြင်မည်</button>
                 </div>
-                <div>
-                    <label class="text-[10px] font-bold text-slate-400 uppercase ml-2 mb-1 block">လျှို့ဝှက်နံပါတ်</label>
-                    <input type="password" id="pass-field" class="w-full p-4 input-field rounded-2xl outline-none font-bold text-slate-700">
-                </div>
-                <button onclick="doLogin()" class="w-full bg-indigo-600 text-white font-black py-4 rounded-2xl mt-4 shadow-lg shadow-indigo-200 btn-active transition-all">
-                    စနစ်ထဲသို့ ဝင်မည်
-                </button>
             </div>
         </div>
     </div>
 
-    <!-- Main Dashboard -->
-    <div id="main-app" class="max-w-[480px] mx-auto px-4 pt-8 pb-20 hidden">
+    <!-- Welcome Screen -->
+    <div id="welcome-screen" class="fixed inset-0 z-[2000] bg-slate-900 flex items-center justify-center p-6">
+        <div class="w-full max-w-sm bg-white rounded-[2.5rem] p-10 text-center shadow-2xl">
+            <div class="w-24 h-24 bg-indigo-50 text-indigo-600 rounded-[2rem] flex items-center justify-center mx-auto mb-8 shadow-inner">
+                <i class="fas fa-couch text-4xl"></i>
+            </div>
+            <h2 class="text-3xl font-black text-slate-900 tracking-tight mb-2">စန်းမော်</h2>
+            <p class="text-indigo-600 font-bold text-sm mb-4">ပရိဘောဂ နှင့် အထွေထွေစာရင်းချုပ်</p>
+            <button onclick="startApp()" class="w-full bg-indigo-600 text-white font-black py-5 rounded-2xl shadow-xl shadow-indigo-200 btn-active transition-all text-lg flex items-center justify-center gap-3">
+                စတင်အသုံးပြုမည် <i class="fas fa-arrow-right text-sm"></i>
+            </button>
+        </div>
+    </div>
+
+    <!-- Main Wrapper -->
+    <div id="main-app" class="max-w-[480px] mx-auto px-4 pt-8 pb-32 hidden">
+        
+        <!-- Header -->
         <header class="flex justify-between items-center mb-8 px-2">
             <div class="flex items-center gap-4">
                 <div class="w-12 h-12 bg-white rounded-2xl flex items-center justify-center shadow-sm">
@@ -115,175 +118,204 @@
                 <div>
                     <h1 class="text-lg font-black text-slate-900">စန်းမော်</h1>
                     <div class="flex items-center gap-1.5">
-                        <span class="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse"></span>
-                        <p class="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Live Cloud</p>
+                        <span id="sync-dot" class="w-1.5 h-1.5 bg-slate-300 rounded-full"></span>
+                        <p id="sync-status" class="text-[9px] font-bold text-slate-400 uppercase">Offline Mode</p>
                     </div>
                 </div>
             </div>
-            <button onclick="doLogout()" class="w-10 h-10 bg-white rounded-xl flex items-center justify-center text-rose-500 shadow-sm btn-active">
-                <i class="fas fa-power-off"></i>
+            <button onclick="location.reload()" class="w-10 h-10 bg-white rounded-xl flex items-center justify-center text-slate-400 shadow-sm btn-active">
+                <i class="fas fa-sync-alt text-sm"></i>
             </button>
         </header>
 
-        <div class="premium-card rounded-[2.5rem] p-8 text-white mb-8 relative overflow-hidden shadow-2xl">
-            <div class="relative z-10">
-                <div class="flex justify-between items-center mb-10">
-                    <input type="date" id="main-date" class="bg-white/10 border-none text-[11px] font-bold p-2.5 rounded-xl text-white outline-none cursor-pointer">
-                    <i class="fas fa-wallet opacity-30 text-xl"></i>
-                </div>
-                <div class="grid grid-cols-2 gap-4 mb-10">
-                    <div class="bg-white/5 p-4 rounded-2xl border border-white/10">
-                        <p class="text-[9px] font-bold text-emerald-400 uppercase tracking-widest mb-1">ဝင်ငွေ</p>
-                        <p id="total-inc" class="text-xl font-black">0</p>
+        <!-- Home Page View -->
+        <div id="view-home">
+            <!-- Stats Card -->
+            <div class="premium-card rounded-[2.5rem] p-8 text-white mb-8 relative overflow-hidden shadow-2xl">
+                <div class="relative z-10">
+                    <div class="flex justify-between items-center mb-10">
+                        <input type="date" id="main-date" class="bg-white/10 border-none text-[11px] font-bold p-2.5 rounded-xl text-white outline-none cursor-pointer">
+                        <i class="fas fa-wallet opacity-30 text-xl"></i>
                     </div>
-                    <div class="bg-white/5 p-4 rounded-2xl border border-white/10">
-                        <p class="text-[9px] font-bold text-rose-400 uppercase tracking-widest mb-1">သုံးငွေ</p>
-                        <p id="total-exp" class="text-xl font-black">0</p>
+                    
+                    <div class="grid grid-cols-2 gap-4 mb-10">
+                        <div class="bg-white/5 p-4 rounded-2xl border border-white/10">
+                            <p class="text-[9px] font-bold text-emerald-400 uppercase mb-1">ဝင်ငွေ</p>
+                            <p id="total-inc" class="text-xl font-black">0</p>
+                        </div>
+                        <div class="bg-white/5 p-4 rounded-2xl border border-white/10">
+                            <p class="text-[9px] font-bold text-rose-400 uppercase mb-1">သုံးငွေ</p>
+                            <p id="total-exp" class="text-xl font-black">0</p>
+                        </div>
                     </div>
-                </div>
-                <div>
-                    <p class="text-[10px] font-bold text-white/40 uppercase tracking-[0.2em] mb-1">ကျန်ရှိသည့် အမြတ်ငွေ</p>
-                    <div class="flex items-baseline gap-2">
-                        <h2 id="total-profit" class="text-4xl font-black tracking-tight">0</h2>
-                        <span class="text-xs font-bold opacity-40">MMK</span>
+
+                    <div>
+                        <p class="text-[10px] font-bold text-white/40 uppercase tracking-[0.2em] mb-1">ကျန်ရှိသည့် အမြတ်ငွေ</p>
+                        <div class="flex items-baseline gap-2">
+                            <h2 id="total-profit" class="text-4xl font-black tracking-tight">0</h2>
+                            <span class="text-xs font-bold opacity-40">MMK</span>
+                        </div>
                     </div>
                 </div>
             </div>
-            <div class="absolute -right-10 -bottom-10 w-32 h-32 bg-indigo-500/20 rounded-full blur-3xl"></div>
+
+            <!-- Add Form -->
+            <div class="bg-white p-6 rounded-[2.5rem] shadow-sm border border-slate-100">
+                <div class="space-y-4">
+                    <input type="text" id="in-desc" placeholder="အကြောင်းအရာ..." class="w-full p-4 input-field rounded-2xl outline-none font-bold text-sm">
+                    <div class="flex gap-2">
+                        <input type="number" id="in-amt" placeholder="ပမာဏ" class="flex-1 p-4 input-field rounded-2xl outline-none font-black text-xl">
+                        <select id="in-type" class="w-28 input-field rounded-2xl font-bold text-xs text-indigo-600 outline-none px-2">
+                            <option value="income">ဝင်ငွေ (+)</option>
+                            <option value="expense">သုံးငွေ (-)</option>
+                        </select>
+                    </div>
+                    <button id="add-btn" class="w-full bg-slate-900 text-white font-black py-4 rounded-2xl shadow-xl hover:bg-black transition-all btn-active">
+                        သိမ်းဆည်းမည်
+                    </button>
+                </div>
+            </div>
         </div>
 
-        <div class="bg-white p-6 rounded-[2.5rem] shadow-sm border border-slate-100 mb-8">
-            <h3 class="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-4 ml-2">စာရင်းအသစ်ထည့်ရန်</h3>
-            <div class="space-y-4">
-                <input type="text" id="in-desc" placeholder="အကြောင်းအရာ..." class="w-full p-4 input-field rounded-2xl outline-none font-bold text-sm">
-                <div class="flex gap-2">
-                    <input type="number" id="in-amt" placeholder="ပမာဏ" class="flex-1 p-4 input-field rounded-2xl outline-none font-black text-xl">
-                    <select id="in-type" class="w-28 input-field rounded-2xl font-bold text-xs text-indigo-600 outline-none px-2">
-                        <option value="income">ဝင်ငွေ (+)</option>
-                        <option value="expense">သုံးငွေ (-)</option>
-                    </select>
-                </div>
-                <button id="add-btn" class="w-full bg-slate-900 text-white font-black py-4 rounded-2xl shadow-xl hover:bg-black transition-all btn-active flex items-center justify-center gap-2">
-                    <i class="fas fa-plus-circle"></i> သိမ်းဆည်းမည်
+        <!-- Records Page View -->
+        <div id="view-records" class="hidden">
+            <h2 class="text-xl font-black text-slate-900 mb-6 flex items-center gap-3 px-2">
+                <i class="fas fa-history text-indigo-600 text-sm"></i>
+                စာရင်းမှတ်တမ်းချုပ်
+            </h2>
+            <div id="grouped-list" class="space-y-8"></div>
+        </div>
+
+        <!-- Bottom Navigation -->
+        <div class="fixed bottom-6 left-1/2 -translate-x-1/2 w-full max-w-[400px] px-6 z-[2000]">
+            <div class="bg-white/80 backdrop-blur-xl border border-white/20 p-3 rounded-[2rem] shadow-2xl flex justify-around items-center">
+                <button onclick="switchView('home')" id="nav-home" class="nav-btn active flex-1 gap-2">
+                    <i class="fas fa-home"></i>
+                    <span class="text-[10px] font-black uppercase">Dashboard</span>
+                </button>
+                <div class="w-4"></div>
+                <button onclick="switchView('records')" id="nav-records" class="nav-btn flex-1 gap-2">
+                    <i class="fas fa-history"></i>
+                    <span class="text-[10px] font-black uppercase">မှတ်တမ်း</span>
                 </button>
             </div>
         </div>
 
-        <div class="flex items-center justify-between mb-4 px-2">
-            <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest">ယနေ့စာရင်းမှတ်တမ်း</p>
-            <div class="h-[1px] flex-1 bg-slate-200 ml-4"></div>
-        </div>
-        
-        <div id="data-list" class="space-y-3"></div>
     </div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-        import { getAuth, signInAnonymously, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-        import { getFirestore, collection, addDoc, deleteDoc, doc, onSnapshot, serverTimestamp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+        import { getAuth, signInAnonymously, onAuthStateChanged, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, collection, addDoc, updateDoc, doc, onSnapshot, serverTimestamp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
-        // CONFIG FIXED: Prevents script crash if environment config is missing
-        let firebaseConfig = {};
-        try {
-            firebaseConfig = JSON.parse(typeof __firebase_config !== 'undefined' ? __firebase_config : '{}');
-        } catch(e) { console.warn("Config load error"); }
+        // Firebase Configuration (will be provided at runtime)
+        const firebaseConfig = JSON.parse(__firebase_config);
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'san-maw-grouped-v2';
 
-        let app, auth, db;
-        const APP_COLLECTION = "san-maw-main-v1";
-        let localData = [];
+        window.localData = JSON.parse(localStorage.getItem('sm_data_store') || '[]');
+        let currentEditId = null;
 
-        // Try initializing only if config exists
-        if (firebaseConfig.apiKey) {
-            app = initializeApp(firebaseConfig);
-            auth = getAuth(app);
-            db = getFirestore(app);
-        }
-
-        window.doLogin = () => {
-            const u = document.getElementById('user-field').value;
-            const p = document.getElementById('pass-field').value;
-            if(u === 'admin' && p === 'admin') {
-                localStorage.setItem('sm_logged', 'true');
-                checkSession();
-            } else {
-                alert("Login မအောင်မြင်ပါ။ အသုံးပြုသူအမည် သို့မဟုတ် လျှို့ဝှက်နံပါတ် မှားယွင်းနေပါသည်။");
-            }
+        // Start Application
+        window.startApp = () => {
+            document.getElementById('welcome-screen').classList.add('hidden');
+            document.getElementById('main-app').classList.remove('hidden');
+            updateUI();
+            
+            const initAuth = async () => {
+                if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
+                    await signInWithCustomToken(auth, __initial_auth_token);
+                } else {
+                    await signInAnonymously(auth);
+                }
+            };
+            initAuth();
         };
 
-        window.doLogout = async () => {
-            if(confirm("စနစ်မှ ထွက်မှာ သေချာပါသလား?")) {
-                localStorage.removeItem('sm_logged');
-                if(auth) await signOut(auth);
-                location.reload();
+        // Firebase Auth State Listener
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                document.getElementById('sync-dot').className = "w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse";
+                document.getElementById('sync-status').innerText = "Live Cloud";
+                
+                // Real-time Firestore Listener
+                onSnapshot(collection(db, 'artifacts', appId, 'public', 'data', 'records'), (snap) => {
+                    window.localData = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+                    localStorage.setItem('sm_data_store', JSON.stringify(window.localData));
+                    updateUI();
+                });
             }
+        });
+
+        // View Switching Logic
+        window.switchView = (view) => {
+            document.getElementById('view-home').classList.add('hidden');
+            document.getElementById('view-records').classList.add('hidden');
+            document.getElementById('nav-home').classList.remove('active');
+            document.getElementById('nav-records').classList.remove('active');
+
+            document.getElementById(`view-${view}`).classList.remove('hidden');
+            document.getElementById(`nav-${view}`).classList.add('active');
+            
+            if(view === 'records') updateGroupedRecords();
         };
 
-        async function checkSession() {
-            if(localStorage.getItem('sm_logged') === 'true') {
-                document.getElementById('login-screen').classList.add('hidden');
-                document.getElementById('main-app').classList.remove('hidden');
-                if(auth) {
-                    try {
-                        await signInAnonymously(auth);
-                    } catch (e) { console.error("Firebase Auth Error:", e); }
-                }
-            }
-        }
-
-        if(auth) {
-            onAuthStateChanged(auth, (user) => {
-                if (user && localStorage.getItem('sm_logged') === 'true') {
-                    const ref = collection(db, 'artifacts', APP_COLLECTION, 'public', 'data', 'records');
-                    onSnapshot(ref, (snap) => {
-                        localData = snap.docs.map(d => ({ id: d.id, ...d.data() }));
-                        updateUI();
-                    }, (err) => { console.error("Firestore Listen Error:", err); });
-                }
-            });
-        }
-
+        // Add New Record (Always adds as new, even with same name)
         document.getElementById('add-btn').onclick = async () => {
             const desc = document.getElementById('in-desc').value;
             const amt = document.getElementById('in-amt').value;
             const type = document.getElementById('in-type').value;
             const date = document.getElementById('main-date').value;
-            
-            if(!desc || !amt || !db) return;
+            if(!desc || !amt) return;
 
             try {
-                const btn = document.getElementById('add-btn');
-                btn.innerHTML = '<div class="spinner"></div>';
-                btn.disabled = true;
-
-                await addDoc(collection(db, 'artifacts', APP_COLLECTION, 'public', 'data', 'records'), {
+                await addDoc(collection(db, 'artifacts', appId, 'public', 'data', 'records'), {
                     desc, amt: parseFloat(amt), type, date, createdAt: serverTimestamp()
                 });
-
                 document.getElementById('in-desc').value = '';
                 document.getElementById('in-amt').value = '';
-                btn.innerHTML = '<i class="fas fa-plus-circle"></i> သိမ်းဆည်းမည်';
-                btn.disabled = false;
-            } catch (e) { alert("Error: " + e.message); }
+            } catch (e) {
+                console.error("Error adding document: ", e);
+            }
         };
 
-        window.removeItem = async (id) => {
-            if(db) await deleteDoc(doc(db, 'artifacts', APP_COLLECTION, 'public', 'data', 'records', id));
+        // Edit Functions
+        window.openEditModal = (id) => {
+            const record = window.localData.find(x => x.id === id);
+            if(!record) return;
+            currentEditId = id;
+            document.getElementById('edit-desc').value = record.desc;
+            document.getElementById('edit-amt').value = record.amt;
+            document.getElementById('edit-modal').classList.remove('hidden');
         };
 
-        let sx = 0;
-        window.hStart = (e) => sx = e.touches[0].clientX;
-        window.hMove = (e, id) => {
-            let dx = sx - e.touches[0].clientX;
-            if (dx > 0 && dx <= 100) document.getElementById(`box-${id}`).style.transform = `translateX(-${dx}px)`;
-        };
-        window.hEnd = (e, id) => {
-            let dx = sx - e.changedTouches[0].clientX;
-            document.getElementById(`box-${id}`).style.transform = dx > 60 ? `translateX(-80px)` : `translateX(0px)`;
+        window.closeEditModal = () => {
+            document.getElementById('edit-modal').classList.add('hidden');
+            currentEditId = null;
         };
 
+        document.getElementById('save-edit-btn').onclick = async () => {
+            if(!currentEditId) return;
+            const newDesc = document.getElementById('edit-desc').value;
+            const newAmt = parseFloat(document.getElementById('edit-amt').value);
+
+            if(!newDesc || isNaN(newAmt)) return;
+
+            try {
+                const docRef = doc(db, 'artifacts', appId, 'public', 'data', 'records', currentEditId);
+                await updateDoc(docRef, { desc: newDesc, amt: newAmt });
+                closeEditModal();
+            } catch(e) {
+                console.error("Error updating document: ", e);
+            }
+        };
+
+        // UI Refresh
         function updateUI() {
-            const filterD = document.getElementById('main-date').value;
-            const filtered = localData.filter(x => x.date === filterD);
+            const selDate = document.getElementById('main-date').value;
+            const filtered = window.localData.filter(x => x.date === selDate);
             
             const inc = filtered.filter(x => x.type === 'income').reduce((a, b) => a + b.amt, 0);
             const exp = filtered.filter(x => x.type === 'expense').reduce((a, b) => a + b.amt, 0);
@@ -291,33 +323,64 @@
             document.getElementById('total-inc').innerText = inc.toLocaleString();
             document.getElementById('total-exp').innerText = exp.toLocaleString();
             document.getElementById('total-profit').innerText = (inc - exp).toLocaleString();
-
-            const list = document.getElementById('data-list');
-            const sorted = filtered.sort((a,b) => (b.createdAt?.seconds || 0) - (a.createdAt?.seconds || 0));
-
-            list.innerHTML = sorted.map(item => `
-                <div class="record-item shadow-sm">
-                    <div class="del-action" onclick="removeItem('${item.id}')"><i class="fas fa-trash-alt"></i></div>
-                    <div id="box-${item.id}" class="record-content p-5 flex items-center justify-between"
-                         ontouchstart="hStart(event)" ontouchmove="hMove(event, '${item.id}')" ontouchend="hEnd(event, '${item.id}')">
-                        <div class="flex items-center gap-4">
-                            <div class="w-10 h-10 rounded-xl flex items-center justify-center ${item.type === 'income' ? 'bg-emerald-50 text-emerald-600' : 'bg-rose-50 text-rose-600'}">
-                                <i class="fas ${item.type === 'income' ? 'fa-arrow-down' : 'fa-arrow-up'} text-[10px]"></i>
-                            </div>
-                            <div>
-                                <p class="font-bold text-slate-800 text-sm">${item.desc}</p>
-                                <p class="text-[9px] font-bold text-slate-400 uppercase mt-0.5">${item.type === 'income' ? 'ဝင်ငွေ' : 'သုံးငွေ'}</p>
-                            </div>
-                        </div>
-                        <p class="font-black text-base ${item.type === 'income' ? 'text-emerald-600' : 'text-slate-800'}">${item.amt.toLocaleString()}</p>
-                    </div>
-                </div>
-            `).join('') || '<div class="py-12 text-center text-slate-300 font-bold italic opacity-50">မှတ်တမ်းမရှိသေးပါ။</div>';
+            
+            if (!document.getElementById('view-records').classList.contains('hidden')) {
+                updateGroupedRecords();
+            }
         }
 
+        // History View with Date Grouping
+        function updateGroupedRecords() {
+            const groupedContainer = document.getElementById('grouped-list');
+            
+            const groups = window.localData.reduce((acc, item) => {
+                if (!acc[item.date]) acc[item.date] = [];
+                acc[item.date].push(item);
+                return acc;
+            }, {});
+
+            const sortedDates = Object.keys(groups).sort((a, b) => new Date(b) - new Date(a));
+
+            groupedContainer.innerHTML = sortedDates.map(date => {
+                const records = groups[date].sort((a,b) => (b.createdAt?.seconds || 0) - (a.createdAt?.seconds || 0));
+                
+                const d = new Date(date);
+                const dateDisplay = d.toLocaleDateString('my-MM', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+
+                return `
+                    <div class="space-y-2">
+                        <div class="date-header">
+                            <h3 class="text-[11px] font-black text-indigo-500 uppercase tracking-widest">${dateDisplay}</h3>
+                        </div>
+                        <div class="space-y-2 px-1">
+                            ${records.map(item => `
+                                <div class="record-item p-4 flex items-center justify-between">
+                                    <div class="flex items-center gap-4">
+                                        <div class="w-9 h-9 rounded-xl flex items-center justify-center ${item.type === 'income' ? 'bg-emerald-50 text-emerald-600' : 'bg-rose-50 text-rose-600'}">
+                                            <i class="fas ${item.type === 'income' ? 'fa-arrow-down' : 'fa-arrow-up'} text-[9px]"></i>
+                                        </div>
+                                        <div>
+                                            <p class="font-bold text-slate-800 text-xs leading-tight">${item.desc}</p>
+                                            <p class="text-[8px] font-bold text-slate-400 uppercase mt-1">${item.type === 'income' ? 'ဝင်ငွေ' : 'သုံးငွေ'}</p>
+                                        </div>
+                                    </div>
+                                    <div class="flex items-center gap-3">
+                                        <p class="font-black text-sm ${item.type === 'income' ? 'text-emerald-600' : 'text-slate-800'}">${item.amt.toLocaleString()}</p>
+                                        <button onclick="openEditModal('${item.id}')" class="w-7 h-7 bg-slate-50 text-slate-300 rounded-lg flex items-center justify-center btn-active">
+                                            <i class="fas fa-pen text-[9px]"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                `;
+            }).join('') || '<div class="py-20 text-center text-slate-300 font-bold italic opacity-50">မှတ်တမ်းမရှိသေးပါ။</div>';
+        }
+
+        // Initialize Date
         document.getElementById('main-date').value = new Date().toISOString().split('T')[0];
         document.getElementById('main-date').onchange = updateUI;
-        checkSession();
     </script>
 </body>
 </html>
