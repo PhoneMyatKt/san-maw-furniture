@@ -3,52 +3,46 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>စန်းမော် ပရိဘောဂ</title>
+    <title>စန်းမော် ပရိဘောဂ - စာရင်းကိုင်စနစ်</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&family=Pyidaungsu:wght@400;700&display=swap');
         
-        :root {
-            --primary: #4338ca;
-            --secondary: #6366f1;
-            --accent: #f59e0b;
-        }
-
         body { 
             font-family: 'Plus Jakarta Sans', 'Pyidaungsu', sans-serif; 
             background: #f1f5f9; 
             color: #0f172a;
             -webkit-tap-highlight-color: transparent;
+            overflow-x: hidden;
         }
 
         .hidden { display: none !important; }
         
-        /* Modern Gradient */
+        /* Premium Gradient Background */
         .glass-grad { 
             background: linear-gradient(135deg, #1e1b4b 0%, #312e81 100%); 
-            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
         }
 
-        /* Sophisticated Inputs */
+        /* Modern Input Styling */
         .input-style { 
             background: #ffffff; 
             border: 2px solid #f1f5f9; 
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); 
         }
         .input-style:focus {
-            border-color: var(--secondary);
+            border-color: #6366f1;
             box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.1);
         }
 
-        /* Modern Item Cards */
+        /* Swipe to Delete Styling */
         .swipe-item {
             position: relative;
             overflow: hidden;
             border-radius: 1.5rem;
             margin-bottom: 0.85rem;
-            background: #ef4444;
-            transition: transform 0.2s ease;
+            background: #ef4444; /* Delete Background Color */
         }
 
         .swipe-content {
@@ -74,26 +68,7 @@
             font-size: 1.25rem;
         }
 
-        /* Custom Date Picker */
-        input[type="date"]::-webkit-calendar-picker-indicator {
-            filter: invert(1);
-            cursor: pointer;
-        }
-
-        .btn-hover {
-            transition: all 0.3s ease;
-        }
-        .btn-hover:active {
-            transform: scale(0.96);
-        }
-
-        /* Floating elements */
-        .stat-card {
-            background: rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(8px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 1.25rem;
-        }
+        .btn-hover:active { transform: scale(0.96); }
     </style>
 </head>
 <body class="min-h-screen">
@@ -105,16 +80,10 @@
                 <i class="fas fa-couch text-4xl"></i>
             </div>
             <h2 class="text-3xl font-extrabold text-slate-900 tracking-tight">စန်းမော်</h2>
-            <p class="text-slate-400 text-sm mt-2 mb-10 font-semibold tracking-wide uppercase">Furniture Admin</p>
+            <p class="text-slate-400 text-sm mt-2 mb-10 font-semibold uppercase tracking-widest">Furniture Admin</p>
             <div class="space-y-4 text-left">
-                <div class="relative">
-                    <i class="fas fa-user absolute left-5 top-5 text-slate-300"></i>
-                    <input type="text" id="user-input" placeholder="User Name" class="w-full p-5 pl-14 input-style rounded-2xl outline-none font-bold text-slate-700">
-                </div>
-                <div class="relative">
-                    <i class="fas fa-lock absolute left-5 top-5 text-slate-300"></i>
-                    <input type="password" id="pass-input" placeholder="Password" class="w-full p-5 pl-14 input-style rounded-2xl outline-none font-bold text-slate-700">
-                </div>
+                <input type="text" id="user-input" placeholder="အသုံးပြုသူအမည်" class="w-full p-5 input-style rounded-2xl outline-none font-bold text-slate-700">
+                <input type="password" id="pass-input" placeholder="လျှို့ဝှက်နံပါတ်" class="w-full p-5 input-style rounded-2xl outline-none font-bold text-slate-700">
                 <button onclick="handleLogin()" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-extrabold py-5 rounded-2xl mt-6 shadow-xl btn-hover transition-all">
                     စနစ်ထဲသို့ ဝင်မည်
                 </button>
@@ -131,10 +100,7 @@
                 </div>
                 <div>
                     <h1 class="text-xl font-extrabold text-slate-900 tracking-tight">စန်းမော်</h1>
-                    <div class="flex items-center gap-2">
-                        <span class="w-2 h-2 bg-emerald-500 rounded-full animate-pulse"></span>
-                        <p class="text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em] mt-1">Cloud Sync Active</p>
-                    </div>
+                    <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-1">Cloud Protected</p>
                 </div>
             </div>
             <button onclick="handleLogout()" class="w-12 h-12 bg-white rounded-2xl flex items-center justify-center shadow-md text-rose-500 btn-hover">
@@ -142,179 +108,143 @@
             </button>
         </header>
 
-        <!-- Main Dashboard Card -->
+        <!-- Balance Card -->
         <div class="glass-grad rounded-[2.5rem] p-8 text-white mb-10 relative overflow-hidden">
             <div class="relative z-10">
                 <div class="flex justify-between items-center mb-10">
-                    <div class="relative">
-                        <input type="date" id="date-filter" class="bg-white/10 border border-white/10 text-xs font-bold p-3 rounded-2xl outline-none text-white cursor-pointer hover:bg-white/20 transition-all">
-                    </div>
-                    <div class="text-[10px] font-black bg-emerald-500/20 text-emerald-300 px-3 py-1.5 rounded-full border border-emerald-500/30">
-                        LIVE DATA
-                    </div>
+                    <input type="date" id="date-filter" class="bg-white/10 border border-white/10 text-xs font-bold p-3 rounded-2xl outline-none text-white cursor-pointer">
+                    <div class="text-[10px] font-black bg-emerald-500/20 text-emerald-300 px-3 py-1.5 rounded-full border border-emerald-500/30">ONLINE</div>
                 </div>
 
                 <div class="grid grid-cols-2 gap-4 mb-10">
-                    <div class="stat-card p-5">
-                        <div class="w-8 h-8 bg-emerald-500/20 rounded-lg flex items-center justify-center mb-3">
-                            <i class="fas fa-arrow-down text-emerald-400 text-xs"></i>
-                        </div>
-                        <p class="text-[10px] font-bold text-white/50 uppercase tracking-widest mb-1">စုစုပေါင်း ဝင်ငွေ</p>
+                    <div class="bg-white/5 backdrop-blur-md p-5 rounded-2xl border border-white/10">
+                        <p class="text-[10px] font-bold text-white/50 uppercase mb-1">ဝင်ငွေ</p>
                         <p id="inc-txt" class="text-2xl font-black">0</p>
                     </div>
-                    <div class="stat-card p-5">
-                        <div class="w-8 h-8 bg-rose-500/20 rounded-lg flex items-center justify-center mb-3">
-                            <i class="fas fa-arrow-up text-rose-400 text-xs"></i>
-                        </div>
-                        <p class="text-[10px] font-bold text-white/50 uppercase tracking-widest mb-1">စုစုပေါင်း သုံးငွေ</p>
+                    <div class="bg-white/5 backdrop-blur-md p-5 rounded-2xl border border-white/10">
+                        <p class="text-[10px] font-bold text-white/50 uppercase mb-1">သုံးငွေ</p>
                         <p id="exp-txt" class="text-2xl font-black">0</p>
                     </div>
                 </div>
 
                 <div class="pt-2">
-                    <p class="text-[11px] font-bold text-white/40 uppercase tracking-[0.3em] mb-2">ကျန်ရှိသည့် အမြတ်ငွေ</p>
-                    <div class="flex items-baseline gap-2">
-                        <h2 id="profit-txt" class="text-5xl font-extrabold tracking-tighter">0</h2>
-                        <span class="text-sm font-bold opacity-50">MMK</span>
-                    </div>
+                    <p class="text-[11px] font-bold text-white/40 uppercase tracking-widest mb-2">လက်ကျန်အမြတ်</p>
+                    <h2 id="profit-txt" class="text-5xl font-extrabold tracking-tighter">0</h2>
                 </div>
             </div>
-            
-            <!-- Abstract background shapes -->
-            <div class="absolute -right-10 -bottom-10 w-40 h-40 bg-indigo-500/20 rounded-full blur-3xl"></div>
-            <div class="absolute -left-10 -top-10 w-40 h-40 bg-purple-500/10 rounded-full blur-3xl"></div>
         </div>
 
-        <!-- Styled Form -->
+        <!-- Add Form -->
         <div class="bg-white p-8 rounded-[2.5rem] shadow-sm border border-slate-100 mb-10">
-            <h4 class="text-xs font-black text-slate-800 uppercase tracking-widest mb-6 flex items-center gap-2">
-                <span class="w-1 h-4 bg-indigo-600 rounded-full"></span> စာရင်းအသစ်ထည့်ရန်
-            </h4>
             <div class="space-y-5">
-                <input type="text" id="desc-in" placeholder="အကြောင်းအရာ ဖော်ပြချက်..." class="w-full p-5 input-style rounded-2xl outline-none font-bold text-sm">
+                <input type="text" id="desc-in" placeholder="အကြောင်းအရာ..." class="w-full p-5 input-style rounded-2xl outline-none font-bold text-sm">
                 <div class="grid grid-cols-12 gap-3">
                     <div class="col-span-7">
                         <input type="number" id="amt-in" placeholder="ပမာဏ" class="w-full p-5 input-style rounded-2xl outline-none font-black text-2xl">
                     </div>
                     <div class="col-span-5">
-                        <select id="type-in" class="w-full h-full input-style px-4 rounded-2xl font-extrabold text-xs text-indigo-600 outline-none appearance-none bg-slate-50">
+                        <select id="type-in" class="w-full h-full input-style px-4 rounded-2xl font-extrabold text-xs text-indigo-600 outline-none appearance-none">
                             <option value="income">ဝင်ငွေ (+)</option>
                             <option value="expense">သုံးငွေ (-)</option>
                         </select>
                     </div>
                 </div>
-                <button id="save-btn" class="w-full bg-slate-900 hover:bg-black text-white font-extrabold py-5 rounded-2xl shadow-xl shadow-slate-200 btn-hover flex items-center justify-center gap-3">
-                    <i class="fas fa-check-circle"></i>
-                    ဒေတာသိမ်းဆည်းမည်
+                <button id="save-btn" class="w-full bg-slate-900 text-white font-extrabold py-5 rounded-2xl shadow-xl btn-hover">
+                    စာရင်းသိမ်းဆည်းမည်
                 </button>
             </div>
         </div>
 
-        <div class="flex justify-between items-center mb-6 px-2">
-            <h3 class="text-[11px] font-black text-slate-400 uppercase tracking-[0.2em]">စာရင်းမှတ်တမ်းများ</h3>
-            <div class="h-[1px] flex-1 mx-4 bg-slate-200"></div>
-        </div>
-        
         <div id="list-container" class="space-y-3"></div>
     </div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-        import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getAuth, signInAnonymously, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
         import { getFirestore, collection, addDoc, deleteDoc, doc, onSnapshot, serverTimestamp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
-        // Logic Section (Remains untouched as requested)
-        const APP_ID = typeof __app_id !== 'undefined' ? __app_id : 'san-maw-final-v12';
+        // 🔥 IMPORTANT: Config is dynamically injected in this environment
         const firebaseConfig = JSON.parse(__firebase_config);
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
         const db = getFirestore(app);
+        const APP_ID = typeof __app_id !== 'undefined' ? __app_id : 'san-maw-live-v12';
 
         let records = [];
         let isAuth = false;
 
+        // Login Handling
         window.handleLogin = () => {
             const u = document.getElementById('user-input').value;
             const p = document.getElementById('pass-input').value;
             if(u === 'admin' && p === 'admin') {
-                localStorage.setItem('sm_logged_in_v12', 'true');
-                initProcess();
-            } else {
-                alert("Login မှားယွင်းနေပါသည်။");
-            }
+                localStorage.setItem('sm_auth_status', 'active');
+                initAuth();
+            } else alert("အချက်အလက်မှားယွင်းနေပါသည်။");
         };
 
         window.handleLogout = async () => {
-            if(confirm("Logout ထွက်ရန် သေချာပါသလား?")) {
-                localStorage.removeItem('sm_logged_in_v12');
+            if(confirm("အကောင့်မှ ထွက်မှာ သေချာပါသလား?")) {
+                localStorage.removeItem('sm_auth_status');
                 await signOut(auth);
                 location.reload();
             }
         };
 
-        async function initProcess() {
-            if(localStorage.getItem('sm_logged_in_v12') === 'true') {
+        async function initAuth() {
+            if(localStorage.getItem('sm_auth_status') === 'active') {
                 document.getElementById('login-section').classList.add('hidden');
                 document.getElementById('app-section').classList.remove('hidden');
-                if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
-                    await signInWithCustomToken(auth, __initial_auth_token);
-                } else {
-                    await signInAnonymously(auth);
-                }
+                await signInAnonymously(auth);
             }
         }
 
         onAuthStateChanged(auth, (user) => {
-            if (user && localStorage.getItem('sm_logged_in_v12') === 'true') {
+            if (user && localStorage.getItem('sm_auth_status') === 'active') {
                 isAuth = true;
-                const colPath = collection(db, 'artifacts', APP_ID, 'public', 'data', 'records');
-                onSnapshot(colPath, (snap) => {
+                const colRef = collection(db, 'artifacts', APP_ID, 'public', 'data', 'records');
+                onSnapshot(colRef, (snap) => {
                     records = snap.docs.map(d => ({ id: d.id, ...d.data() }));
                     renderUI();
                 });
             }
         });
 
+        // Database Operations
         document.getElementById('save-btn').onclick = async () => {
-            if (!isAuth) return;
             const desc = document.getElementById('desc-in').value;
             const amt = document.getElementById('amt-in').value;
             const type = document.getElementById('type-in').value;
             const date = document.getElementById('date-filter').value;
-            if(!desc || !amt) return;
-            try {
-                const colPath = collection(db, 'artifacts', APP_ID, 'public', 'data', 'records');
-                await addDoc(colPath, { desc, amt: parseFloat(amt), type, date, createdAt: serverTimestamp() });
-                document.getElementById('desc-in').value = '';
-                document.getElementById('amt-in').value = '';
-            } catch (e) { console.error(e); }
+            if(!desc || !amt || !isAuth) return;
+
+            await addDoc(collection(db, 'artifacts', APP_ID, 'public', 'data', 'records'), {
+                desc, amt: parseFloat(amt), type, date, createdAt: serverTimestamp()
+            });
+            document.getElementById('desc-in').value = '';
+            document.getElementById('amt-in').value = '';
         };
 
-        window.deleteItem = async (docId) => {
-            try {
-                await deleteDoc(doc(db, 'artifacts', APP_ID, 'public', 'data', 'records', docId));
-            } catch (e) { console.error(e); }
+        window.deleteItem = async (id) => {
+            await deleteDoc(doc(db, 'artifacts', APP_ID, 'public', 'data', 'records', id));
         };
 
-        // UI Helpers
+        // UI Interactions (Swipe)
         let startX = 0;
-        window.ts = (e, id) => { startX = e.touches[0].clientX; };
+        window.ts = (e) => startX = e.touches[0].clientX;
         window.tm = (e, id) => {
-            const moveX = e.touches[0].clientX;
-            const diff = startX - moveX;
-            const el = document.getElementById(`content-${id}`);
-            if (diff > 0 && diff <= 120) el.style.transform = `translateX(-${diff}px)`;
+            let diff = startX - e.touches[0].clientX;
+            if (diff > 0 && diff <= 120) document.getElementById(`content-${id}`).style.transform = `translateX(-${diff}px)`;
         };
         window.te = (e, id) => {
-            const endX = e.changedTouches[0].clientX;
-            const diff = startX - endX;
+            let diff = startX - e.changedTouches[0].clientX;
             const el = document.getElementById(`content-${id}`);
-            el.style.transform = diff > 60 ? `translateX(-80px)` : `translateX(0px)`;
+            el.style.transform = diff > 70 ? `translateX(-80px)` : `translateX(0px)`;
         };
 
-        window.renderUI = () => {
-            const dateVal = document.getElementById('date-filter').value;
-            const filtered = records.filter(r => r.date === dateVal);
+        function renderUI() {
+            const date = document.getElementById('date-filter').value;
+            const filtered = records.filter(r => r.date === date);
             const inc = filtered.filter(r => r.type === 'income').reduce((s,r) => s+r.amt, 0);
             const exp = filtered.filter(r => r.type === 'expense').reduce((s,r) => s+r.amt, 0);
 
@@ -323,41 +253,33 @@
             document.getElementById('profit-txt').innerText = (inc - exp).toLocaleString();
 
             const container = document.getElementById('list-container');
-            const sorted = filtered.sort((a,b) => (b.createdAt?.seconds || 0) - (a.createdAt?.seconds || 0));
-
-            container.innerHTML = sorted.map(r => `
+            container.innerHTML = filtered.sort((a,b) => (b.createdAt?.seconds || 0) - (a.createdAt?.seconds || 0)).map(r => `
                 <div class="swipe-item shadow-sm">
-                    <div class="delete-btn-bg" onclick="deleteItem('${r.id}')">
-                        <i class="fas fa-trash-alt"></i>
-                    </div>
+                    <div class="delete-btn-bg" onclick="deleteItem('${r.id}')"><i class="fas fa-trash-alt"></i></div>
                     <div id="content-${r.id}" class="swipe-content p-5 flex items-center justify-between"
-                         ontouchstart="ts(event, '${r.id}')"
-                         ontouchmove="tm(event, '${r.id}')"
-                         ontouchend="te(event, '${r.id}')">
-                        <div class="flex items-center gap-5">
+                         ontouchstart="ts(event)" ontouchmove="tm(event, '${r.id}')" ontouchend="te(event, '${r.id}')">
+                        <div class="flex items-center gap-4">
                             <div class="w-12 h-12 rounded-2xl flex items-center justify-center ${r.type === 'income' ? 'bg-emerald-50 text-emerald-600' : 'bg-rose-50 text-rose-600'}">
-                                <i class="fas ${r.type === 'income' ? 'fa-arrow-down' : 'fa-arrow-up'} text-sm"></i>
+                                <i class="fas ${r.type === 'income' ? 'fa-arrow-down' : 'fa-arrow-up'} text-xs"></i>
                             </div>
                             <div>
                                 <p class="font-bold text-slate-800 tracking-tight">${r.desc}</p>
-                                <p class="text-[9px] font-black ${r.type === 'income' ? 'text-emerald-500' : 'text-rose-400'} uppercase tracking-[0.1em] mt-1">
+                                <p class="text-[9px] font-black uppercase mt-1 ${r.type === 'income' ? 'text-emerald-500' : 'text-rose-400'}">
                                     ${r.type === 'income' ? 'ဝင်ငွေစာရင်း' : 'သုံးငွေစာရင်း'}
                                 </p>
                             </div>
                         </div>
-                        <div class="text-right">
-                            <p class="font-black text-lg ${r.type === 'income' ? 'text-emerald-600' : 'text-slate-800'}">
-                                ${r.type === 'income' ? '+' : '-'}${r.amt.toLocaleString()}
-                            </p>
-                        </div>
+                        <p class="font-black text-lg ${r.type === 'income' ? 'text-emerald-600' : 'text-slate-800'}">
+                            ${r.amt.toLocaleString()}
+                        </p>
                     </div>
                 </div>
-            `).join('') || `<div class="py-16 text-center text-slate-300 font-bold italic opacity-60">ယနေ့အတွက် မှတ်တမ်းမရှိသေးပါ။</div>`;
-        };
+            `).join('') || '<div class="py-16 text-center text-slate-300 font-bold italic opacity-60">စာရင်းမှတ်တမ်း မရှိသေးပါ။</div>';
+        }
 
         document.getElementById('date-filter').value = new Date().toISOString().split('T')[0];
         document.getElementById('date-filter').onchange = renderUI;
-        initProcess();
+        initAuth();
     </script>
 </body>
 </html>
