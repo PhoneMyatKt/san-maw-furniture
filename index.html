@@ -1,3 +1,327 @@
 <!DOCTYPE html>
+<html lang="my">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>စန်းမော် ပရိဘောဂ - စာရင်းချုပ်</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&family=Pyidaungsu:wght@400;700&display=swap');
+        
+        body { 
+            font-family: 'Plus Jakarta Sans', 'Pyidaungsu', sans-serif; 
+            background: #f1f5f9; 
+            color: #0f172a;
+            -webkit-tap-highlight-color: transparent;
+        }
 
-<html lang="my"> <head> <meta charset="UTF-8"> <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"> <title>စန်းမော် ပရိဘောဂ</title> <script src="https://www.google.com/search?q=https://cdn.tailwindcss.com"></script> <link href="[suspicious link removed]" rel="stylesheet"> <style> @import url('https://www.google.com/search?q=https://fonts.googleapis.com/css2%3Ffamily%3DPlus%2BJakarta%2BSans:wght%40400%3B600%3B700%3B800%26family%3DPyidaungsu:wght%40400%3B700%26display%3Dswap'); body { font-family: 'Plus Jakarta Sans', 'Pyidaungsu', sans-serif; background: #f8fafc; color: #0f172a; -webkit-tap-highlight-color: transparent; } .hidden { display: none !important; } .glass-grad { background: linear-gradient(135deg, #1e1b4b 0%, #312e81 100%); box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1); } .input-style { background: #ffffff; border: 2px solid #f1f5f9; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); } .input-style:focus { border-color: #6366f1; box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.1); } .swipe-item { position: relative; overflow: hidden; border-radius: 1.5rem; margin-bottom: 0.85rem; background: #ef4444; } .swipe-content { position: relative; z-index: 10; background: white; transition: transform 0.3s cubic-bezier(0.25, 1, 0.5, 1); border-radius: 1.5rem; border: 1px solid rgba(226, 232, 240, 0.8); } .delete-btn-bg { position: absolute; right: 0; top: 0; bottom: 0; width: 80px; display: flex; align-items: center; justify-content: center; color: white; z-index: 5; } .btn-hover:active { transform: scale(0.96); } </style> </head> <body class="min-h-screen"> <div id="login-section" class="fixed inset-0 z-[1000] bg-slate-950 flex items-center justify-center p-6"> <div class="w-full max-w-sm bg-white rounded-[3rem] p-10 text-center shadow-2xl"> <div class="w-20 h-20 bg-indigo-50 text-indigo-600 rounded-3xl flex items-center justify-center mx-auto mb-6"> <i class="fas fa-couch text-3xl"></i> </div> <h2 class="text-3xl font-extrabold text-slate-900">စန်းမော်</h2> <p class="text-slate-400 text-xs mt-2 mb-10 font-semibold tracking-widest uppercase">Furniture Admin</p> <div class="space-y-4 text-left"> <input type="text" id="user-input" placeholder="အသုံးပြုသူအမည်" class="w-full p-5 input-style rounded-2xl outline-none font-bold"> <input type="password" id="pass-input" placeholder="လျှို့ဝှက်နံပါတ်" class="w-full p-5 input-style rounded-2xl outline-none font-bold"> <button onclick="handleLogin()" class="w-full bg-indigo-600 text-white font-extrabold py-5 rounded-2xl mt-6 shadow-xl btn-hover">Login ဝင်မည်</button> </div> </div> </div> <div id="app-section" class="max-w-[480px] mx-auto px-5 pt-10 pb-24 hidden"> <header class="flex justify-between items-center mb-8"> <div class="flex items-center gap-4"> <div class="w-12 h-12 bg-white rounded-2xl flex items-center justify-center shadow-md"> <i class="fas fa-couch text-indigo-600 text-xl"></i> </div> <h1 class="text-lg font-extrabold text-slate-900">စန်းမော်</h1> </div> <button onclick="handleLogout()" class="w-10 h-10 bg-white rounded-xl flex items-center justify-center text-rose-500"><i class="fas fa-power-off"></i></button> </header> <div class="glass-grad rounded-[2.5rem] p-8 text-white mb-8 relative overflow-hidden"> <div class="relative z-10"> <div class="flex justify-between items-center mb-10"> <input type="date" id="date-filter" class="bg-white/10 border-none text-xs font-bold p-2.5 rounded-xl text-white"> <span class="text-[10px] font-black bg-emerald-500/20 text-emerald-300 px-3 py-1 rounded-full">ONLINE</span> </div> <div class="grid grid-cols-2 gap-6 mb-8"> <div><p class="text-[10px] font-bold opacity-50 uppercase mb-1">ဝင်ငွေ</p><p id="inc-txt" class="text-2xl font-black">0</p></div> <div><p class="text-[10px] font-bold opacity-50 uppercase mb-1">သုံးငွေ</p><p id="exp-txt" class="text-2xl font-black">0</p></div> </div> <div class="pt-2 border-t border-white/10"><p class="text-[10px] font-bold opacity-40 mb-1">အမြတ်</p><h2 id="profit-txt" class="text-4xl font-extrabold">0</h2></div> </div> </div> <div class="bg-white p-7 rounded-[2.5rem] shadow-sm border border-slate-100 mb-10"> <div class="space-y-4"> <input type="text" id="desc-in" placeholder="အကြောင်းအရာ..." class="w-full p-4 input-style rounded-2xl outline-none font-bold"> <div class="grid grid-cols-12 gap-2"> <input type="number" id="amt-in" placeholder="ပမာဏ" class="col-span-8 p-4 input-style rounded-2xl font-black text-xl"> <select id="type-in" class="col-span-4 input-style rounded-2xl font-bold text-xs text-indigo-600"><option value="income">ဝင်ငွေ</option><option value="expense">သုံးငွေ</option></select> </div> <button id="save-btn" class="w-full bg-slate-900 text-white font-extrabold py-5 rounded-2xl shadow-xl btn-hover">သိမ်းဆည်းမည်</button> </div> </div> <div id="list-container" class="space-y-3"></div> </div> <script type="module"> import { initializeApp } from "https://www.google.com/search?q=https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js"; import { getAuth, signInAnonymously, onAuthStateChanged, signOut } from "https://www.google.com/search?q=https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js"; import { getFirestore, collection, addDoc, deleteDoc, doc, onSnapshot, serverTimestamp } from "https://www.google.com/search?q=https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js"; const firebaseConfig = JSON.parse(__firebase_config); const app = initializeApp(firebaseConfig); const auth = getAuth(app); const db = getFirestore(app); const APP_ID = 'san-maw-furniture-live'; let records = []; window.handleLogin = () => { if(document.getElementById('user-input').value === 'admin' && document.getElementById('pass-input').value === 'admin') { localStorage.setItem('sm_auth', 'true'); checkAuth(); } else alert("Login မှားယွင်းနေပါသည်။"); }; window.handleLogout = async () => { if(confirm("ထွက်မှာသေချာလား?")) { localStorage.removeItem('sm_auth'); await signOut(auth); location.reload(); } }; async function checkAuth() { if(localStorage.getItem('sm_auth') === 'true') { document.getElementById('login-section').classList.add('hidden'); document.getElementById('app-section').classList.remove('hidden'); await signInAnonymously(auth); } } onAuthStateChanged(auth, (user) => { if (user && localStorage.getItem('sm_auth') === 'true') { onSnapshot(collection(db, 'artifacts', APP_ID, 'public', 'data', 'records'), (snap) => { records = snap.docs.map(d => ({ id: d.id, ...d.data() })); renderUI(); }); } }); document.getElementById('save-btn').onclick = async () => { const desc = document.getElementById('desc-in').value, amt = document.getElementById('amt-in').value, type = document.getElementById('type-in').value, date = document.getElementById('date-filter').value; if(!desc || !amt) return; await addDoc(collection(db, 'artifacts', APP_ID, 'public', 'data', 'records'), { desc, amt: parseFloat(amt), type, date, createdAt: serverTimestamp() }); document.getElementById('desc-in').value = ''; document.getElementById('amt-in').value = ''; }; window.deleteItem = async (id) => await deleteDoc(doc(db, 'artifacts', APP_ID, 'public', 'data', 'records', id)); let startX = 0; window.ts = (e) => startX = e.touches[0].clientX; window.tm = (e, id) => { let diff = startX - e.touches[0].clientX; if (diff > 0 && diff <= 100) document.getElementById(content-${id}).style.transform = translateX(-${diff}px); }; window.te = (e, id) => { let diff = startX - e.changedTouches[0].clientX; document.getElementById(content-${id}).style.transform = diff > 60 ? translateX(-80px) : translateX(0px); }; function renderUI() { const date = document.getElementById('date-filter').value; const filtered = records.filter(r => r.date === date); const inc = filtered.filter(r => r.type === 'income').reduce((s,r) => s+r.amt, 0), exp = filtered.filter(r => r.type === 'expense').reduce((s,r) => s+r.amt, 0); document.getElementById('inc-txt').innerText = inc.toLocaleString(); document.getElementById('exp-txt').innerText = exp.toLocaleString(); document.getElementById('profit-txt').innerText = (inc - exp).toLocaleString(); document.getElementById('list-container').innerHTML = filtered.sort((a,b) => (b.createdAt?.seconds || 0) - (a.createdAt?.seconds || 0)).map(r => <div class="swipe-item shadow-sm"> <div class="delete-btn-bg" onclick="deleteItem('${r.id}')"><i class="fas fa-trash-alt"></i></div> <div id="content-${r.id}" class="swipe-content p-5 flex items-center justify-between" ontouchstart="ts(event)" ontouchmove="tm(event, '${r.id}')" ontouchend="te(event, '${r.id}')"> <div class="flex items-center gap-4"> <div class="w-10 h-10 rounded-xl flex items-center justify-center ${r.type === 'income' ? 'bg-emerald-50 text-emerald-600' : 'bg-rose-50 text-rose-600'}"><i class="fas ${r.type === 'income' ? 'fa-arrow-down' : 'fa-arrow-up'} text-[10px]"></i></div> <div><p class="font-bold text-sm text-slate-800">${r.desc}</p><p class="text-[9px] font-bold text-slate-400 uppercase mt-1">${r.type === 'income' ? 'ဝင်ငွေ' : 'သုံးငွေ'}</p></div> </div> <p class="font-black ${r.type === 'income' ? 'text-emerald-600' : 'text-slate-700'}">${r.amt.toLocaleString()}</p> </div> </div>).join('') || '<div class="py-10 text-center text-slate-300 font-bold italic">မှတ်တမ်းမရှိပါ။</div>'; } document.getElementById('date-filter').value = new Date().toISOString().split('T')[0]; document.getElementById('date-filter').onchange = renderUI; checkAuth(); </script> </body> </html>
+        .hidden { display: none !important; }
+        
+        /* Premium Dashboard Gradient */
+        .premium-card { 
+            background: linear-gradient(135deg, #1e1b4b 0%, #312e81 100%); 
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.15);
+        }
+
+        .input-field { 
+            background: #ffffff; 
+            border: 2px solid #e2e8f0; 
+            transition: all 0.3s ease; 
+        }
+        .input-field:focus {
+            border-color: #6366f1;
+            box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.1);
+        }
+
+        /* Swipe to Delete Styling */
+        .record-item {
+            position: relative;
+            overflow: hidden;
+            border-radius: 1.25rem;
+            margin-bottom: 0.75rem;
+            background: #ef4444; 
+        }
+
+        .record-content {
+            position: relative;
+            z-index: 10;
+            background: white;
+            transition: transform 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+            border-radius: 1.25rem;
+            border: 1px solid #f1f5f9;
+        }
+
+        .del-action {
+            position: absolute;
+            right: 0;
+            top: 0;
+            bottom: 0;
+            width: 70px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            z-index: 5;
+        }
+
+        .btn-active:active {
+            transform: scale(0.97);
+        }
+
+        /* Loading Spinner */
+        .spinner {
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top: 3px solid #fff;
+            width: 20px;
+            height: 20px;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+    </style>
+</head>
+<body class="min-h-screen">
+
+    <!-- Login Overlay -->
+    <div id="login-screen" class="fixed inset-0 z-[2000] bg-slate-900 flex items-center justify-center p-6">
+        <div class="w-full max-w-sm bg-white rounded-[2.5rem] p-8 text-center shadow-2xl">
+            <div class="w-20 h-20 bg-indigo-50 text-indigo-600 rounded-3xl flex items-center justify-center mx-auto mb-6">
+                <i class="fas fa-couch text-3xl"></i>
+            </div>
+            <h2 class="text-2xl font-black text-slate-900 tracking-tight">စန်းမော် ပရိဘောဂ</h2>
+            <p class="text-slate-400 text-[10px] mt-1 mb-8 uppercase tracking-[0.2em] font-bold">Admin Portal Login</p>
+            
+            <div class="space-y-4 text-left">
+                <div>
+                    <label class="text-[10px] font-bold text-slate-400 uppercase ml-2 mb-1 block">အသုံးပြုသူအမည်</label>
+                    <input type="text" id="user-field" class="w-full p-4 input-field rounded-2xl outline-none font-bold text-slate-700">
+                </div>
+                <div>
+                    <label class="text-[10px] font-bold text-slate-400 uppercase ml-2 mb-1 block">လျှို့ဝှက်နံပါတ်</label>
+                    <input type="password" id="pass-field" class="w-full p-4 input-field rounded-2xl outline-none font-bold text-slate-700">
+                </div>
+                <button onclick="doLogin()" class="w-full bg-indigo-600 text-white font-black py-4 rounded-2xl mt-4 shadow-lg shadow-indigo-200 btn-active transition-all">
+                    စနစ်ထဲသို့ ဝင်မည်
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Dashboard -->
+    <div id="main-app" class="max-w-[480px] mx-auto px-4 pt-8 pb-20 hidden">
+        <header class="flex justify-between items-center mb-8 px-2">
+            <div class="flex items-center gap-4">
+                <div class="w-12 h-12 bg-white rounded-2xl flex items-center justify-center shadow-sm">
+                    <i class="fas fa-couch text-indigo-600 text-xl"></i>
+                </div>
+                <div>
+                    <h1 class="text-lg font-black text-slate-900">စန်းမော်</h1>
+                    <div class="flex items-center gap-1.5">
+                        <span class="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse"></span>
+                        <p class="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Live Cloud</p>
+                    </div>
+                </div>
+            </div>
+            <button onclick="doLogout()" class="w-10 h-10 bg-white rounded-xl flex items-center justify-center text-rose-500 shadow-sm btn-active">
+                <i class="fas fa-power-off"></i>
+            </button>
+        </header>
+
+        <!-- Stats Card -->
+        <div class="premium-card rounded-[2.5rem] p-8 text-white mb-8 relative overflow-hidden shadow-2xl">
+            <div class="relative z-10">
+                <div class="flex justify-between items-center mb-10">
+                    <input type="date" id="main-date" class="bg-white/10 border-none text-[11px] font-bold p-2.5 rounded-xl text-white outline-none cursor-pointer">
+                    <i class="fas fa-wallet opacity-30 text-xl"></i>
+                </div>
+                
+                <div class="grid grid-cols-2 gap-4 mb-10">
+                    <div class="bg-white/5 p-4 rounded-2xl border border-white/10">
+                        <p class="text-[9px] font-bold text-emerald-400 uppercase tracking-widest mb-1">ဝင်ငွေ</p>
+                        <p id="total-inc" class="text-xl font-black">0</p>
+                    </div>
+                    <div class="bg-white/5 p-4 rounded-2xl border border-white/10">
+                        <p class="text-[9px] font-bold text-rose-400 uppercase tracking-widest mb-1">သုံးငွေ</p>
+                        <p id="total-exp" class="text-xl font-black">0</p>
+                    </div>
+                </div>
+
+                <div>
+                    <p class="text-[10px] font-bold text-white/40 uppercase tracking-[0.2em] mb-1">ကျန်ရှိသည့် အမြတ်ငွေ</p>
+                    <div class="flex items-baseline gap-2">
+                        <h2 id="total-profit" class="text-4xl font-black tracking-tight">0</h2>
+                        <span class="text-xs font-bold opacity-40">MMK</span>
+                    </div>
+                </div>
+            </div>
+            <!-- Decorative circle -->
+            <div class="absolute -right-10 -bottom-10 w-32 h-32 bg-indigo-500/20 rounded-full blur-3xl"></div>
+        </div>
+
+        <!-- Add Transaction Form -->
+        <div class="bg-white p-6 rounded-[2.5rem] shadow-sm border border-slate-100 mb-8">
+            <h3 class="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-4 ml-2">စာရင်းအသစ်ထည့်ရန်</h3>
+            <div class="space-y-4">
+                <input type="text" id="in-desc" placeholder="အကြောင်းအရာ..." class="w-full p-4 input-field rounded-2xl outline-none font-bold text-sm">
+                <div class="flex gap-2">
+                    <input type="number" id="in-amt" placeholder="ပမာဏ" class="flex-1 p-4 input-field rounded-2xl outline-none font-black text-xl">
+                    <select id="in-type" class="w-28 input-field rounded-2xl font-bold text-xs text-indigo-600 outline-none px-2">
+                        <option value="income">ဝင်ငွေ (+)</option>
+                        <option value="expense">သုံးငွေ (-)</option>
+                    </select>
+                </div>
+                <button id="add-btn" class="w-full bg-slate-900 text-white font-black py-4 rounded-2xl shadow-xl hover:bg-black transition-all btn-active flex items-center justify-center gap-2">
+                    <i class="fas fa-plus-circle"></i> သိမ်းဆည်းမည်
+                </button>
+            </div>
+        </div>
+
+        <!-- History List -->
+        <div class="flex items-center justify-between mb-4 px-2">
+            <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest">ယနေ့စာရင်းမှတ်တမ်း</p>
+            <div class="h-[1px] flex-1 bg-slate-200 ml-4"></div>
+        </div>
+        
+        <div id="data-list" class="space-y-3">
+            <!-- Items injected here -->
+        </div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInAnonymously, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, collection, addDoc, deleteDoc, doc, onSnapshot, serverTimestamp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+        // Firebase Configuration (Automatically injected in this environment)
+        const firebaseConfig = JSON.parse(__firebase_config);
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+        const APP_COLLECTION = "san-maw-main-v1";
+
+        let localData = [];
+
+        // Auth Logic
+        window.doLogin = () => {
+            const u = document.getElementById('user-field').value;
+            const p = document.getElementById('pass-field').value;
+            if(u === 'admin' && p === 'admin') {
+                localStorage.setItem('sm_logged', 'true');
+                checkSession();
+            } else {
+                alert("Login မအောင်မြင်ပါ။");
+            }
+        };
+
+        window.doLogout = async () => {
+            if(confirm("စနစ်မှ ထွက်မှာ သေချာပါသလား?")) {
+                localStorage.removeItem('sm_logged');
+                await signOut(auth);
+                location.reload();
+            }
+        };
+
+        async function checkSession() {
+            if(localStorage.getItem('sm_logged') === 'true') {
+                document.getElementById('login-screen').classList.add('hidden');
+                document.getElementById('main-app').classList.remove('hidden');
+                try {
+                    await signInAnonymously(auth);
+                } catch (e) { console.error(e); }
+            }
+        }
+
+        onAuthStateChanged(auth, (user) => {
+            if (user && localStorage.getItem('sm_logged') === 'true') {
+                const ref = collection(db, 'artifacts', APP_COLLECTION, 'public', 'data', 'records');
+                onSnapshot(ref, (snap) => {
+                    localData = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+                    updateUI();
+                });
+            }
+        });
+
+        // Data Logic
+        document.getElementById('add-btn').onclick = async () => {
+            const desc = document.getElementById('in-desc').value;
+            const amt = document.getElementById('in-amt').value;
+            const type = document.getElementById('in-type').value;
+            const date = document.getElementById('main-date').value;
+            
+            if(!desc || !amt) return;
+
+            try {
+                const btn = document.getElementById('add-btn');
+                btn.innerHTML = '<div class="spinner"></div>';
+                btn.disabled = true;
+
+                await addDoc(collection(db, 'artifacts', APP_COLLECTION, 'public', 'data', 'records'), {
+                    desc, amt: parseFloat(amt), type, date, createdAt: serverTimestamp()
+                });
+
+                document.getElementById('in-desc').value = '';
+                document.getElementById('in-amt').value = '';
+                btn.innerHTML = '<i class="fas fa-plus-circle"></i> သိမ်းဆည်းမည်';
+                btn.disabled = false;
+            } catch (e) { alert("Error: " + e.message); }
+        };
+
+        window.removeItem = async (id) => {
+            await deleteDoc(doc(db, 'artifacts', APP_ID, 'public', 'data', 'records', id));
+        };
+
+        // Swipe Handler
+        let sx = 0;
+        window.hStart = (e) => sx = e.touches[0].clientX;
+        window.hMove = (e, id) => {
+            let dx = sx - e.touches[0].clientX;
+            if (dx > 0 && dx <= 100) document.getElementById(`box-${id}`).style.transform = `translateX(-${dx}px)`;
+        };
+        window.hEnd = (e, id) => {
+            let dx = sx - e.changedTouches[0].clientX;
+            document.getElementById(`box-${id}`).style.transform = dx > 60 ? `translateX(-80px)` : `translateX(0px)`;
+        };
+
+        // UI Refresh
+        function updateUI() {
+            const filterD = document.getElementById('main-date').value;
+            const filtered = localData.filter(x => x.date === filterD);
+            
+            const inc = filtered.filter(x => x.type === 'income').reduce((a, b) => a + b.amt, 0);
+            const exp = filtered.filter(x => x.type === 'expense').reduce((a, b) => a + b.amt, 0);
+
+            document.getElementById('total-inc').innerText = inc.toLocaleString();
+            document.getElementById('total-exp').innerText = exp.toLocaleString();
+            document.getElementById('total-profit').innerText = (inc - exp).toLocaleString();
+
+            const list = document.getElementById('data-list');
+            const sorted = filtered.sort((a,b) => (b.createdAt?.seconds || 0) - (a.createdAt?.seconds || 0));
+
+            list.innerHTML = sorted.map(item => `
+                <div class="record-item shadow-sm">
+                    <div class="del-action" onclick="removeItem('${item.id}')"><i class="fas fa-trash-alt"></i></div>
+                    <div id="box-${item.id}" class="record-content p-5 flex items-center justify-between"
+                         ontouchstart="hStart(event)" ontouchmove="hMove(event, '${item.id}')" ontouchend="hEnd(event, '${item.id}')">
+                        <div class="flex items-center gap-4">
+                            <div class="w-10 h-10 rounded-xl flex items-center justify-center ${item.type === 'income' ? 'bg-emerald-50 text-emerald-600' : 'bg-rose-50 text-rose-600'}">
+                                <i class="fas ${item.type === 'income' ? 'fa-arrow-down' : 'fa-arrow-up'} text-[10px]"></i>
+                            </div>
+                            <div>
+                                <p class="font-bold text-slate-800 text-sm">${item.desc}</p>
+                                <p class="text-[9px] font-bold text-slate-400 uppercase mt-0.5">${item.type === 'income' ? 'ဝင်ငွေ' : 'သုံးငွေ'}</p>
+                            </div>
+                        </div>
+                        <p class="font-black text-base ${item.type === 'income' ? 'text-emerald-600' : 'text-slate-800'}">${item.amt.toLocaleString()}</p>
+                    </div>
+                </div>
+            `).join('') || '<div class="py-12 text-center text-slate-300 font-bold italic opacity-50">မှတ်တမ်းမရှိသေးပါ။</div>';
+        }
+
+        // Init
+        document.getElementById('main-date').value = new Date().toISOString().split('T')[0];
+        document.getElementById('main-date').onchange = updateUI;
+        checkSession();
+    </script>
+</body>
+</html>
