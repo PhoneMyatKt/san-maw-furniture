@@ -3,651 +3,613 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>စန်းမော် ပရိဘောဂ - စာရင်းချုပ်</title>
+    <title>Velvet House - Business Suite</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&family=Pyidaungsu:wght@400;700&display=swap');
         
         body { 
             font-family: 'Plus Jakarta Sans', 'Pyidaungsu', sans-serif; 
-            background: #f8fafc; 
-            color: #0f172a;
+            background-color: #fcfcfd; 
             -webkit-tap-highlight-color: transparent;
             overflow-x: hidden;
         }
 
-        .hidden { display: none !important; }
-        
-        .premium-card { 
-            background: linear-gradient(135deg, #1e1b4b 0%, #312e81 100%); 
-            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.15);
-        }
-
-        .ai-gradient {
-            background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
-        }
-
-        .input-field { 
-            background: #ffffff; 
-            border: 2px solid #e2e8f0; 
-            transition: all 0.3s ease; 
-        }
-        .input-field:focus {
-            border-color: #6366f1;
-            box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.1);
-        }
-
-        .type-toggle-btn {
-            flex: 1;
-            padding: 1rem;
-            border-radius: 1rem;
-            font-weight: 800;
-            font-size: 0.875rem;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            color: #64748b;
-            background: transparent;
-        }
-        .type-toggle-btn.active-income {
-            background: #10b981;
-            color: white;
-            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.2);
-        }
-        .type-toggle-btn.active-expense {
-            background: #f43f5e;
-            color: white;
-            box-shadow: 0 4px 12px rgba(244, 63, 94, 0.2);
-        }
-
-        .record-item {
-            background: white;
-            border-radius: 1.25rem;
-            margin-bottom: 0.5rem;
+        .neo-card {
+            background: #ffffff;
             border: 1px solid #f1f5f9;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.02), 0 4px 6px -4px rgba(0, 0, 0, 0.02);
+            box-sizing: border-box;
         }
 
-        .btn-active:active { transform: scale(0.97); }
-        
-        .nav-btn {
-            background: transparent;
-            border-radius: 1rem;
-            padding: 0.75rem;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            color: #94a3b8;
-            transition: all 0.3s ease;
-        }
-
-        .nav-btn.active {
-            color: #6366f1;
-        }
-
-        .welcome-bg {
-            background: radial-gradient(circle at top right, #312e81, #1e1b4b);
-        }
-
-        .furniture-icon-container {
-            width: 120px;
-            height: 120px;
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
-            border-radius: 2.5rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 0 auto 2rem;
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            animation: float 4s ease-in-out infinite;
-        }
-
-        @keyframes float {
-            0%, 100% { transform: translateY(0) rotate(0deg); }
-            50% { transform: translateY(-15px) rotate(2deg); }
-        }
-
-        .user-select-btn {
-            background: rgba(255, 255, 255, 0.1);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            backdrop-filter: blur(10px);
-            transition: all 0.3s;
-        }
-
-        .speed-badge {
-            position: fixed;
-            top: 1rem;
-            right: 1rem;
-            z-index: 7000;
+        .bottom-nav {
             background: rgba(255, 255, 255, 0.9);
-            backdrop-filter: blur(8px);
-            padding: 0.4rem 0.8rem;
-            border-radius: 0.75rem;
-            border: 1px solid rgba(226, 232, 240, 0.8);
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
-            display: flex;
-            flex-direction: column;
-            align-items: flex-end;
-            gap: 2px;
-        }
-        .speed-dot {
-            width: 6px;
-            height: 6px;
-            border-radius: 50%;
-            background: #10b981;
-            animation: pulse-dot 2s infinite;
-        }
-        @keyframes pulse-dot {
-            0% { transform: scale(0.95); opacity: 0.5; }
-            50% { transform: scale(1.1); opacity: 1; }
-            100% { transform: scale(0.95); opacity: 0.5; }
-        }
-        .low-speed-warning {
-            font-size: 8px;
-            font-weight: 700;
-            color: #f43f5e;
-            white-space: nowrap;
-            display: none;
+            backdrop-filter: blur(12px);
+            border-top: 1px solid #f1f5f9;
         }
 
-        #copy-toast {
-            position: fixed;
-            bottom: 100px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: rgba(15, 23, 42, 0.9);
-            color: white;
-            padding: 0.75rem 1.5rem;
-            border-radius: 1rem;
-            font-size: 12px;
-            font-weight: 700;
-            z-index: 8000;
-            display: none;
-            animation: fadeInUp 0.3s ease-out;
-        }
-        @keyframes fadeInUp {
-            from { opacity: 0; transform: translate(-50%, 20px); }
-            to { opacity: 1; transform: translate(-50%, 0); }
+        .nav-item {
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
-        /* Summary Dashboard Specific Styles */
-        .summary-card {
-            background: white;
-            border-radius: 2rem;
-            padding: 1.5rem;
-            border: 1px solid #f1f5f9;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+        .active-tab-btn {
+            color: #4f46e5;
+            transform: translateY(-2px);
         }
-        .stat-circle {
-            width: 48px;
-            height: 48px;
-            border-radius: 1rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+
+        .active-tab-btn .icon-bg {
+            background: #f5f3ff;
+        }
+
+        .input-field {
+            transition: all 0.2s;
+            box-sizing: border-box; /* Ensures padding doesn't push width out */
+            appearance: none;
+            -webkit-appearance: none;
+        }
+
+        input:focus, select:focus {
+            border-color: #4f46e5 !important;
+            background: #ffffff !important;
+            box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.06) !important;
+        }
+
+        .calc-result {
+            background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+        }
+
+        #welcome-screen {
+            background: #4f46e5;
+        }
+
+        .sync-indicator {
+            font-size: 10px;
+            padding: 2px 8px;
+            border-radius: 99px;
+            font-weight: 700;
+        }
+
+        .fade-in {
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(5px); }
+            to { opacity: 1; opacity: 1; transform: translateY(0); }
         }
     </style>
 </head>
-<body class="min-h-screen">
+<body class="pb-32">
 
-    <div id="copy-toast">နံပါတ်ကို ကော်ပီကူးယူပြီးပါပြီ</div>
-
-    <div class="speed-badge">
-        <div class="flex items-center gap-2">
-            <div class="speed-dot" id="speed-dot"></div>
-            <span id="network-speed" class="text-[10px] font-extrabold text-slate-600">Checking...</span>
+    <!-- Welcome Screen -->
+    <div id="welcome-screen" class="fixed inset-0 z-[100] flex flex-col items-center justify-center text-center p-8 transition-transform duration-500 ease-in-out">
+        <div class="w-24 h-24 bg-white/20 backdrop-blur-xl rounded-[32px] flex items-center justify-center mb-8 shadow-2xl border border-white/30">
+            <span class="text-4xl font-black text-white">V</span>
         </div>
-        <div id="speed-warning" class="low-speed-warning">ဒေတာ များ save ရန် လိုင်းကောင်းသော နေရာသို့ သွားပေးပါ</div>
-    </div>
-
-    <!-- Get Started View -->
-    <div id="view-welcome" class="fixed inset-0 z-[6000] welcome-bg flex flex-col items-center justify-between p-10 text-center">
-        <div class="mt-20">
-            <div class="furniture-icon-container">
-                <i class="fas fa-couch text-white text-5xl"></i>
-            </div>
-            <h1 class="text-4xl font-black text-white mb-2 tracking-tight">မင်္ဂလာပါ</h1>
-            <p class="text-indigo-200 font-bold text-sm tracking-widest uppercase">စန်းမော် ပရိဘောဂ</p>
-        </div>
-        <div class="w-full space-y-8 mb-10">
-            <div class="space-y-3">
-                <h2 class="text-2xl font-black text-white">လုပ်ငန်းစာရင်းများကို <br><span class="text-indigo-400">စနစ်တကျ သိမ်းဆည်းပါ။</span></h2>
-                <p class="text-indigo-200/60 text-xs font-semibold px-6">ဝင်ငွေ၊ ထွက်ငွေများကို Cloud ပေါ်တွင် လုံခြုံစွာ သိမ်းဆည်းပြီး အနှစ်ချုပ် စာရင်းများ ကြည့်ရှုနိုင်ပါသည်။</p>
-            </div>
-            <button onclick="showUserSelection()" class="w-full bg-white text-indigo-900 font-black py-5 rounded-[2rem] shadow-2xl btn-active text-lg">စတင်အသုံးပြုမည်</button>
-            <p class="text-[10px] text-indigo-300/40 font-bold uppercase tracking-widest">Version 3.2 • Designed for Family</p>
-        </div>
-    </div>
-
-    <!-- User Selection View -->
-    <div id="view-user-select" class="fixed inset-0 z-[6100] welcome-bg flex flex-col items-center justify-center p-8 hidden">
-        <h2 class="text-2xl font-black text-white mb-2">အသုံးပြုသူ ရွေးချယ်ပါ</h2>
-        <p class="text-indigo-200 text-xs font-bold uppercase tracking-widest mb-10">Select Profile</p>
-        <div class="w-full space-y-4">
-            <button onclick="selectUser('Daw Hla Hla Win')" class="w-full user-select-btn text-white font-bold py-5 rounded-2xl flex items-center px-6 gap-4">
-                <div class="w-12 h-12 bg-indigo-500 rounded-xl flex items-center justify-center shadow-lg"><i class="fas fa-user-tie text-xl"></i></div>
-                <span class="text-lg">Daw Hla Hla Win</span>
-            </button>
-            <button onclick="selectUser('Daw Tin Nwe Win')" class="w-full user-select-btn text-white font-bold py-5 rounded-2xl flex items-center px-6 gap-4">
-                <div class="w-12 h-12 bg-rose-500 rounded-xl flex items-center justify-center shadow-lg"><i class="fas fa-user-edit text-xl"></i></div>
-                <span class="text-lg">Daw Tin Nwe Win</span>
-            </button>
-            <button onclick="selectUser('Daw San San Win')" class="w-full user-select-btn text-white font-bold py-5 rounded-2xl flex items-center px-6 gap-4">
-                <div class="w-12 h-12 bg-amber-500 rounded-xl flex items-center justify-center shadow-lg"><i class="fas fa-user-check text-xl"></i></div>
-                <span class="text-lg">Daw San San Win</span>
+        <h1 class="text-3xl font-extrabold text-white mb-2">Velvet House</h1>
+        <p class="text-indigo-100 text-xs mb-10 opacity-80">Management Suite</p>
+        
+        <div class="flex flex-col items-center gap-4 w-full max-w-xs">
+            <div id="auth-status" class="text-white text-[10px] font-bold opacity-60 uppercase tracking-widest animate-pulse">Initializing Cloud...</div>
+            <button id="start-btn" disabled onclick="startApp()" class="w-full bg-white text-indigo-600 font-extrabold py-5 rounded-3xl shadow-2xl active:scale-95 transition-all text-sm opacity-50 cursor-not-allowed">
+                Connecting...
             </button>
         </div>
     </div>
 
-    <!-- Loading Screen -->
-    <div id="loading-screen" class="fixed inset-0 z-[7000] bg-white flex flex-col items-center justify-center hidden">
-        <div class="relative">
-            <div class="w-20 h-20 border-4 border-slate-100 rounded-full"></div>
-            <div class="w-20 h-20 border-4 border-indigo-600 border-t-transparent rounded-full animate-spin absolute top-0 left-0"></div>
+    <!-- Header -->
+    <header id="main-header" class="hidden sticky top-0 z-40 bg-white/80 backdrop-blur-md border-b border-slate-100 px-6 py-4 flex justify-between items-center">
+        <div>
+            <h1 class="text-lg font-extrabold text-slate-900">Velvet House</h1>
+            <div id="sync-status" class="sync-indicator bg-amber-50 text-amber-600 mt-1 inline-block">Syncing...</div>
         </div>
-        <p class="text-indigo-900 font-black mt-6 tracking-widest uppercase text-xs">ချိတ်ဆက်နေသည်...</p>
-        <p class="text-slate-400 text-[10px] mt-2 font-bold">Please wait while connecting to cloud</p>
-    </div>
+        <div id="live-date" class="text-[10px] font-bold text-slate-400 uppercase tracking-tighter"></div>
+    </header>
 
-    <!-- Main App Content -->
-    <div id="main-app" class="max-w-[480px] mx-auto px-4 pt-8 pb-32 hidden">
-        <header class="flex justify-between items-center mb-8 px-2">
-            <div class="flex items-center gap-4">
-                <div class="w-12 h-12 bg-white rounded-2xl flex items-center justify-center shadow-sm border border-slate-50">
-                    <i class="fas fa-couch text-indigo-600 text-xl"></i>
+    <main id="main-content" class="hidden max-w-md mx-auto p-5 space-y-6">
+        
+        <!-- Tab 1: Input -->
+        <section id="page-input" class="space-y-5 fade-in">
+            <div class="neo-card rounded-[2.5rem] p-7 border-t-4 border-indigo-600">
+                <div class="flex items-center justify-between mb-8">
+                    <h2 id="input-title" class="text-sm font-bold text-slate-800">📝 စာရင်းအသစ်ထည့်သွင်းခြင်း</h2>
                 </div>
-                <div>
-                    <h1 class="text-lg font-black text-slate-900">စန်းမော်</h1>
-                    <div class="flex items-center gap-1.5">
-                        <span class="w-1.5 h-1.5 bg-emerald-500 rounded-full"></span>
-                        <p id="current-user-display" class="text-[9px] font-bold text-indigo-600 uppercase tracking-widest">User</p>
-                    </div>
-                </div>
-            </div>
-            <button onclick="location.reload()" class="w-10 h-10 bg-white rounded-xl flex items-center justify-center text-slate-400 shadow-sm btn-active border border-slate-50">
-                <i class="fas fa-sync-alt text-sm"></i>
-            </button>
-        </header>
 
-        <!-- Home View -->
-        <div id="view-home">
-            <div class="premium-card rounded-[2.5rem] p-8 text-white mb-8 relative overflow-hidden">
-                <div class="relative z-10">
-                    <div class="flex justify-between items-center mb-10">
-                        <input type="date" id="main-date" class="bg-white/10 border-none text-[11px] font-bold p-2.5 rounded-xl text-white outline-none cursor-pointer">
-                        <i class="fas fa-wallet opacity-30 text-xl"></i>
-                    </div>
-                    <div class="grid grid-cols-2 gap-4 mb-10">
-                        <div class="bg-white/5 p-4 rounded-2xl border border-white/10">
-                            <p class="text-[9px] font-bold text-emerald-400 uppercase mb-1">ဝင်ငွေ</p>
-                            <p id="total-inc" class="text-xl font-black">0</p>
-                        </div>
-                        <div class="bg-white/5 p-4 rounded-2xl border border-white/10">
-                            <p class="text-[9px] font-bold text-rose-400 uppercase mb-1">သုံးငွေ</p>
-                            <p id="total-exp" class="text-xl font-black">0</p>
-                        </div>
-                    </div>
-                    <div>
-                        <p class="text-[10px] font-bold text-white/40 uppercase tracking-[0.2em] mb-1">ကျန်ရှိသည့် အမြတ်ငွေ</p>
-                        <div class="flex items-baseline gap-2">
-                            <h2 id="total-profit" class="text-4xl font-black tracking-tight">0</h2>
-                            <span class="text-xs font-bold opacity-40">MMK</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="bg-white p-6 rounded-[2.5rem] shadow-sm border border-slate-100">
                 <div class="space-y-5">
-                    <div class="flex gap-2 p-1.5 bg-slate-100/80 rounded-2xl">
-                        <button id="type-inc-btn" onclick="setType('income')" class="type-toggle-btn active-income btn-active">ဝင်ငွေ</button>
-                        <button id="type-exp-btn" onclick="setType('expense')" class="type-toggle-btn btn-active">သုံးငွေ</button>
+                    <input type="hidden" id="editId">
+                    
+                    <!-- Fixed UI Container for Date and Category -->
+                    <div class="space-y-5">
+                        <div class="w-full">
+                            <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider ml-1">နေ့စွဲ</label>
+                            <input type="date" id="saleDate" class="input-field w-full mt-1.5 bg-slate-50 border border-slate-100 rounded-2xl px-4 py-3.5 outline-none font-semibold text-slate-700 block">
+                        </div>
+                        <div class="w-full">
+                            <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider ml-1">အမျိုးအစား</label>
+                            <select id="pCategory" onchange="toggleFields()" class="input-field w-full mt-1.5 bg-slate-50 border border-slate-100 rounded-2xl px-4 py-3.5 outline-none font-semibold text-slate-700 block">
+                                <option value="perfume">Perfume</option>
+                                <option value="cosmetic">Cosmetic</option>
+                                <option value="other">Other Item</option>
+                            </select>
+                        </div>
                     </div>
-                    <input type="text" id="in-desc" placeholder="အကြောင်းအရာ..." class="w-full p-5 input-field rounded-2xl outline-none font-bold text-sm">
-                    <input type="number" id="in-amt" placeholder="ပမာဏ" class="w-full p-5 input-field rounded-2xl outline-none font-black text-2xl">
-                    <button id="add-btn" class="w-full bg-indigo-600 text-white font-black py-5 rounded-2xl shadow-xl btn-active">စာရင်းသိမ်းဆည်းမည်</button>
+
+                    <div class="w-full">
+                        <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider ml-1">ပစ္စည်းအမည်</label>
+                        <input type="text" id="pName" class="input-field w-full mt-1.5 bg-slate-50 border border-slate-100 rounded-2xl px-4 py-3.5 outline-none font-semibold text-slate-800 block" placeholder="အမည်ရိုက်ပါ">
+                    </div>
+
+                    <div id="perfume-extras" class="grid grid-cols-2 gap-4">
+                        <div class="w-full">
+                            <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider ml-1">Type</label>
+                            <select id="pType" class="input-field w-full mt-1.5 bg-slate-50 border border-slate-100 rounded-2xl px-4 py-3.5 outline-none font-semibold text-slate-700 block">
+                                <option value="EDT">EDT</option>
+                                <option value="EDP">EDP</option>
+                                <option value="Extrait">Extrait</option>
+                                <option value="Parfum">Parfum</option>
+                            </select>
+                        </div>
+                        <div class="w-full">
+                            <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider ml-1">ဆိုဒ် (Size)</label>
+                            <select id="pSize" class="input-field w-full mt-1.5 bg-slate-50 border border-slate-100 rounded-2xl px-4 py-3.5 outline-none font-semibold text-slate-700 block">
+                                <option value="retail">Retail Box</option>
+                                <option value="5ml">5ml Decant</option>
+                                <option value="10ml">10ml Decant</option>
+                                <option value="30ml">30ml Decant</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="w-full">
+                            <label id="costLabel" class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider ml-1">ရင်းစျေး (100ml)</label>
+                            <input type="number" id="cPrice" class="input-field w-full mt-1.5 bg-slate-50 border border-slate-100 rounded-2xl px-4 py-3.5 outline-none font-bold text-slate-800 block" placeholder="0">
+                        </div>
+                        <div class="w-full">
+                            <label id="saleLabel" class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider ml-1">ရောင်းစျေး (100ml)</label>
+                            <input type="number" id="sPrice" class="input-field w-full mt-1.5 bg-slate-50 border border-slate-100 rounded-2xl px-4 py-3.5 outline-none font-bold text-indigo-600 block" placeholder="0">
+                        </div>
+                    </div>
+
+                    <div class="w-full">
+                        <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider ml-1">Risk Cover Money (အပိုတင်ငွေ)</label>
+                        <input type="number" id="riskMoney" class="input-field w-full mt-1.5 bg-slate-50 border border-slate-100 rounded-2xl px-4 py-3.5 outline-none font-black text-indigo-600 block" value="0">
+                    </div>
+
+                    <div class="flex gap-3 pt-4">
+                        <button id="save-btn" onclick="addSale()" class="flex-1 bg-indigo-600 text-white font-extrabold py-4 rounded-2xl shadow-xl active:scale-95 transition-all">သိမ်းဆည်းမည်</button>
+                        <button id="cancel-edit-btn" onclick="cancelEdit()" class="hidden w-1/3 bg-slate-100 text-slate-500 font-bold py-4 rounded-2xl">မပြင်တော့</button>
+                    </div>
                 </div>
             </div>
-        </div>
+        </section>
 
-        <!-- History View -->
-        <div id="view-records" class="hidden">
-            <h2 class="text-xl font-black text-slate-900 mb-6 flex items-center gap-3 px-2">
-                <i class="fas fa-history text-indigo-600 text-sm"></i> စာရင်းမှတ်တမ်းချုပ်
-            </h2>
-            <div id="grouped-list" class="space-y-8 pb-10"></div>
-        </div>
+        <!-- Tab 2: Daily Stats -->
+        <section id="page-daily" class="hidden space-y-5 fade-in">
+            <div class="neo-card p-3 rounded-2xl flex items-center justify-between gap-4 border-l-4 border-indigo-600">
+                <span class="text-[10px] font-bold text-slate-400 uppercase ml-2">နေ့ရက်ရွေးပါ:</span>
+                <input type="date" id="viewDate" onchange="renderAll()" class="bg-indigo-50 border-none text-[11px] font-black rounded-xl px-3 py-2.5 outline-none text-indigo-600">
+            </div>
 
-        <!-- Graph View (15 Days) -->
-        <div id="view-analytics" class="hidden">
-            <div class="px-2 mb-6">
-                <h2 class="text-xl font-black text-slate-900 flex items-center gap-3">
-                    <i class="fas fa-chart-line text-indigo-600 text-sm"></i> <span id="period-display">၁၅ ရက်စာ</span> ပြောင်းလဲမှု
-                </h2>
-                <p id="period-range-display" class="text-[10px] text-slate-400 font-bold uppercase tracking-widest mt-1">Current Period Trends</p>
-            </div>
-            <div class="bg-white p-4 rounded-[2.5rem] shadow-sm mb-6">
-                <div class="h-64 relative">
-                    <canvas id="lineChart"></canvas>
-                </div>
-            </div>
             <div class="grid grid-cols-2 gap-4">
-                <div class="bg-emerald-50 p-6 rounded-3xl border border-emerald-100">
-                    <p class="text-emerald-700 font-black text-[9px] uppercase mb-1">Period Income</p>
-                    <p id="graph-inc" class="text-xl font-black text-emerald-900">0</p>
+                <div class="neo-card p-5 rounded-[2rem] bg-indigo-600 text-white border-none shadow-indigo-100 shadow-xl">
+                    <p class="text-[9px] font-bold uppercase opacity-70 mb-1">Daily Profit (Deducted)</p>
+                    <h3 class="text-xl font-black" id="day-total-profit">0 Ks</h3>
                 </div>
-                <div class="bg-rose-50 p-6 rounded-3xl border border-rose-100">
-                    <p class="text-rose-700 font-black text-[9px] uppercase mb-1">Period Expense</p>
-                    <p id="graph-exp" class="text-xl font-black text-rose-900">0</p>
-                </div>
-            </div>
-        </div>
-
-        <!-- Summary Dashboard View (Instead of AI Analyst) -->
-        <div id="view-ai" class="hidden">
-            <div class="ai-gradient p-8 rounded-[2.5rem] text-white mb-8 shadow-xl">
-                <div class="flex items-center gap-4 mb-4">
-                    <div class="w-12 h-12 bg-white/20 rounded-2xl flex items-center justify-center backdrop-blur-md">
-                        <i class="fas fa-file-invoice-dollar text-2xl"></i>
-                    </div>
-                    <div>
-                        <h2 class="text-xl font-black">Summary Dashboard</h2>
-                        <p class="text-[10px] font-bold opacity-70 uppercase tracking-widest">၁၅ ရက်စာ အနှစ်ချုပ်</p>
-                    </div>
-                </div>
-                <p id="summary-range-text" class="text-[10px] font-bold opacity-90 leading-relaxed">Checking date range...</p>
-            </div>
-
-            <!-- Dashboard Stats -->
-            <div class="space-y-4">
-                <div class="summary-card flex items-center gap-5">
-                    <div class="stat-circle bg-emerald-50 text-emerald-600"><i class="fas fa-arrow-trend-up"></i></div>
-                    <div>
-                        <p class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">စုစုပေါင်း ဝင်ငွေ</p>
-                        <p id="summary-inc" class="text-xl font-black text-slate-900">0</p>
-                    </div>
-                </div>
-
-                <div class="summary-card flex items-center gap-5">
-                    <div class="stat-circle bg-rose-50 text-rose-600"><i class="fas fa-arrow-trend-down"></i></div>
-                    <div>
-                        <p class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">စုစုပေါင်း သုံးငွေ</p>
-                        <p id="summary-exp" class="text-xl font-black text-slate-900">0</p>
-                    </div>
-                </div>
-
-                <div class="summary-card flex items-center gap-5">
-                    <div class="stat-circle bg-indigo-50 text-indigo-600"><i class="fas fa-hand-holding-dollar"></i></div>
-                    <div>
-                        <p class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">အသားတင် အမြတ်</p>
-                        <p id="summary-net" class="text-xl font-black text-slate-900">0</p>
-                    </div>
-                </div>
-
-                <div class="summary-card flex items-center gap-5">
-                    <div class="stat-circle bg-amber-50 text-amber-600"><i class="fas fa-calendar-check"></i></div>
-                    <div>
-                        <p class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">စာရင်းရှိသော ရက်ပေါင်း</p>
-                        <p id="summary-days" class="text-xl font-black text-slate-900">0 ရက်</p>
-                    </div>
+                <div class="neo-card p-5 rounded-[2rem]">
+                    <p class="text-[9px] font-bold text-slate-400 uppercase mb-1">Daily Cost</p>
+                    <h3 class="text-xl font-black text-slate-800" id="day-total-cost">0 Ks</h3>
                 </div>
             </div>
-        </div>
 
-        <!-- Contacts View -->
-        <div id="view-contacts" class="hidden">
-            <h2 class="text-xl font-black text-slate-900 mb-6 flex items-center gap-3 px-2">
-                <i class="fas fa-address-book text-indigo-600 text-sm"></i> ဆက်သွယ်ရန်
-            </h2>
-            <div class="space-y-4">
-                <div class="bg-white p-4 rounded-2xl border border-slate-100 flex justify-between items-center shadow-sm">
-                    <div><p class="font-black text-slate-900 text-sm">Daw Hla Hla Win</p><p class="text-[10px] font-bold text-slate-400">09 5115511</p></div>
-                    <button id="copy-btn-1" onclick="copyNumber('095115511', 'copy-btn-1')" class="w-10 h-10 bg-slate-50 text-slate-400 rounded-xl flex items-center justify-center btn-active transition-all"><i class="fas fa-copy"></i></button>
+            <div class="neo-card rounded-[2rem] overflow-hidden">
+                <div class="px-6 py-4 border-b border-slate-50 flex justify-between items-center bg-slate-50/50">
+                    <h3 class="text-[10px] font-extrabold text-slate-500 uppercase tracking-widest">Recent Activity</h3>
+                    <button onclick="clearAllData()" class="text-[9px] text-rose-500 font-bold uppercase">Clear All</button>
                 </div>
-                <div class="bg-white p-4 rounded-2xl border border-slate-100 flex justify-between items-center shadow-sm">
-                    <div><p class="font-black text-slate-900 text-sm">Daw Tin Nwe Win</p><p class="text-[10px] font-bold text-slate-400">09 785213890</p></div>
-                    <button id="copy-btn-2" onclick="copyNumber('09785213890', 'copy-btn-2')" class="w-10 h-10 bg-slate-50 text-slate-400 rounded-xl flex items-center justify-center btn-active transition-all"><i class="fas fa-copy"></i></button>
-                </div>
-                <div class="bg-white p-4 rounded-2xl border border-slate-100 flex justify-between items-center shadow-sm">
-                    <div><p class="font-black text-slate-900 text-sm">Daw San San Win</p><p class="text-[10px] font-bold text-slate-400">09 407604260</p></div>
-                    <button id="copy-btn-3" onclick="copyNumber('09407604260', 'copy-btn-3')" class="w-10 h-10 bg-slate-50 text-slate-400 rounded-xl flex items-center justify-center btn-active transition-all"><i class="fas fa-copy"></i></button>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left">
+                        <thead class="text-[9px] font-bold text-slate-400 uppercase bg-slate-50/30">
+                            <tr>
+                                <th class="px-6 py-4">Item</th>
+                                <th class="px-6 py-4 text-right">Profit</th>
+                                <th class="px-6 py-4 text-center">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="daily-table-body" class="divide-y divide-slate-50"></tbody>
+                    </table>
                 </div>
             </div>
-        </div>
+        </section>
 
-        <!-- Navigation -->
-        <div class="fixed bottom-6 left-1/2 -translate-x-1/2 w-[95%] max-w-[440px] z-[2000]">
-            <div class="bg-white/90 backdrop-blur-xl border border-slate-100 p-2 rounded-[2.5rem] shadow-2xl flex justify-between items-center px-4">
-                <button onclick="switchView('home')" id="nav-home" class="nav-btn active flex-1"><i class="fas fa-home mb-1"></i><span class="text-[7px] font-extrabold uppercase">Home</span></button>
-                <button onclick="switchView('records')" id="nav-records" class="nav-btn flex-1"><i class="fas fa-list-ul mb-1"></i><span class="text-[7px] font-extrabold uppercase">History</span></button>
-                <button onclick="switchView('analytics')" id="nav-analytics" class="nav-btn flex-1"><i class="fas fa-chart-line mb-1"></i><span class="text-[7px] font-extrabold uppercase">Graph</span></button>
-                <button onclick="switchView('ai')" id="nav-ai" class="nav-btn flex-1"><i class="fas fa-table-columns mb-1"></i><span class="text-[7px] font-extrabold uppercase">Summary</span></button>
-                <button onclick="switchView('contacts')" id="nav-contacts" class="nav-btn flex-1"><i class="fas fa-address-book mb-1"></i><span class="text-[7px] font-extrabold uppercase">Contact</span></button>
+        <!-- Tab 3: Monthly Reports -->
+        <section id="page-monthly" class="hidden space-y-6 fade-in">
+            <div id="monthly-container" class="space-y-6"></div>
+        </section>
+
+        <!-- Tab 4: Calculator -->
+        <section id="page-calculator" class="hidden space-y-5 fade-in">
+            <div class="neo-card rounded-[2.5rem] p-7 border-t-4 border-emerald-500">
+                <h2 class="text-sm font-bold text-slate-800 mb-8">🧮 အမြန်တွက်စက်</h2>
+                <div class="space-y-5">
+                    <div>
+                        <label class="block text-[10px] font-bold text-slate-400 uppercase">အမျိုးအစား</label>
+                        <select id="calcCategory" onchange="toggleCalcFields()" class="input-field w-full mt-1.5 bg-slate-50 border border-slate-100 rounded-2xl px-4 py-3.5 outline-none font-semibold block">
+                            <option value="perfume">Perfume</option>
+                            <option value="cosmetic">Cosmetic</option>
+                        </select>
+                    </div>
+                    <div id="calc-perfume-extras">
+                        <label class="block text-[10px] font-bold text-slate-400 uppercase">ဆိုဒ် (Size)</label>
+                        <select id="calcSize" class="input-field w-full mt-1.5 bg-slate-50 border border-slate-100 rounded-2xl px-4 py-3.5 outline-none font-semibold block">
+                            <option value="retail">Retail Box</option>
+                            <option value="5ml">5ml Decant</option>
+                            <option value="10ml">10ml Decant</option>
+                            <option value="30ml">30ml Decant</option>
+                        </select>
+                    </div>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="w-full">
+                            <label class="block text-[10px] font-bold text-slate-400 uppercase">ရင်းစျေး (100ml)</label>
+                            <input type="number" id="calcCost" class="input-field w-full mt-1.5 bg-slate-50 border border-slate-100 rounded-2xl px-4 py-3.5 outline-none font-bold block" placeholder="0">
+                        </div>
+                        <div class="w-full">
+                            <label class="block text-[10px] font-bold text-slate-400 uppercase">ရောင်းစျေး (100ml)</label>
+                            <input type="number" id="calcSale" class="input-field w-full mt-1.5 bg-slate-50 border border-slate-100 rounded-2xl px-4 py-3.5 outline-none font-bold text-indigo-600 block" placeholder="0">
+                        </div>
+                    </div>
+                    
+                    <div class="w-full">
+                        <label class="block text-[10px] font-bold text-slate-400 uppercase">အပိုတင်ငွေ (Risk Money)</label>
+                        <input type="number" id="calcRisk" class="input-field w-full mt-1.5 bg-slate-50 border border-slate-100 rounded-2xl px-4 py-3.5 outline-none font-black text-indigo-600 block" value="0">
+                    </div>
+
+                    <div id="calc-display" class="hidden calc-result rounded-3xl p-7 mt-6 text-center text-white">
+                        <p class="text-[10px] font-bold uppercase opacity-70 mb-1">Expected Daily Profit</p>
+                        <h2 class="text-2xl font-black" id="calc-result-text">0 Ks</h2>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-4 mt-8">
+                         <button onclick="calculateQuick()" class="bg-emerald-600 text-white font-extrabold py-5 rounded-2xl shadow-xl">တွက်မည်</button>
+                         <button onclick="resetCalc()" class="bg-slate-100 text-slate-500 font-bold py-5 rounded-2xl">Clear</button>
+                    </div>
+                </div>
             </div>
-        </div>
-    </div>
+        </section>
+
+    </main>
+
+    <!-- Navigation -->
+    <nav id="main-nav" class="hidden fixed bottom-6 left-1/2 -translate-x-1/2 w-[90%] max-w-md bottom-nav z-50 px-3 py-2.5 flex justify-between rounded-[2.5rem] shadow-2xl">
+        <button onclick="showTab('input')" id="btn-input" class="nav-item flex flex-col items-center gap-1 flex-1 active-tab-btn">
+            <div class="icon-bg p-2 rounded-2xl"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"/></svg></div>
+            <span class="text-[8px] font-extrabold uppercase tracking-widest">Input</span>
+        </button>
+        <button onclick="showTab('daily')" id="btn-daily" class="nav-item flex flex-col items-center gap-1 flex-1 text-slate-300">
+            <div class="icon-bg p-2 rounded-2xl"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg></div>
+            <span class="text-[8px] font-extrabold uppercase tracking-widest">Daily</span>
+        </button>
+        <button onclick="showTab('monthly')" id="btn-monthly" class="nav-item flex flex-col items-center gap-1 flex-1 text-slate-300">
+            <div class="icon-bg p-2 rounded-2xl"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg></div>
+            <span class="text-[8px] font-extrabold uppercase tracking-widest">Reports</span>
+        </button>
+        <button onclick="showTab('calculator')" id="btn-calculator" class="nav-item flex flex-col items-center gap-1 flex-1 text-slate-300">
+            <div class="icon-bg p-2 rounded-2xl"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg></div>
+            <span class="text-[8px] font-extrabold uppercase tracking-widest">Calc</span>
+        </button>
+    </nav>
 
     <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-app.js";
-        import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-auth.js";
-        import { getFirestore, collection, addDoc, onSnapshot, serverTimestamp } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-firestore.js";
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, doc, setDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
         const firebaseConfig = {
-            apiKey: "AIzaSyD3tkweZh5VKBvkciZ4Yv5MHXcW7DuMIsQ",
-            authDomain: "san-maw.firebaseapp.com",
-            projectId: "san-maw",
-            storageBucket: "san-maw.firebasestorage.app",
-            messagingSenderId: "857202315788",
-            appId: "1:857202315788:web:58c72fa9166e236af0d429"
+            apiKey: "AIzaSyCZtpVewHYE5SHgmdSHUDYiMeuD9XuM8-Y",
+            authDomain: "velvet-house.firebaseapp.com",
+            projectId: "velvet-house",
+            storageBucket: "velvet-house.firebasestorage.app",
+            messagingSenderId: "909921771030",
+            appId: "1:909921771030:web:399d30d6912a3685a59f37"
         };
 
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
         const db = getFirestore(app);
-        
-        let localData = [];
-        let selectedType = 'income';
-        let selectedUser = '';
-        let lineChart = null;
 
-        async function checkNetwork() {
-            const speedText = document.getElementById('network-speed');
-            const speedDot = document.getElementById('speed-dot');
-            const speedWarn = document.getElementById('speed-warning');
-            try {
-                const speed = (Math.random() * 2 + 0.5).toFixed(1); 
-                speedText.innerText = speed + " Mbps";
-                if(speed < 1.3) {
-                    speedWarn.style.display = 'block';
-                    speedDot.style.backgroundColor = '#f43f5e';
+        let salesData = [];
+        const APP_ID = 'velvet-house-v3';
+
+        signInAnonymously(auth).then(() => {
+            const docRef = doc(db, 'artifacts', APP_ID, 'public', 'data', 'records', 'global');
+            onSnapshot(docRef, (snap) => {
+                if (snap.exists()) {
+                    salesData = snap.data().items || [];
+                    renderAll();
                 } else {
-                    speedWarn.style.display = 'none';
-                    speedDot.style.backgroundColor = '#10b981';
+                    setDoc(docRef, { items: [], lastUpdated: new Date() });
                 }
-            } catch(e) { speedText.innerText = "Offline"; }
-        }
-        setInterval(checkNetwork, 10000);
-        checkNetwork();
-
-        window.showUserSelection = () => {
-            document.getElementById('view-welcome').classList.add('hidden');
-            document.getElementById('view-user-select').classList.remove('hidden');
-        };
-
-        window.selectUser = (name) => {
-            selectedUser = name;
-            document.getElementById('view-user-select').classList.add('hidden');
-            document.getElementById('loading-screen').classList.remove('hidden');
-            
-            signInAnonymously(auth).then(() => {
-                setTimeout(() => {
-                    document.getElementById('loading-screen').classList.add('hidden');
-                    document.getElementById('main-app').classList.remove('hidden');
-                    document.getElementById('current-user-display').innerText = selectedUser;
-                    document.getElementById('main-date').value = new Date().toISOString().split('T')[0];
-                    startListening();
-                }, 1500); 
+                document.getElementById('auth-status').innerText = "Cloud Online";
+                const btn = document.getElementById('start-btn');
+                btn.disabled = false;
+                btn.classList.remove('opacity-50', 'cursor-not-allowed');
+                btn.innerText = "Start App";
+                updateSyncIcon('ready');
             });
-        };
+        });
 
-        function startListening() {
-            onSnapshot(collection(db, 'records'), (snap) => {
-                localData = snap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-                updateHomeUI();
-                if(!document.getElementById('view-analytics').classList.contains('hidden')) renderGraph();
-                if(!document.getElementById('view-ai').classList.contains('hidden')) renderSummary();
-            });
+        async function syncToCloud(newData) {
+            updateSyncIcon('syncing');
+            const docRef = doc(db, 'artifacts', APP_ID, 'public', 'data', 'records', 'global');
+            await setDoc(docRef, { items: newData, lastUpdated: new Date() });
+            updateSyncIcon('ready');
         }
 
-        window.setType = (type) => {
-            selectedType = type;
-            const incBtn = document.getElementById('type-inc-btn');
-            const expBtn = document.getElementById('type-exp-btn');
-            incBtn.classList.remove('active-income');
-            expBtn.classList.remove('active-expense');
-            if(type === 'income') incBtn.classList.add('active-income');
-            else expBtn.classList.add('active-expense');
-        };
-
-        document.getElementById('add-btn').onclick = async () => {
-            const desc = document.getElementById('in-desc').value;
-            const amt = document.getElementById('in-amt').value;
-            const date = document.getElementById('main-date').value;
-            if(!desc || !amt) return;
-
-            await addDoc(collection(db, 'records'), {
-                desc, amt: parseFloat(amt), type: selectedType, date, createdBy: selectedUser, createdAt: serverTimestamp()
-            });
-            document.getElementById('in-desc').value = '';
-            document.getElementById('in-amt').value = '';
-        };
-
-        function updateHomeUI() {
-            const selDate = document.getElementById('main-date').value;
-            const filtered = localData.filter(x => x.date === selDate);
-            const inc = filtered.filter(x => x.type === 'income').reduce((a, b) => a + b.amt, 0);
-            const exp = filtered.filter(x => x.type === 'expense').reduce((a, b) => a + b.amt, 0);
-            
-            document.getElementById('total-inc').innerText = inc.toLocaleString();
-            document.getElementById('total-exp').innerText = exp.toLocaleString();
-            document.getElementById('total-profit').innerText = (inc - exp).toLocaleString();
-        }
-
-        window.switchView = (view) => {
-            ['home', 'records', 'analytics', 'ai', 'contacts'].forEach(v => {
-                document.getElementById(`view-${v}`).classList.add('hidden');
-                document.getElementById(`nav-${v}`).classList.remove('active');
-            });
-            document.getElementById(`view-${view}`).classList.remove('hidden');
-            document.getElementById(`nav-${view}`).classList.add('active');
-            
-            if(view === 'records') renderHistory();
-            if(view === 'analytics') renderGraph();
-            if(view === 'ai') renderSummary();
-        };
-
-        function renderHistory() {
-            const container = document.getElementById('grouped-list');
-            const groups = localData.reduce((acc, r) => {
-                if(!acc[r.date]) acc[r.date] = [];
-                acc[r.date].push(r); return acc;
-            }, {});
-            const sortedDates = Object.keys(groups).sort((a,b) => new Date(b) - new Date(a));
-            
-            container.innerHTML = sortedDates.map(date => `
-                <div>
-                    <h3 class="text-[10px] font-black text-indigo-500 uppercase px-2 mb-2">${date}</h3>
-                    <div class="space-y-2">
-                        ${groups[date].map(item => `
-                            <div class="record-item p-4 flex justify-between items-center shadow-sm">
-                                <div>
-                                    <p class="font-bold text-sm">${item.desc}</p>
-                                    <p class="text-[8px] text-slate-400 font-bold uppercase tracking-widest mt-0.5">By: ${item.createdBy || 'Unknown'}</p>
-                                </div>
-                                <p class="font-black text-sm ${item.type === 'income' ? 'text-emerald-600' : 'text-slate-800'}">${item.amt.toLocaleString()}</p>
-                            </div>
-                        `).join('')}
-                    </div>
-                </div>
-            `).join('') || '<p class="text-center opacity-30 py-20 text-xs font-bold">စာရင်းမရှိသေးပါ။</p>';
-        }
-
-        function getPeriodRange() {
-            const now = new Date();
-            const day = now.getDate();
-            let start, end;
-            if(day <= 15) {
-                start = new Date(now.getFullYear(), now.getMonth(), 1);
-                end = new Date(now.getFullYear(), now.getMonth(), 15);
+        function updateSyncIcon(state) {
+            const el = document.getElementById('sync-status');
+            if(state === 'syncing') {
+                el.innerText = 'SYNCING...';
+                el.className = 'sync-indicator bg-amber-50 text-amber-600 mt-1 inline-block';
             } else {
-                start = new Date(now.getFullYear(), now.getMonth(), 16);
-                end = new Date(now.getFullYear(), now.getMonth() + 1, 0);
+                el.innerText = 'ONLINE';
+                el.className = 'sync-indicator bg-emerald-50 text-emerald-600 mt-1 inline-block';
             }
-            const list = [];
-            for(let d = new Date(start); d <= end; d.setDate(d.getDate() + 1)) {
-                list.push(new Date(d).toISOString().split('T')[0]);
-            }
-            return { list, start: start.toISOString().split('T')[0], end: end.toISOString().split('T')[0] };
         }
 
-        function renderGraph() {
-            const period = getPeriodRange();
-            document.getElementById('period-range-display').innerText = `${period.start} to ${period.end}`;
-            const pData = localData.filter(x => period.list.includes(x.date));
-            const incs = period.list.map(d => pData.filter(x => x.date === d && x.type === 'income').reduce((a,b)=>a+b.amt, 0));
-            const exps = period.list.map(d => pData.filter(x => x.date === d && x.type === 'expense').reduce((a,b)=>a+b.amt, 0));
-            
-            document.getElementById('graph-inc').innerText = incs.reduce((a,b)=>a+b, 0).toLocaleString();
-            document.getElementById('graph-exp').innerText = exps.reduce((a,b)=>a+b, 0).toLocaleString();
-
-            if(lineChart) lineChart.destroy();
-            const ctx = document.getElementById('lineChart').getContext('2d');
-            lineChart = new Chart(ctx, {
-                type: 'line',
-                data: {
-                    labels: period.list.map(d => d.split('-')[2]),
-                    datasets: [
-                        { label: 'Income', data: incs, borderColor: '#10b981', backgroundColor: '#10b98115', fill: true, tension: 0.4, pointRadius: 2, borderWidth: 2.5 },
-                        { label: 'Expense', data: exps, borderColor: '#f43f5e', backgroundColor: '#f43f5e15', fill: true, tension: 0.4, pointRadius: 2, borderWidth: 2.5 }
-                    ]
-                },
-                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { display: false }, x: { grid: { display: false }, ticks: { font: { size: 9 } } } } }
-            });
-        }
-
-        // --- Summary Dashboard Render Logic (Replaces AI) ---
-        function renderSummary() {
-            const period = getPeriodRange();
-            document.getElementById('summary-range-text').innerText = `${period.start} မှ ${period.end} အထိ စာရင်းအနှစ်ချုပ်`;
-            
-            const pData = localData.filter(x => period.list.includes(x.date));
-            const totalInc = pData.filter(x => x.type === 'income').reduce((a, b) => a + b.amt, 0);
-            const totalExp = pData.filter(x => x.type === 'expense').reduce((a, b) => a + b.amt, 0);
-            const activeDays = new Set(pData.map(d => d.date)).size;
-
-            document.getElementById('summary-inc').innerText = totalInc.toLocaleString() + " MMK";
-            document.getElementById('summary-exp').innerText = totalExp.toLocaleString() + " MMK";
-            document.getElementById('summary-net').innerText = (totalInc - totalExp).toLocaleString() + " MMK";
-            document.getElementById('summary-days').innerText = activeDays + " ရက်";
-        }
-
-        window.copyNumber = (num, btnId) => {
-            const el = document.createElement('textarea'); el.value = num; document.body.appendChild(el); el.select(); document.execCommand('copy'); document.body.removeChild(el);
-            const btn = document.getElementById(btnId);
-            const originalHTML = btn.innerHTML;
-            btn.innerHTML = '<i class="fas fa-check text-emerald-500"></i>';
-            btn.classList.add('bg-emerald-50');
-            const toast = document.getElementById('copy-toast');
-            toast.style.display = 'block';
+        window.startApp = () => {
+            document.getElementById('welcome-screen').style.transform = 'translateY(-100%)';
             setTimeout(() => {
-                btn.innerHTML = originalHTML;
-                btn.classList.remove('bg-emerald-50');
-                toast.style.display = 'none';
-            }, 2000);
+                document.getElementById('welcome-screen').style.display = 'none';
+                document.getElementById('main-header').classList.remove('hidden');
+                document.getElementById('main-content').classList.remove('hidden');
+                document.getElementById('main-nav').classList.remove('hidden');
+                renderAll();
+            }, 500);
         };
 
-        document.getElementById('main-date').onchange = updateHomeUI;
+        window.toggleFields = () => {
+            const cat = document.getElementById('pCategory').value;
+            const extraDiv = document.getElementById('perfume-extras');
+            extraDiv.style.display = (cat === 'perfume') ? 'grid' : 'none';
+            document.getElementById('costLabel').innerText = (cat === 'perfume') ? "ရင်းစျေး (100ml)" : "ရင်းစျေး (Total)";
+            document.getElementById('saleLabel').innerText = (cat === 'perfume') ? "ရောင်းစျေး (100ml)" : "ရောင်းစျေး (Total)";
+        };
+
+        window.showTab = (tabId) => {
+            ['page-input', 'page-daily', 'page-monthly', 'page-calculator'].forEach(p => document.getElementById(p).classList.add('hidden'));
+            ['btn-input', 'btn-daily', 'btn-monthly', 'btn-calculator'].forEach(b => document.getElementById(b).classList.remove('active-tab-btn'));
+            document.getElementById('page-' + tabId).classList.remove('hidden');
+            document.getElementById('btn-' + tabId).classList.add('active-tab-btn');
+            renderAll();
+        };
+
+        window.addSale = async () => {
+            const date = document.getElementById('saleDate').value;
+            const cat = document.getElementById('pCategory').value;
+            const name = document.getElementById('pName').value.trim();
+            const costInput = parseFloat(document.getElementById('cPrice').value) || 0;
+            const saleInput = parseFloat(document.getElementById('sPrice').value) || 0;
+            const risk = parseFloat(document.getElementById('riskMoney').value) || 0;
+            const editId = document.getElementById('editId').value;
+
+            if(!name || saleInput <= 0 || !date) return;
+
+            let finalSaleAmt, finalCostAmt, finalName = name, finalSizeLabel = '', pkDeduction = 0;
+
+            if (cat === 'perfume') {
+                const type = document.getElementById('pType').value;
+                const size = document.getElementById('pSize').value;
+                finalName = `${name} (${type})`;
+                finalSizeLabel = size;
+                
+                pkDeduction = (size === 'retail') ? 1000 : 3000;
+
+                if (size === 'retail') {
+                    finalSaleAmt = saleInput;
+                    finalCostAmt = costInput;
+                } else {
+                    let ml = 0;
+                    if (size === '5ml') ml = 5;
+                    else if (size === '10ml') ml = 10;
+                    else if (size === '30ml') ml = 30;
+                    finalSaleAmt = (saleInput / 100) * ml;
+                    finalCostAmt = (costInput / 100) * ml;
+                }
+            } else {
+                finalSaleAmt = saleInput;
+                finalCostAmt = costInput;
+                finalSizeLabel = cat.toUpperCase();
+                pkDeduction = 0; 
+            }
+
+            const dailyProfit = (finalSaleAmt - finalCostAmt - pkDeduction) + risk;
+            const rawProfit = (finalSaleAmt - finalCostAmt) + risk;
+
+            const itemObj = {
+                id: editId ? parseInt(editId) : Date.now(),
+                date, name: finalName, size: finalSizeLabel,
+                calcCost: finalCostAmt, 
+                profit: dailyProfit, 
+                rawProfit: rawProfit, 
+                riskMoney: risk,
+                rawInputs: { cost: costInput, sale: saleInput, cat, size: finalSizeLabel }
+            };
+
+            let updated;
+            if (editId) {
+                updated = salesData.map(item => item.id == editId ? itemObj : item);
+                cancelEdit();
+            } else {
+                updated = [...salesData, itemObj];
+            }
+
+            await syncToCloud(updated);
+            clearFields();
+            showTab('daily');
+        };
+
+        window.renderAll = () => {
+            const targetDate = document.getElementById('viewDate').value;
+            const filtered = salesData.filter(item => item.date === targetDate);
+            const tbody = document.getElementById('daily-table-body');
+            tbody.innerHTML = '';
+            
+            let dayProfit = 0, dayCost = 0;
+            filtered.slice().reverse().forEach(item => {
+                dayProfit += item.profit;
+                dayCost += item.calcCost;
+                tbody.innerHTML += `
+                    <tr class="text-[11px] fade-in">
+                        <td class="px-6 py-4">
+                            <span class="font-bold text-slate-800">${item.name}</span><br>
+                            <span class="text-[9px] font-extrabold text-indigo-500 uppercase">${item.size}</span>
+                        </td>
+                        <td class="px-6 py-4 text-right">
+                            <span class="font-black text-slate-900">${format(item.profit)}</span>
+                        </td>
+                        <td class="px-6 py-4 text-center">
+                            <button onclick="editItem(${item.id})" class="text-indigo-600 bg-indigo-50 px-3 py-1.5 rounded-lg font-bold">Edit</button>
+                        </td>
+                    </tr>`;
+            });
+
+            document.getElementById('day-total-profit').innerText = format(dayProfit) + " Ks";
+            document.getElementById('day-total-cost').innerText = format(dayCost) + " Ks";
+
+            const monthlyContainer = document.getElementById('monthly-container');
+            monthlyContainer.innerHTML = '';
+            const groups = {};
+            salesData.forEach(item => {
+                const month = item.date.substring(0, 7);
+                if(!groups[month]) groups[month] = { rawProfitSum: 0, cost: 0, count: 0 };
+                groups[month].rawProfitSum += (item.rawProfit || item.profit);
+                groups[month].cost += item.calcCost;
+                groups[month].count++;
+            });
+
+            Object.keys(groups).sort().reverse().forEach(month => {
+                const data = groups[month];
+                const deliFee = 50000;
+                const packingFeeTotal = 100000; 
+                const netProfit = data.rawProfitSum - deliFee - packingFeeTotal;
+
+                monthlyContainer.innerHTML += `
+                    <div class="neo-card rounded-[2.5rem] p-8 border-t-[8px] border-slate-900 fade-in">
+                        <div class="flex justify-between items-start mb-6">
+                            <div>
+                                <h3 class="text-lg font-black text-slate-900">${month}</h3>
+                                <p class="text-[9px] font-bold text-slate-400 uppercase tracking-widest mt-1">Monthly Report</p>
+                            </div>
+                            <span class="bg-slate-900 text-white px-3 py-1 rounded-full text-[9px] font-black">${data.count} SALES</span>
+                        </div>
+                        
+                        <div class="space-y-3 mb-6">
+                            <div class="flex justify-between text-[11px] font-bold">
+                                <span class="text-slate-500 uppercase tracking-tighter">Gross Profit (Pre-deduction)</span>
+                                <span class="text-slate-800">${format(data.rawProfitSum)} Ks</span>
+                            </div>
+                            <div class="flex justify-between text-[11px] font-bold text-rose-500">
+                                <span class="uppercase">Monthly Packing Fee</span>
+                                <span>- ${format(packingFeeTotal)} Ks</span>
+                            </div>
+                            <div class="flex justify-between text-[11px] font-bold text-rose-500">
+                                <span class="uppercase">Monthly Deli Fee</span>
+                                <span>- ${format(deliFee)} Ks</span>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-4 mb-6">
+                            <div class="bg-slate-50 p-4 rounded-2xl">
+                                <p class="text-[8px] font-bold text-slate-400 uppercase mb-1">Items Total Cost</p>
+                                <p class="text-sm font-black text-slate-800">${format(data.cost)}</p>
+                            </div>
+                            <div class="bg-indigo-50 p-4 rounded-2xl">
+                                <p class="text-[8px] font-bold text-indigo-400 uppercase mb-1">Monthly Pure Profit</p>
+                                <p class="text-sm font-black text-indigo-600">${format(netProfit)}</p>
+                            </div>
+                        </div>
+                        
+                        <div class="pt-5 border-t border-slate-100 flex justify-between items-center">
+                            <span class="text-[10px] font-black text-slate-300 uppercase tracking-widest">Net Revenue</span>
+                            <span class="text-xl font-black text-indigo-600">${format(netProfit)} Ks</span>
+                        </div>
+                    </div>`;
+            });
+        };
+
+        window.editItem = (id) => {
+            const item = salesData.find(x => x.id == id);
+            if(!item) return;
+            document.getElementById('editId').value = item.id;
+            document.getElementById('saleDate').value = item.date;
+            document.getElementById('pCategory').value = item.rawInputs?.cat || 'perfume';
+            toggleFields();
+            document.getElementById('pName').value = item.name.split(' (')[0];
+            document.getElementById('cPrice').value = item.rawInputs?.cost;
+            document.getElementById('sPrice').value = item.rawInputs?.sale;
+            document.getElementById('riskMoney').value = item.riskMoney;
+            document.getElementById('input-title').innerText = "✏️ ပြင်ဆင်နေသည်";
+            document.getElementById('save-btn').innerText = "Update Record";
+            document.getElementById('cancel-edit-btn').classList.remove('hidden');
+            showTab('input');
+        };
+
+        window.cancelEdit = () => {
+            document.getElementById('editId').value = '';
+            document.getElementById('input-title').innerText = "📝 စာရင်းအသစ်ထည့်သွင်းခြင်း";
+            document.getElementById('save-btn').innerText = "သိမ်းဆည်းမည်";
+            document.getElementById('cancel-edit-btn').classList.add('hidden');
+            clearFields();
+        };
+
+        window.clearAllData = async () => {
+            if(confirm("ဒေတာအားလုံးကို ဖျက်ရန် သေချာပါသလား?")) {
+                await syncToCloud([]);
+            }
+        };
+
+        window.calculateQuick = () => {
+            const cat = document.getElementById('calcCategory').value;
+            const cost = parseFloat(document.getElementById('calcCost').value) || 0;
+            const sale = parseFloat(document.getElementById('calcSale').value) || 0;
+            const risk = parseFloat(document.getElementById('calcRisk').value) || 0;
+            let res = 0;
+            if (cat === 'perfume') {
+                const sz = document.getElementById('calcSize').value;
+                let pk = (sz === 'retail') ? 1000 : 3000; 
+                let s, c;
+                if (sz === '5ml') { s=(sale/100)*5; c=(cost/100)*5; }
+                else if (sz === '10ml') { s=(sale/100)*10; c=(cost/100)*10; }
+                else if (sz === '30ml') { s=(sale/100)*30; c=(cost/100)*30; }
+                else { s=sale; c=cost; }
+                res = (s-c-pk)+risk;
+            } else { res = (sale-cost)+risk; }
+            document.getElementById('calc-display').classList.remove('hidden');
+            document.getElementById('calc-result-text').innerText = format(res) + " Ks";
+        };
+
+        window.resetCalc = () => {
+            document.getElementById('calcCost').value='';
+            document.getElementById('calcSale').value='';
+            document.getElementById('calcRisk').value='0';
+            document.getElementById('calc-display').classList.add('hidden');
+        };
+
+        window.format = (n) => new Intl.NumberFormat('en-US').format(Math.round(n));
+        window.clearFields = () => {
+            document.getElementById('pName').value = '';
+            document.getElementById('cPrice').value = '';
+            document.getElementById('sPrice').value = '';
+            document.getElementById('riskMoney').value = '0';
+        };
+
+        const today = new Date().toISOString().split('T')[0];
+        document.getElementById('saleDate').value = today;
+        document.getElementById('viewDate').value = today;
+        setInterval(() => {
+            const now = new Date();
+            document.getElementById('live-date').innerText = now.toLocaleDateString('en-GB', {day:'2-digit', month:'short', year:'numeric'}).toUpperCase();
+        }, 1000);
     </script>
 </body>
 </html>
