@@ -37,7 +37,7 @@
         .modal-overlay { position: fixed; inset: 0; background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(4px); z-index: 7000; display: flex; align-items: center; justify-content: center; padding: 20px; }
         .cart-item { background: #f8fafc; border-radius: 1rem; padding: 1rem; margin-bottom: 0.5rem; border-left: 4px solid var(--primary); }
 
-        /* Invoice UI Enhancement - Preview only */
+        /* Invoice Preview UI */
         .invoice-box {
             background: white;
             width: 100%;
@@ -57,33 +57,32 @@
         }
 
         .inv-header { text-align: center; margin-bottom: 15px; border-bottom: 1px dashed #000; padding-bottom: 10px; }
-        .inv-title { font-size: 22px; font-weight: 800; margin-bottom: 2px; }
+        .inv-title { font-size: 24px; font-weight: 800; margin-bottom: 2px; }
         
         .inv-table { width: 100%; border-collapse: collapse; margin: 10px 0; }
-        .inv-table th { border-bottom: 1px solid #000; padding: 5px 2px; text-align: left; font-size: 13px; font-weight: 800; }
-        .inv-table td { padding: 6px 2px; border-bottom: 1px dotted #eee; font-size: 13px; vertical-align: top; }
+        .inv-table th { border-bottom: 1px solid #000; padding: 8px 2px; text-align: left; font-size: 15px; font-weight: 800; }
+        .inv-table td { padding: 8px 2px; border-bottom: 1px dotted #eee; font-size: 15px; vertical-align: top; }
         
         .inv-total-row { display: flex; justify-content: flex-end; margin-top: 10px; }
-        .inv-total-box { width: 100%; max-width: 180px; }
-        .inv-total-item { display: flex; justify-content: space-between; padding: 2px 0; font-size: 14px; }
-        .inv-grand-total { border-top: 1.5px solid #000; margin-top: 5px; padding-top: 5px; font-weight: 800; font-size: 16px; }
+        .inv-total-box { width: 100%; }
+        .inv-total-item { display: flex; justify-content: space-between; padding: 4px 0; font-size: 16px; }
+        .inv-grand-total { border-top: 2px solid #000; margin-top: 5px; padding-top: 8px; font-weight: 900; font-size: 18px; }
 
+        /* General Print Fix */
         @media print {
             @page {
                 size: 80mm auto;
-                margin: 0;
+                margin: 0; /* Browser margin ဖျောက်ရန် */
             }
             body { margin: 0; padding: 0; background: white; }
             .no-print { display: none !important; }
             #invoice-paper {
-                width: 76mm !important;
-                margin: 0 auto !important;
-                padding: 5mm !important;
+                width: 80mm !important;
+                margin: 0 !important;
+                padding: 4mm !important; /* ဘေးဘောင် ညှိရန် */
                 visibility: visible !important;
                 display: block !important;
             }
-            .inv-table td, .inv-table th { font-size: 13px !important; }
-            .inv-title { font-size: 22px !important; }
         }
     </style>
 </head>
@@ -91,7 +90,6 @@
 
     <div id="toast" class="status-toast"></div>
 
-    <!-- Connection Status -->
     <div class="fixed top-4 right-4 z-[8000] no-print">
         <div id="db-status" class="db-status-pill bg-slate-100 text-slate-500 shadow-sm">
             <span class="w-2 h-2 rounded-full bg-slate-400 animate-pulse"></span>
@@ -102,15 +100,14 @@
     <!-- Invoice Modal -->
     <div id="invoice-modal" class="modal-overlay hidden">
         <div class="invoice-box">
-            <!-- Paper UI for Preview/Print -->
             <div id="invoice-paper">
                 <div class="inv-header">
                     <div class="inv-title">စန်းမော် ပရိဘောဂ</div>
-                    <div class="text-[12px] font-bold">ဝယ်ယူအားပေးမှုကို အထူးကျေးဇူးတင်ပါသည်။</div>
-                    <div class="mt-2 font-black uppercase tracking-tighter text-[11px] border border-black inline-block px-2 py-0.5">Cash Receipt / ပြေစာ</div>
+                    <div class="text-[14px] font-bold">ဝယ်ယူအားပေးမှုကို အထူးကျေးဇူးတင်ပါသည်။</div>
+                    <div class="mt-2 font-black uppercase tracking-tighter text-[12px] border border-black inline-block px-3 py-1">Cash Receipt / ပြေစာ</div>
                 </div>
 
-                <div class="space-y-1.5 mb-4 text-[13px]">
+                <div class="space-y-2 mb-4 text-[14px]">
                     <div class="flex justify-between">
                         <span class="text-gray-500">နေ့စွဲ:</span>
                         <span id="inv-date" class="font-bold"></span>
@@ -123,7 +120,7 @@
                         <span class="text-gray-500">ဖုန်း:</span>
                         <span id="inv-phone" class="font-bold"></span>
                     </div>
-                    <div id="inv-address-row" class="text-right text-[12px] text-gray-600 italic">
+                    <div id="inv-address-row" class="text-right text-[13px] text-gray-600 italic">
                         <span id="inv-address"></span>
                     </div>
                 </div>
@@ -132,12 +129,11 @@
                     <thead>
                         <tr>
                             <th>အမျိုးအမည်</th>
-                            <th width="35" class="text-center">ခု</th>
-                            <th width="80" class="text-right">သင့်ငွေ</th>
+                            <th width="40" class="text-center">ခု</th>
+                            <th width="100" class="text-right">သင့်ငွေ</th>
                         </tr>
                     </thead>
                     <tbody id="inv-items-list">
-                        <!-- Items injected here -->
                     </tbody>
                 </table>
 
@@ -150,12 +146,11 @@
                     </div>
                 </div>
 
-                <div class="text-center mt-6 pt-4 border-t border-dotted border-gray-400">
-                    <p class="text-[12px] font-bold">ကျေးဇူးတင်ပါသည်</p>
+                <div class="text-center mt-8 pt-4 border-t border-dotted border-gray-400">
+                    <p class="text-[14px] font-bold">ကျေးဇူးတင်ပါသည်</p>
                 </div>
             </div>
 
-            <!-- Action Buttons -->
             <div class="p-6 bg-slate-50 border-t border-slate-200 no-print">
                 <div class="flex gap-2">
                     <button id="print-btn-main" onclick="handleSafariPrint()" class="flex-1 py-4 rounded-xl bg-indigo-600 text-white font-black text-sm uppercase flex items-center justify-center gap-2 shadow-lg active:scale-95 transition-all">
@@ -167,8 +162,7 @@
         </div>
     </div>
 
-    <!-- PIN Modal, Selection, and App content remains the same but with the updated Print logic -->
-    <!-- (Hidden for brevity but includes all original functionality) -->
+    <!-- Login & Main App Content (Kept as provided) -->
     <div id="pin-modal" class="modal-overlay hidden">
         <div class="bg-white p-8 rounded-[2rem] w-full max-w-xs text-center shadow-2xl">
             <div class="w-16 h-16 bg-indigo-50 text-indigo-600 rounded-2xl flex items-center justify-center mx-auto mb-4">
@@ -193,9 +187,7 @@
         </div>
     </div>
 
-    <!-- Main App UI Container -->
     <div id="main-app" class="max-w-[500px] mx-auto px-5 pt-8 pb-32 hidden">
-        <!-- (All Home, Daily Summary, Records, Stock, Accounting views kept exactly as provided) -->
         <div id="view-home">
             <div class="premium-card rounded-[2.5rem] p-6 text-white mb-8 shadow-xl">
                 <div class="flex justify-between items-start mb-6">
@@ -284,6 +276,20 @@
                 <button id="add-stock-btn" onclick="toggleStockAdd(true)" class="bg-indigo-600 text-white text-xs font-black px-5 py-3 rounded-xl uppercase owner-only shadow-md">Add New</button>
             </div>
             <div id="stock-list" class="space-y-4"></div>
+            <div id="stock-form" class="hidden bg-white p-6 rounded-3xl border border-slate-100 shadow-sm space-y-4 mt-4">
+                <input type="hidden" id="edit-stock-id">
+                <input type="text" id="stock-sku" placeholder="SKU (e.g. T001)" class="w-full p-4 input-field rounded-xl font-black uppercase">
+                <input type="text" id="stock-name" placeholder="ပစ္စည်းအမည်" class="w-full p-4 input-field rounded-xl font-bold">
+                <div class="grid grid-cols-2 gap-3">
+                    <input type="number" id="stock-cost" placeholder="ရင်းစျေး" class="p-4 input-field rounded-xl font-bold">
+                    <input type="number" id="stock-sell" placeholder="ရောင်းစျေး" class="p-4 input-field rounded-xl font-bold">
+                </div>
+                <input type="number" id="stock-qty" placeholder="လက်ကျန်အရေအတွက်" class="w-full p-4 input-field rounded-xl font-bold">
+                <div class="flex gap-2">
+                    <button onclick="toggleStockAdd(false)" class="flex-1 py-4 text-xs font-black uppercase text-slate-400">Cancel</button>
+                    <button onclick="saveStock()" class="flex-[2] py-4 bg-indigo-600 text-white rounded-xl text-xs font-black uppercase">Save Stock</button>
+                </div>
+            </div>
         </div>
 
         <div id="view-accounting" class="hidden">
@@ -291,7 +297,6 @@
             <div id="accounting-list" class="space-y-5"></div>
         </div>
 
-        <!-- Bottom Navigation -->
         <div class="fixed bottom-6 left-1/2 -translate-x-1/2 w-[94%] max-w-[440px] z-[5000] no-print">
             <div class="bg-slate-900 p-3 rounded-full shadow-[0_20px_50px_rgba(0,0,0,0.3)] flex justify-between items-center px-6">
                 <button onclick="switchView('home')" id="nav-home" class="nav-btn active flex-1 py-3 text-2xl"><i class="fas fa-plus-circle"></i></button>
@@ -344,11 +349,7 @@
             const iframe = document.createElement('iframe');
             iframe.id = 'print-iframe';
             iframe.style.position = 'fixed';
-            iframe.style.right = '0';
-            iframe.style.bottom = '0';
-            iframe.style.width = '0';
-            iframe.style.height = '0';
-            iframe.style.border = '0';
+            iframe.style.visibility = 'hidden';
             document.body.appendChild(iframe);
 
             const doc = iframe.contentWindow.document;
@@ -356,8 +357,7 @@
             doc.write(`
                 <html>
                     <head>
-                        <title>Print Invoice</title>
-                        <link href="https://cdn.tailwindcss.com" rel="stylesheet">
+                        <title>Invoice</title>
                         <style>
                             @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&family=Pyidaungsu:wght@400;700&display=swap');
                             @page { 
@@ -366,64 +366,50 @@
                             }
                             body { 
                                 font-family: 'Plus Jakarta Sans', 'Pyidaungsu', sans-serif; 
-                                background: #fff; 
-                                padding: 0; 
-                                margin: 0;
-                                color: #000;
+                                margin: 0; padding: 0; background: #fff; color: #000;
                             }
                             #print-container {
-                                width: 74mm;
-                                margin: 0 auto;
-                                padding: 5mm 2mm;
-                                display: block;
+                                width: 80mm;
+                                margin: 0;
+                                padding: 6mm 4mm;
+                                box-sizing: border-box;
                             }
-                            .inv-header { text-align: center; margin-bottom: 12px; border-bottom: 1px dashed #000; padding-bottom: 10px; }
-                            .inv-title { font-size: 22px; font-weight: 800; }
-                            .inv-table { width: 100%; border-collapse: collapse; margin: 10px 0; }
-                            .inv-table th { border-bottom: 1.5px solid #000; padding: 6px 0; text-align: left; font-size: 13px; font-weight: 800; }
-                            .inv-table td { padding: 8px 0; border-bottom: 1px dotted #ccc; font-size: 13px; font-weight: 700; }
-                            .inv-grand-total { border-top: 1.5px solid #000; margin-top: 8px; padding-top: 8px; font-weight: 900; font-size: 16px; }
-                            .inv-total-row { display: flex; justify-content: flex-end; margin-top: 10px; }
-                            .inv-total-box { width: 100%; }
+                            .inv-header { text-align: center; margin-bottom: 15px; border-bottom: 1.5px dashed #000; padding-bottom: 10px; }
+                            .inv-title { font-size: 24px; font-weight: 800; }
+                            .inv-table { width: 100%; border-collapse: collapse; margin: 12px 0; }
+                            .inv-table th { border-bottom: 1.5px solid #000; padding: 8px 0; text-align: left; font-size: 15px; font-weight: 800; }
+                            .inv-table td { padding: 10px 0; border-bottom: 1px dotted #ccc; font-size: 15px; font-weight: 700; vertical-align: top; }
+                            .inv-grand-total { border-top: 2px solid #000; margin-top: 10px; padding-top: 10px; font-weight: 900; font-size: 18px; }
                             .flex { display: flex; }
                             .justify-between { justify-content: space-between; }
                             .text-right { text-align: right; }
                             .text-center { text-align: center; }
                             .font-bold { font-weight: 700; }
-                            .text-gray-500 { color: #666; }
-                            .text-[12px] { font-size: 12px; }
-                            .text-[13px] { font-size: 13px; }
-                            .mb-4 { margin-bottom: 1rem; }
-                            .space-y-1.5 > * + * { margin-top: 0.375rem; }
                             .font-black { font-weight: 900; }
-                            .uppercase { text-transform: uppercase; }
-                            .border { border: 1px solid #000; }
-                            .px-2 { padding-left: 0.5rem; padding-right: 0.5rem; }
-                            .italic { font-style: italic; }
+                            .space-y-2 > * + * { margin-top: 0.5rem; }
+                            .mt-8 { margin-top: 2rem; }
+                            .pt-4 { padding-top: 1rem; }
+                            .border-t { border-top: 1px solid #000; }
+                            .text-[14px] { font-size: 14px; }
                         </style>
                     </head>
                     <body>
                         <div id="print-container">${printContent}</div>
+                        <script>
+                            window.onload = function() {
+                                window.print();
+                                setTimeout(function() { window.parent.document.getElementById('print-iframe').remove(); }, 500);
+                            };
+                        <\/script>
                     </body>
                 </html>
             `);
             doc.close();
-
-            setTimeout(() => {
-                iframe.contentWindow.focus();
-                iframe.contentWindow.print();
-            }, 600);
         };
 
-        // Other original functions (verifyPin, selectUser, initSync, etc.) kept exactly as-is
-        window.openPinModal = () => {
-            document.getElementById('pin-modal').classList.remove('hidden');
-            document.getElementById('pin-input').focus();
-        };
-        window.closePinModal = () => {
-            document.getElementById('pin-modal').classList.add('hidden');
-            document.getElementById('pin-input').value = '';
-        };
+        // All original logic functions remain exactly as they were
+        window.openPinModal = () => { document.getElementById('pin-modal').classList.remove('hidden'); document.getElementById('pin-input').focus(); };
+        window.closePinModal = () => { document.getElementById('pin-modal').classList.add('hidden'); document.getElementById('pin-input').value = ''; };
         window.verifyPin = async () => {
             const btn = document.getElementById('verify-pin-btn');
             const input = document.getElementById('pin-input').value;
@@ -568,14 +554,14 @@
             const addr = r.address || '';
             if(addr) { document.getElementById('inv-address').innerText = addr; document.getElementById('inv-address-row').classList.remove('hidden'); }
             else { document.getElementById('inv-address-row').classList.add('hidden'); }
+            
             document.getElementById('inv-items-list').innerHTML = r.items.map((i) => `
                 <tr>
                     <td class="font-bold">
-                        <div class="text-[13px]">${i.desc}</div>
-                        <div class="text-[10px] text-gray-500 font-normal">@ ${i.sell.toLocaleString()}</div>
+                        <div class="text-[15px]">${i.desc}</div>
                     </td>
-                    <td class="text-center font-bold text-[13px]">${i.qty}</td>
-                    <td class="text-right font-bold text-[13px]">${(i.qty * i.sell).toLocaleString()}</td>
+                    <td class="text-center font-bold text-[15px]">${i.qty}</td>
+                    <td class="text-right font-bold text-[15px]">${(i.qty * i.sell).toLocaleString()}</td>
                 </tr>
             `).join('');
             document.getElementById('inv-total').innerText = r.amt.toLocaleString() + " Ks";
