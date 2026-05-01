@@ -1,4 +1,3 @@
-```html
 <!DOCTYPE html>
 <html lang="my">
 <head>
@@ -26,112 +25,59 @@
         }
 
         .hidden { display: none !important; }
-        
-        .premium-card { 
-            background: linear-gradient(135deg, #1e1b4b 0%, #3730a3 50%, #4338ca 100%); 
-        }
-
-        .input-field { 
-            background: #ffffff; 
-            border: 1.5px solid #f1f5f9; 
-            transition: all 0.2s ease; 
-            font-size: 1rem;
-        }
-        .input-field:focus {
-            border-color: var(--primary);
-            box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.1);
-        }
-
+        .premium-card { background: linear-gradient(135deg, #1e1b4b 0%, #3730a3 50%, #4338ca 100%); }
+        .input-field { background: #ffffff; border: 1.5px solid #f1f5f9; transition: all 0.2s ease; font-size: 1rem; }
+        .input-field:focus { border-color: var(--primary); box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.1); }
         .nav-btn { color: #94a3b8; transition: all 0.3s; }
         .nav-btn.active { color: var(--primary); }
+        .record-card { background: white; border: 1px solid #f1f5f9; border-radius: 1.25rem; transition: all 0.2s; }
+        .status-toast { position: fixed; top: 20px; left: 50%; transform: translateX(-50%); z-index: 9999; padding: 12px 24px; border-radius: 12px; color: white; font-weight: 800; font-size: 14px; display: none; box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
+        .db-status-pill { padding: 4px 12px; border-radius: 999px; font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.05em; display: flex; align-items: center; gap: 6px; }
+        .modal-overlay { position: fixed; inset: 0; background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(4px); z-index: 7000; display: flex; align-items: center; justify-content: center; padding: 20px; }
+        .cart-item { background: #f8fafc; border-radius: 1rem; padding: 1rem; margin-bottom: 0.5rem; border-left: 4px solid var(--primary); }
 
-        .record-card {
-            background: white;
-            border: 1px solid #f1f5f9;
-            border-radius: 1.25rem;
-            transition: all 0.2s;
-        }
-
-        .status-toast {
-            position: fixed;
-            top: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            z-index: 9999;
-            padding: 12px 24px;
-            border-radius: 12px;
-            color: white;
-            font-weight: 800;
-            font-size: 14px;
-            display: none;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
-        }
-
-        .db-status-pill {
-            padding: 4px 12px;
-            border-radius: 999px;
-            font-size: 11px;
-            font-weight: 800;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-
-        .modal-overlay {
-            position: fixed;
-            inset: 0;
-            background: rgba(15, 23, 42, 0.6);
-            backdrop-filter: blur(4px);
-            z-index: 7000;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
-        }
-
-        .cart-item {
-            background: #f8fafc;
-            border-radius: 1rem;
-            padding: 1rem;
-            margin-bottom: 0.5rem;
-            border-left: 4px solid var(--primary);
-        }
-
+        /* Invoice UI Enhancement */
         .invoice-box {
             background: white;
             width: 100%;
-            max-width: 400px;
-            border-radius: 2rem;
+            max-width: 450px;
+            border-radius: 1.5rem;
             overflow: hidden;
             box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25);
         }
 
+        #invoice-paper {
+            padding: 40px 30px;
+            color: #000;
+            background: white;
+            line-height: 1.4;
+        }
+
+        .inv-header { text-align: center; margin-bottom: 25px; border-bottom: 2px solid #000; padding-bottom: 15px; }
+        .inv-title { font-size: 26px; font-weight: 800; margin-bottom: 5px; }
+        
+        .inv-table { width: 100%; border-collapse: collapse; margin: 20px 0; }
+        .inv-table th { border-bottom: 1px solid #000; padding: 8px 4px; text-align: left; font-size: 12px; font-weight: 800; text-transform: uppercase; }
+        .inv-table td { padding: 10px 4px; border-bottom: 1px dotted #ccc; font-size: 12px; vertical-align: top; }
+        
+        .inv-total-row { display: flex; justify-content: flex-end; margin-top: 15px; }
+        .inv-total-box { min-width: 180px; }
+        .inv-total-item { display: flex; justify-content: space-between; padding: 4px 0; font-size: 13px; }
+        .inv-grand-total { border-top: 2px solid #000; margin-top: 8px; padding-top: 8px; font-weight: 800; font-size: 18px; }
+
         @media print {
             body * { visibility: hidden; }
-            #printable-area, #printable-area * { visibility: visible; }
-            #printable-area {
+            #invoice-paper, #invoice-paper * { visibility: visible; }
+            #invoice-paper {
                 position: absolute;
                 left: 0;
                 top: 0;
                 width: 100%;
                 margin: 0;
-                padding: 10px;
+                padding: 20px;
+                box-shadow: none !important;
             }
             .no-print { display: none !important; }
-            .invoice-box { 
-                box-shadow: none; 
-                border: none;
-                width: 100%;
-                max-width: 100%;
-            }
-        }
-
-        @media (max-width: 380px) {
-            body { font-size: 14px; }
-            .premium-card { padding: 1.25rem !important; }
-            .nav-btn i { font-size: 1.25rem; }
         }
     </style>
 </head>
@@ -149,48 +95,79 @@
 
     <!-- Invoice Modal -->
     <div id="invoice-modal" class="modal-overlay hidden">
-        <div class="invoice-box" id="printable-area">
-            <div class="p-8">
-                <div class="text-center mb-6">
-                    <h2 class="text-2xl font-black text-slate-900">စန်းမော် ပရိဘောဂ</h2>
-                    <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-1">Invoice Receipt</p>
+        <div class="invoice-box">
+            <!-- Paper UI for Print -->
+            <div id="invoice-paper">
+                <div class="inv-header">
+                    <div class="inv-title">စန်းမော် ပရိဘောဂ</div>
+                    <div class="mt-2 font-black uppercase tracking-tighter text-[11px] border-2 border-black inline-block px-3 py-1">Cash Receipt / ပြေစာ</div>
                 </div>
-                <div class="space-y-4 mb-6 text-left">
-                    <div class="flex justify-between border-b border-slate-100 pb-2">
-                        <span class="text-xs font-bold text-slate-400">နေ့စွဲ</span>
-                        <span id="inv-date" class="text-xs font-black text-slate-800"></span>
+
+                <div class="grid grid-cols-2 gap-4 mb-6 text-[12px]">
+                    <div class="space-y-1">
+                        <div>
+                            <span class="font-bold text-gray-500 uppercase text-[10px]">Customer Name:</span>
+                            <div id="inv-customer" class="font-black text-[14px]"></div>
+                        </div>
+                        <div>
+                            <span class="font-bold text-gray-500 uppercase text-[10px]">Phone:</span>
+                            <div id="inv-phone" class="font-bold"></div>
+                        </div>
+                        <div>
+                            <span class="font-bold text-gray-500 uppercase text-[10px]">Address:</span>
+                            <div id="inv-address" class="font-medium text-gray-700"></div>
+                        </div>
                     </div>
-                    <div>
-                        <p class="text-[9px] font-black text-slate-400 uppercase mb-1">ဝယ်သူအချက်အလက်</p>
-                        <p id="inv-customer" class="text-sm font-black text-slate-900"></p>
-                        <p id="inv-phone" class="text-xs font-bold text-slate-600"></p>
-                        <p id="inv-address" class="text-xs font-bold text-slate-600 italic"></p>
+                    <div class="text-right">
+                        <span class="font-bold text-gray-500 uppercase text-[10px]">Date:</span>
+                        <div id="inv-date" class="font-black text-[14px]"></div>
                     </div>
                 </div>
-                <div class="space-y-3 mb-6 text-left">
-                    <p class="text-[9px] font-black text-slate-400 uppercase">ဝယ်ယူသောပစ္စည်းများ</p>
-                    <div id="inv-items-list" class="space-y-2 border-y border-slate-50 py-3 max-h-60 overflow-y-auto"></div>
-                </div>
-                <div class="bg-slate-50 p-4 rounded-2xl space-y-2">
-                    <div class="flex justify-between border-t border-slate-200 pt-2">
-                        <span class="text-xs font-black text-indigo-600 uppercase">စုစုပေါင်း</span>
-                        <span id="inv-total" class="text-xl font-black text-indigo-600">0</span>
+
+                <table class="inv-table">
+                    <thead>
+                        <tr>
+                            <th width="40">စဉ်</th>
+                            <th>အမျိုးအမည်</th>
+                            <th width="40" class="text-center">ခုရေ</th>
+                            <th width="80" class="text-right">နှုန်း</th>
+                            <th width="90" class="text-right">သင့်ငွေ</th>
+                        </tr>
+                    </thead>
+                    <tbody id="inv-items-list">
+                        <!-- Items injected here -->
+                    </tbody>
+                </table>
+
+                <div class="inv-total-row">
+                    <div class="inv-total-box">
+                        <div class="inv-total-item inv-grand-total">
+                            <span>စုစုပေါင်း</span>
+                            <span id="inv-total">0</span>
+                        </div>
                     </div>
                 </div>
-                <div class="text-center mt-6 no-print">
-                    <div class="flex gap-2">
-                        <button id="print-btn-main" onclick="handleSafariPrint()" class="flex-1 py-4 rounded-xl bg-indigo-600 text-white font-black text-sm uppercase flex items-center justify-center gap-2">
-                            <i class="fas fa-print"></i> Print
-                        </button>
-                        <button onclick="closeInvoice()" class="flex-1 py-4 rounded-xl bg-slate-900 text-white font-black text-sm uppercase">Close</button>
-                    </div>
+
+                <div class="text-center mt-12 border-t border-dotted border-gray-300 pt-6">
+                    <p class="text-[12px] font-black uppercase tracking-widest">Thank You!</p>
+                    <p class="text-[11px] font-bold mt-1">ဝယ်ယူအားပေးမှုကို အထူးကျေးဇူးတင်ရှိပါသည်။</p>
+                </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="p-6 bg-slate-50 border-t border-slate-200 no-print">
+                <div class="flex gap-2">
+                    <button id="print-btn-main" onclick="handleSafariPrint()" class="flex-1 py-4 rounded-xl bg-indigo-600 text-white font-black text-sm uppercase flex items-center justify-center gap-2 shadow-lg active:scale-95 transition-all">
+                        <i class="fas fa-print"></i> Print Invoice
+                    </button>
+                    <button onclick="closeInvoice()" class="flex-1 py-4 rounded-xl bg-slate-900 text-white font-black text-sm uppercase">Close</button>
                 </div>
             </div>
         </div>
     </div>
 
     <!-- Security PIN Modal -->
-    <div id="pin-modal" class="modal-overlay hidden" style="z-index: 7000;">
+    <div id="pin-modal" class="modal-overlay hidden">
         <div class="bg-white p-8 rounded-[2rem] w-full max-w-xs text-center shadow-2xl">
             <div class="w-16 h-16 bg-indigo-50 text-indigo-600 rounded-2xl flex items-center justify-center mx-auto mb-4">
                 <i class="fas fa-lock text-2xl"></i>
@@ -322,12 +299,10 @@
                 <h2 class="text-2xl font-black">Stock လက်ကျန်</h2>
                 <button id="add-stock-btn" onclick="toggleStockAdd(true)" class="bg-indigo-600 text-white text-xs font-black px-5 py-3 rounded-xl uppercase owner-only shadow-md">Add New</button>
             </div>
-            
             <div class="relative mb-6">
                 <input type="text" id="stock-list-search" placeholder="SKU ဖြင့် ရှာမည်..." class="w-full p-4 pl-12 bg-white border border-slate-100 rounded-2xl font-bold shadow-sm focus:border-indigo-600 outline-none">
                 <i class="fas fa-search absolute left-5 top-1/2 -translate-y-1/2 text-slate-400"></i>
             </div>
-
             <div id="stock-form" class="hidden bg-white p-7 rounded-3xl border border-slate-100 mb-8 space-y-4 owner-only shadow-xl">
                 <input type="hidden" id="edit-stock-id">
                 <input type="text" id="stock-sku" placeholder="SKU Code" class="w-full p-5 input-field rounded-2xl font-bold uppercase">
@@ -365,7 +340,7 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-app.js";
         import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-auth.js";
-        import { getFirestore, collection, addDoc, onSnapshot, serverTimestamp, doc, updateDoc, deleteDoc, increment, getDoc, setDoc, enableIndexedDbPersistence, query, where } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-firestore.js";
+        import { getFirestore, collection, addDoc, onSnapshot, serverTimestamp, doc, updateDoc, deleteDoc, increment, getDoc, setDoc, query, where } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyD3tkweZh5VKBvkciZ4Yv5MHXcW7DuMIsQ",
@@ -381,29 +356,6 @@
         const db = getFirestore(app);
         const appId = 'san-maw-inventory';
 
-        // Connection Monitor
-        function monitorConnection() {
-            const statusEl = document.getElementById('db-status');
-            window.addEventListener('online', updateStatus);
-            window.addEventListener('offline', updateStatus);
-            function updateStatus() {
-                if (navigator.onLine) {
-                    statusEl.innerHTML = '<span class="w-2 h-2 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.5)]"></span> Online';
-                    statusEl.className = 'db-status-pill bg-emerald-50 text-emerald-600 shadow-sm border border-emerald-100';
-                } else {
-                    statusEl.innerHTML = '<span class="w-2 h-2 rounded-full bg-rose-500 animate-pulse"></span> Offline';
-                    statusEl.className = 'db-status-pill bg-rose-50 text-rose-600 shadow-sm border border-rose-100';
-                }
-            }
-            updateStatus();
-        }
-
-        try {
-            enableIndexedDbPersistence(db).catch((err) => {
-                if (err.code == 'failed-precondition') console.warn("Persistence failed");
-            });
-        } catch(e) {}
-
         let currentUser = '';
         let records = [];
         let stocks = [];
@@ -418,9 +370,8 @@
             setTimeout(() => { t.style.display = 'none'; }, 3000);
         };
 
-        // --- Safari Print Fix using Hidden IFRAME ---
         window.handleSafariPrint = () => {
-            const printContent = document.getElementById('printable-area').innerHTML;
+            const printContent = document.getElementById('invoice-paper').innerHTML;
             const existingFrame = document.getElementById('print-iframe');
             if (existingFrame) existingFrame.remove();
 
@@ -443,8 +394,19 @@
                         <link href="https://cdn.tailwindcss.com" rel="stylesheet">
                         <style>
                             @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&family=Pyidaungsu:wght@400;700&display=swap');
-                            body { font-family: 'Plus Jakarta Sans', 'Pyidaungsu', sans-serif; padding: 20px; }
-                            .no-print { display: none !important; }
+                            body { font-family: 'Plus Jakarta Sans', 'Pyidaungsu', sans-serif; background: #fff; padding: 10px; color: #000; }
+                            .inv-header { text-align: center; margin-bottom: 25px; border-bottom: 2px solid #000; padding-bottom: 15px; }
+                            .inv-title { font-size: 26px; font-weight: 800; margin-bottom: 5px; }
+                            .inv-table { width: 100%; border-collapse: collapse; margin: 20px 0; }
+                            .inv-table th { border-bottom: 1px solid #000; padding: 8px 4px; text-align: left; font-size: 12px; font-weight: 800; }
+                            .inv-table td { padding: 10px 4px; border-bottom: 1px dotted #ccc; font-size: 12px; }
+                            .inv-grand-total { border-top: 2px solid #000; margin-top: 8px; padding-top: 8px; font-weight: 800; font-size: 18px; }
+                            .inv-total-row { display: flex; justify-content: flex-end; margin-top: 15px; }
+                            .text-right { text-align: right; }
+                            .text-center { text-align: center; }
+                            .font-black { font-weight: 900; }
+                            .font-bold { font-weight: 700; }
+                            .text-gray-500 { color: #6b7280; }
                         </style>
                     </head>
                     <body>${printContent}</body>
@@ -452,7 +414,6 @@
             `);
             doc.close();
 
-            // Wait a moment for styles to load and trigger print
             setTimeout(() => {
                 iframe.contentWindow.focus();
                 iframe.contentWindow.print();
@@ -478,21 +439,11 @@
                 await signInAnonymously(auth);
                 const configRef = doc(db, 'artifacts', appId, 'public', 'data', 'settings', 'admin_config');
                 let snap = await getDoc(configRef);
-                if (!snap.exists()) {
-                    await setDoc(configRef, { pin: "2026" });
-                    snap = await getDoc(configRef);
-                }
-                if(input === snap.data().pin) {
-                    closePinModal();
-                    enterApp('Owner');
-                } else {
-                    showToast("PIN နံပါတ် မှားယွင်းနေပါသည်။");
-                }
-            } catch (err) {
-                showToast("Database Error.");
-            } finally {
-                btn.disabled = false; btn.innerText = "Verify PIN";
-            }
+                if (!snap.exists()) { await setDoc(configRef, { pin: "2026" }); snap = await getDoc(configRef); }
+                if(input === snap.data().pin) { closePinModal(); enterApp('Owner'); } 
+                else { showToast("PIN နံပါတ် မှားယွင်းနေပါသည်။"); }
+            } catch (err) { showToast("Database Error."); } 
+            finally { btn.disabled = false; btn.innerText = "Verify PIN"; }
         };
 
         window.selectUser = async (role) => {
@@ -522,15 +473,26 @@
             });
         }
 
-        async function checkAuth() {
-            if(!auth.currentUser) await signInAnonymously(auth);
-            return !!auth.currentUser;
+        function monitorConnection() {
+            const statusEl = document.getElementById('db-status');
+            const updateStatus = () => {
+                if (navigator.onLine) {
+                    statusEl.innerHTML = '<span class="w-2 h-2 rounded-full bg-emerald-500"></span> Online';
+                    statusEl.className = 'db-status-pill bg-emerald-50 text-emerald-600 shadow-sm border border-emerald-100';
+                } else {
+                    statusEl.innerHTML = '<span class="w-2 h-2 rounded-full bg-rose-500 animate-pulse"></span> Offline';
+                    statusEl.className = 'db-status-pill bg-rose-50 text-rose-600 shadow-sm border border-rose-100';
+                }
+            };
+            window.addEventListener('online', updateStatus);
+            window.addEventListener('offline', updateStatus);
+            updateStatus();
         }
 
         window.setType = (t) => {
             currentType = t;
-            document.getElementById('type-inc-btn').className = t === 'income' ? 'flex-1 py-4 rounded-full text-xs font-black bg-indigo-600 text-white shadow-md' : 'flex-1 py-4 rounded-full text-xs font-black text-slate-400';
-            document.getElementById('type-exp-btn').className = t === 'expense' ? 'flex-1 py-4 rounded-full text-xs font-black bg-rose-600 text-white shadow-md' : 'flex-1 py-4 rounded-full text-xs font-black text-slate-400';
+            document.getElementById('type-inc-btn').className = t === 'income' ? 'flex-1 py-4 rounded-full text-xs font-black bg-indigo-600 text-white' : 'flex-1 py-4 rounded-full text-xs font-black text-slate-400';
+            document.getElementById('type-exp-btn').className = t === 'expense' ? 'flex-1 py-4 rounded-full text-xs font-black bg-rose-600 text-white' : 'flex-1 py-4 rounded-full text-xs font-black text-slate-400';
             document.getElementById('income-fields').classList.toggle('hidden', t !== 'income');
             document.getElementById('expense-fields').classList.toggle('hidden', t !== 'expense');
             cart = []; renderCart();
@@ -539,21 +501,15 @@
         document.getElementById('sku-search').oninput = (e) => {
             const val = e.target.value.trim().toUpperCase();
             const found = stocks.find(s => s.sku === val);
-            const badge = document.getElementById('stock-badge');
             if(found) {
                 document.getElementById('in-desc').value = found.name;
                 document.getElementById('in-orig-price').value = found.sell;
                 document.getElementById('live-stock-qty').innerText = found.qty;
-                badge.classList.remove('hidden');
+                document.getElementById('stock-badge').classList.remove('hidden');
             } else {
                 document.getElementById('in-desc').value = '';
-                badge.classList.add('hidden');
+                document.getElementById('stock-badge').classList.add('hidden');
             }
-        };
-
-        document.getElementById('stock-list-search').oninput = (e) => {
-            const val = e.target.value.trim().toUpperCase();
-            renderStock(val);
         };
 
         window.addToCart = () => {
@@ -561,16 +517,14 @@
             const stockItem = stocks.find(s => s.sku === sku);
             const qty = parseInt(document.getElementById('in-qty').value) || 0;
             const sellPrice = parseFloat(document.getElementById('in-orig-price').value) || 0;
-            if(!stockItem) return showToast("Error: SKU မမှန်ပါ။");
+            if(!stockItem) return showToast("SKU မမှန်ပါ။");
             if(qty <= 0 || qty > stockItem.qty) return showToast("အရေအတွက် မှားယွင်းနေပါသည်။");
             cart.push({ sku, desc: stockItem.name, cost: stockItem.cost, sell: sellPrice, qty, stockDocId: stockItem.id });
-            
             document.getElementById('sku-search').value = '';
             document.getElementById('in-qty').value = '1';
             document.getElementById('in-desc').value = '';
             document.getElementById('in-orig-price').value = '';
             document.getElementById('stock-badge').classList.add('hidden');
-            
             renderCart();
         };
 
@@ -583,7 +537,7 @@
             list.innerHTML = cart.map((item, idx) => {
                 total += (item.sell * item.qty);
                 return `<div class="cart-item flex justify-between items-center shadow-sm">
-                    <div><p class="text-sm font-black">${item.desc}</p><p class="text-xs text-slate-500">${item.qty} x ${item.sell.toLocaleString()} Ks</p></div>
+                    <div><p class="text-sm font-black">${item.desc}</p><p class="text-xs text-slate-500">${item.qty} x ${item.sell.toLocaleString()}</p></div>
                     <button onclick="removeFromCart(${idx})" class="text-rose-400 p-2"><i class="fas fa-trash-alt"></i></button>
                 </div>`;
             }).join('');
@@ -593,23 +547,23 @@
         window.removeFromCart = (i) => { cart.splice(i, 1); renderCart(); };
 
         window.saveInvoice = async () => {
-            if(!(await checkAuth())) return showToast("Connection Error");
             const name = document.getElementById('cust-name').value.trim();
             if(!name || cart.length === 0) return showToast("အချက်အလက်အပြည့်အစုံထည့်ပါ");
             const totalAmt = cart.reduce((s, i) => s + (i.sell * i.qty), 0);
             const totalCost = cart.reduce((s, i) => s + (i.cost * i.qty), 0);
             const docData = {
                 type: 'income', date: document.getElementById('main-date').value,
-                user: currentUser, customer: name, items: cart, amt: totalAmt, cost: totalCost,
+                user: currentUser, customer: name, 
+                phone: document.getElementById('cust-phone').value,
+                address: document.getElementById('cust-address').value,
+                items: cart, amt: totalAmt, cost: totalCost,
                 desc: cart.length > 1 ? `${cart[0].desc} နှင့် အခြား...` : cart[0].desc,
                 createdAt: serverTimestamp()
             };
             const dr = await addDoc(collection(db, 'artifacts', appId, 'public', 'data', 'records'), docData);
             for(let item of cart) await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'stock', item.stockDocId), { qty: increment(-item.qty) });
-            
             showToast("အောင်မြင်စွာသိမ်းဆည်းပြီးပါပြီ", false);
             viewInvoice(dr.id);
-            
             document.getElementById('cust-name').value = '';
             document.getElementById('cust-phone').value = '';
             document.getElementById('cust-address').value = '';
@@ -617,7 +571,6 @@
         };
 
         window.saveExpense = async () => {
-            if(!(await checkAuth())) return showToast("Connection Error");
             const d = document.getElementById('ex-desc').value;
             const a = parseFloat(document.getElementById('ex-amt').value) || 0;
             if(!d || a <= 0) return showToast("အချက်အလက် ထည့်ပါ");
@@ -634,8 +587,18 @@
             if(!r) return;
             document.getElementById('inv-date').innerText = r.date;
             document.getElementById('inv-customer').innerText = r.customer || '-';
-            document.getElementById('inv-items-list').innerHTML = r.items.map(i => `<div class="flex justify-between text-xs mb-1"><span>${i.desc} (${i.qty})</span><span>${(i.qty * i.sell).toLocaleString()}</span></div>`).join('');
-            document.getElementById('inv-total').innerText = r.amt.toLocaleString();
+            document.getElementById('inv-phone').innerText = r.phone || 'N/A';
+            document.getElementById('inv-address').innerText = r.address || 'N/A';
+            document.getElementById('inv-items-list').innerHTML = r.items.map((i, index) => `
+                <tr>
+                    <td class="text-center">${index + 1}</td>
+                    <td class="font-bold">${i.desc}</td>
+                    <td class="text-center">${i.qty}</td>
+                    <td class="text-right">${i.sell.toLocaleString()}</td>
+                    <td class="text-right">${(i.qty * i.sell).toLocaleString()}</td>
+                </tr>
+            `).join('');
+            document.getElementById('inv-total').innerText = r.amt.toLocaleString() + " Ks";
             document.getElementById('invoice-modal').classList.remove('hidden');
         };
 
@@ -660,35 +623,25 @@
             document.getElementById('sum-cost').innerText = totalCost.toLocaleString();
             document.getElementById('sum-exp').innerText = totalExp.toLocaleString();
             document.getElementById('sum-profit').innerText = (totalInc - totalCost - totalExp).toLocaleString();
-            document.getElementById('daily-summary-list').innerHTML = incs.map(r => `<div class="record-card p-5 border-l-4 border-indigo-500 flex justify-between shadow-sm"><div><p class="text-sm font-black">${r.customer}</p><p class="text-xs font-bold text-slate-400">${r.desc}</p></div><p class="text-sm font-black text-indigo-600">${r.amt.toLocaleString()}</p></div>`).join('');
+            document.getElementById('daily-summary-list').innerHTML = incs.map(r => `<div class="record-card p-5 border-l-4 border-indigo-500 flex justify-between"><div><p class="text-sm font-black">${r.customer}</p><p class="text-xs font-bold text-slate-400">${r.desc}</p></div><p class="text-sm font-black text-indigo-600">${r.amt.toLocaleString()}</p></div>`).join('');
         }
 
         function renderRecords() {
             const sorted = [...records].sort((a,b) => new Date(b.date) - new Date(a.date));
-            document.getElementById('history-list').innerHTML = sorted.map(r => `<div class="record-card p-5 mb-3 shadow-sm"><div class="flex justify-between"><div><p class="text-[10px] font-black uppercase ${r.type === 'income' ? 'text-indigo-500' : 'text-rose-500'}">${r.type}</p><p class="text-sm font-black">${r.desc}</p><p class="text-[10px] text-slate-400 font-bold mt-1">${r.date}</p></div><p class="text-sm font-black">${r.amt.toLocaleString()}</p></div><div class="flex justify-between mt-4">${r.type === 'income' ? `<button onclick="viewInvoice('${r.id}')" class="text-[10px] font-black bg-indigo-50 text-indigo-600 px-3 py-1.5 rounded-lg uppercase">View Receipt</button>` : '<span></span>'}${currentUser === 'Owner' ? `<button onclick="deleteRecord('${r.id}')" class="text-rose-200 hover:text-rose-500 transition-colors"><i class="fas fa-trash-alt"></i></button>` : ''}</div></div>`).join('');
+            document.getElementById('history-list').innerHTML = sorted.map(r => `<div class="record-card p-5 mb-3"><div class="flex justify-between"><div><p class="text-[10px] font-black uppercase ${r.type === 'income' ? 'text-indigo-500' : 'text-rose-500'}">${r.type}</p><p class="text-sm font-black">${r.desc}</p><p class="text-[10px] text-slate-400 font-bold mt-1">${r.date}</p></div><p class="text-sm font-black">${r.amt.toLocaleString()}</p></div><div class="flex justify-between mt-4">${r.type === 'income' ? `<button onclick="viewInvoice('${r.id}')" class="text-[10px] font-black bg-indigo-50 text-indigo-600 px-3 py-1.5 rounded-lg uppercase">View Receipt</button>` : '<span></span>'}${currentUser === 'Owner' ? `<button onclick="deleteRecord('${r.id}')" class="text-rose-200 hover:text-rose-500"><i class="fas fa-trash-alt"></i></button>` : ''}</div></div>`).join('');
         }
 
-        // --- Optimized Delete with Auto Stock Restore ---
         window.deleteRecord = async (id) => { 
-            if(!(await checkAuth())) return showToast("Connection Error");
-            if(confirm("ဤစာရင်းကို ဖျက်မည်လား? (ဖျက်လိုက်ပါက Stock ထဲတွင် ပစ္စည်းအရေအတွက် အလိုအလျောက် ပြန်ပေါင်းပေးမည် ဖြစ်ပါသည်။)")) {
+            if(confirm("ဤစာရင်းကို ဖျက်မည်လား?")) {
                 const rec = records.find(x => x.id === id);
                 if(rec && rec.type === 'income' && rec.items) {
-                    // Restore stock for each item in the record
                     for(let item of rec.items) {
-                        // Locate the stock doc by docId stored in the item or find by SKU
-                        let stockId = item.stockDocId;
-                        if(!stockId) {
-                           const foundStock = stocks.find(s => s.sku === item.sku);
-                           stockId = foundStock ? foundStock.id : null;
-                        }
-                        if(stockId) {
-                            await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'stock', stockId), { qty: increment(item.qty) });
-                        }
+                        let stockId = item.stockDocId || (stocks.find(s => s.sku === item.sku)?.id);
+                        if(stockId) await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'stock', stockId), { qty: increment(item.qty) });
                     }
                 }
                 await deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', 'records', id)); 
-                showToast("ဖျက်ပြီးပါပြီ။ Stock ပြန်ဖြည့်ပြီးပါပြီ။", false);
+                showToast("ဖျက်ပြီးပါပြီ။", false);
             }
         };
 
@@ -700,11 +653,10 @@
                 if(!periods[pKey]) periods[pKey] = { label: `${date.toLocaleString('default', { month: 'short' })} ${date.getDate() <= 15 ? '1-15' : '16-End'}`, inc: 0, cost: 0, exp: 0 };
                 if(r.type === 'income') { periods[pKey].inc += r.amt; periods[pKey].cost += r.cost || 0; } else periods[pKey].exp += r.amt;
             });
-            document.getElementById('accounting-list').innerHTML = Object.values(periods).map(p => `<div class="bg-white p-6 rounded-3xl shadow-md border-t-4 border-indigo-600 mb-4"><p class="text-sm font-black text-indigo-600 mb-4">${p.label}</p><div class="grid grid-cols-2 gap-3"><div class="bg-slate-50 p-4 rounded-2xl"><p class="text-[10px] uppercase font-bold text-slate-400">Sales</p><p class="text-sm font-black">${p.inc.toLocaleString()}</p></div><div class="bg-indigo-50 p-4 rounded-2xl"><p class="text-[10px] uppercase font-bold text-indigo-400">Cost</p><p class="text-sm font-black">${p.cost.toLocaleString()}</p></div><div class="bg-rose-50 p-4 rounded-2xl"><p class="text-[10px] uppercase font-bold text-rose-400">Exp</p><p class="text-sm font-black">${p.exp.toLocaleString()}</p></div><div class="bg-emerald-50 p-4 rounded-2xl"><p class="text-[10px] uppercase font-bold text-emerald-400">Net Profit</p><p class="text-sm font-black">${(p.inc - p.cost - p.exp).toLocaleString()}</p></div></div></div>`).join('');
+            document.getElementById('accounting-list').innerHTML = Object.values(periods).map(p => `<div class="bg-white p-6 rounded-3xl shadow-md border-t-4 border-indigo-600 mb-4"><p class="text-sm font-black text-indigo-600 mb-4">${p.label}</p><div class="grid grid-cols-2 gap-3"><div class="bg-slate-50 p-4 rounded-2xl"><p class="text-[10px] font-bold text-slate-400">Sales</p><p class="text-sm font-black">${p.inc.toLocaleString()}</p></div><div class="bg-indigo-50 p-4 rounded-2xl"><p class="text-[10px] font-bold text-indigo-400">Cost</p><p class="text-sm font-black">${p.cost.toLocaleString()}</p></div><div class="bg-rose-50 p-4 rounded-2xl"><p class="text-[10px] font-bold text-rose-400">Exp</p><p class="text-sm font-black">${p.exp.toLocaleString()}</p></div><div class="bg-emerald-50 p-4 rounded-2xl"><p class="text-[10px] font-bold text-emerald-400">Profit</p><p class="text-sm font-black">${(p.inc - p.cost - p.exp).toLocaleString()}</p></div></div></div>`).join('');
         }
 
         window.saveStock = async () => {
-            if(!(await checkAuth())) return showToast("Connection Error");
             const id = document.getElementById('edit-stock-id').value;
             const data = {
                 sku: document.getElementById('stock-sku').value.trim().toUpperCase(),
@@ -729,22 +681,15 @@
             toggleStockAdd(true);
         };
 
-        window.deleteStock = async (id) => { 
-            if(!(await checkAuth())) return showToast("Connection Error");
-            if(confirm("ဖျက်မည်လား?")) await deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', 'stock', id)); 
-        };
-
+        window.deleteStock = async (id) => { if(confirm("ဖျက်မည်လား?")) await deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', 'stock', id)); };
         window.toggleStockAdd = (s) => {
             document.getElementById('stock-form').classList.toggle('hidden', !s);
             if(!s) ['edit-stock-id','stock-sku','stock-name','stock-cost','stock-sell','stock-qty'].forEach(i => document.getElementById(i).value = '');
         };
 
         function renderStock(filterSku = '') {
-            const filtered = filterSku 
-                ? stocks.filter(s => s.sku.includes(filterSku)) 
-                : stocks;
-
-            document.getElementById('stock-list').innerHTML = filtered.map(s => `<div class="record-card p-5 flex justify-between items-center mb-3 shadow-sm"><div class="flex-1"><span class="bg-indigo-50 text-indigo-600 text-[10px] font-black px-3 py-1 rounded-lg uppercase">${s.sku}</span><p class="text-sm font-black mt-3 text-slate-800">${s.name}</p><p class="text-xs text-slate-400 font-bold">Price: ${s.sell.toLocaleString()} Ks</p></div><div class="flex items-center gap-4"><div class="text-right border-r pr-4"><p class="text-lg font-black text-slate-900">${s.qty}</p><p class="text-[10px] font-bold text-slate-400 uppercase">Stock</p></div>${currentUser === 'Owner' ? `<div class="flex gap-1"><button onclick="editStock('${s.id}')" class="text-slate-300 hover:text-indigo-500 p-2"><i class="fas fa-pen text-xs"></i></button><button onclick="deleteStock('${s.id}')" class="text-rose-200 hover:text-rose-500 p-2"><i class="fas fa-trash-alt text-xs"></i></button></div>` : ''}</div></div>`).join('');
+            const filtered = filterSku ? stocks.filter(s => s.sku.includes(filterSku)) : stocks;
+            document.getElementById('stock-list').innerHTML = filtered.map(s => `<div class="record-card p-5 flex justify-between items-center mb-3"><div class="flex-1"><span class="bg-indigo-50 text-indigo-600 text-[10px] font-black px-3 py-1 rounded-lg uppercase">${s.sku}</span><p class="text-sm font-black mt-3">${s.name}</p></div><div class="flex items-center gap-4"><div class="text-right border-r pr-4"><p class="text-lg font-black">${s.qty}</p></div>${currentUser === 'Owner' ? `<div class="flex gap-1"><button onclick="editStock('${s.id}')" class="text-slate-300 p-2"><i class="fas fa-pen text-xs"></i></button><button onclick="deleteStock('${s.id}')" class="text-rose-200 p-2"><i class="fas fa-trash-alt text-xs"></i></button></div>` : ''}</div></div>`).join('');
         }
 
         window.switchView = (v) => {
@@ -759,7 +704,6 @@
         };
 
         document.getElementById('main-date').onchange = () => { updateDashboard(); renderDailySummary(); };
-
         function applyPermissions() {
             const isOwner = currentUser === 'Owner';
             document.querySelectorAll('.owner-only').forEach(el => el.classList.toggle('hidden', !isOwner));
@@ -767,5 +711,3 @@
     </script>
 </body>
 </html>
-
-```
