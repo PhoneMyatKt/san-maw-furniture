@@ -13,7 +13,7 @@
             --primary: #6366f1;
             --success: #10b981;
             --danger: #f43f5e;
-            --bg-main: #fcfdfe;
+            --bg-main: #f8fafc;
         }
 
         body { 
@@ -27,48 +27,56 @@
         
         .premium-card { 
             background: linear-gradient(135deg, #1e1b4b 0%, #3730a3 50%, #4338ca 100%); 
+            box-shadow: 0 20px 25px -5px rgba(67, 56, 202, 0.2);
         }
 
         .input-field { 
             background: #ffffff; 
-            border: 1.5px solid #f1f5f9; 
+            border: 1.5px solid #e2e8f0; 
             transition: all 0.2s ease; 
         }
         .input-field:focus {
             border-color: var(--primary);
             box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.1);
+            outline: none;
         }
 
-        .nav-btn { color: #94a3b8; transition: all 0.3s; }
-        .nav-btn.active { color: var(--primary); }
+        .nav-btn { color: #94a3b8; transition: all 0.3s; flex: 1; text-align: center; padding: 12px 0; }
+        .nav-btn.active { color: white; background: rgba(255,255,255,0.1); border-radius: 100px; }
 
         .record-card {
             background: white;
             border: 1px solid #f1f5f9;
             border-radius: 1.25rem;
-            transition: all 0.2s;
+            transition: transform 0.1s;
         }
+        .record-card:active { transform: scale(0.98); }
 
         .status-toast {
             position: fixed;
-            top: 20px;
+            top: 24px;
             left: 50%;
             transform: translateX(-50%);
             z-index: 9999;
-            padding: 12px 24px;
-            border-radius: 12px;
+            padding: 14px 28px;
+            border-radius: 16px;
             color: white;
-            font-weight: 800;
-            font-size: 12px;
+            font-weight: 700;
             display: none;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            animation: slideDown 0.3s ease;
+        }
+
+        @keyframes slideDown {
+            from { transform: translate(-50%, -100%); opacity: 0; }
+            to { transform: translate(-50%, 0); opacity: 1; }
         }
 
         .modal-overlay {
             position: fixed;
             inset: 0;
-            background: rgba(15, 23, 42, 0.6);
-            backdrop-filter: blur(4px);
+            background: rgba(15, 23, 42, 0.7);
+            backdrop-filter: blur(8px);
             z-index: 7000;
             display: flex;
             align-items: center;
@@ -77,11 +85,12 @@
         }
 
         .cart-item {
-            background: #f8fafc;
+            background: white;
             border-radius: 1rem;
             padding: 1rem;
             margin-bottom: 0.5rem;
-            border-left: 4px solid var(--primary);
+            border-left: 5px solid var(--primary);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
         }
 
         .invoice-box {
@@ -90,27 +99,13 @@
             max-width: 400px;
             border-radius: 2rem;
             overflow: hidden;
-            box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25);
         }
 
         @media print {
             body * { visibility: hidden; }
             #printable-area, #printable-area * { visibility: visible; }
-            #printable-area {
-                position: absolute;
-                left: 0;
-                top: 0;
-                width: 100%;
-                margin: 0;
-                padding: 10px;
-            }
+            #printable-area { position: absolute; left: 0; top: 0; width: 100%; }
             .no-print { display: none !important; }
-            .invoice-box { 
-                box-shadow: none; 
-                border: none;
-                width: 100%;
-                max-width: 100%;
-            }
         }
     </style>
 </head>
@@ -118,210 +113,225 @@
 
     <div id="toast" class="status-toast"></div>
 
-    <!-- Invoice Detail Modal -->
+    <!-- DB Connection Status -->
+    <div class="fixed top-4 right-4 z-[8000] no-print">
+        <div id="db-status" class="flex items-center gap-2 bg-white px-3 py-1.5 rounded-full shadow-sm text-[10px] font-bold uppercase tracking-wider text-slate-500 border border-slate-100">
+            <span class="w-2 h-2 rounded-full bg-slate-300"></span> Checking
+        </div>
+    </div>
+
+    <!-- Invoice Modal -->
     <div id="invoice-modal" class="modal-overlay hidden">
-        <div class="invoice-box" id="printable-area">
+        <div class="invoice-box shadow-2xl" id="printable-area">
             <div class="p-8">
                 <div class="text-center mb-6">
                     <h2 class="text-2xl font-black text-slate-900">စန်းမော် ပရိဘောဂ</h2>
                     <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-1">Invoice Receipt</p>
                 </div>
-                <div class="space-y-4 mb-6 text-left">
-                    <div class="flex justify-between border-b border-slate-100 pb-2">
-                        <span class="text-[10px] font-bold text-slate-400">နေ့စွဲ</span>
-                        <span id="inv-date" class="text-[10px] font-black text-slate-800"></span>
+                <div class="space-y-4 mb-6 border-b border-slate-100 pb-4">
+                    <div class="flex justify-between">
+                        <span class="text-xs font-bold text-slate-400 uppercase">Date</span>
+                        <span id="inv-date" class="text-xs font-black text-slate-800"></span>
                     </div>
                     <div>
-                        <p class="text-[9px] font-black text-slate-400 uppercase mb-1">ဝယ်သူအချက်အလက်</p>
-                        <p id="inv-customer" class="text-xs font-black text-slate-900"></p>
-                        <p id="inv-phone" class="text-[11px] font-bold text-slate-600"></p>
-                        <p id="inv-address" class="text-[11px] font-bold text-slate-600 italic"></p>
+                        <p class="text-[9px] font-black text-slate-400 uppercase mb-1">Customer</p>
+                        <p id="inv-customer" class="text-sm font-black text-slate-900"></p>
+                        <p id="inv-phone" class="text-xs font-bold text-slate-500"></p>
                     </div>
                 </div>
-                <div class="space-y-3 mb-6 text-left">
-                    <p class="text-[9px] font-black text-slate-400 uppercase">ဝယ်ယူသောပစ္စည်းများ</p>
-                    <div id="inv-items-list" class="space-y-2 border-y border-slate-50 py-3 max-h-60 overflow-y-auto"></div>
+                <div id="inv-items-list" class="space-y-3 mb-6"></div>
+                <div class="bg-indigo-600 p-5 rounded-2xl flex justify-between items-center text-white">
+                    <span class="text-xs font-bold uppercase opacity-80">Total</span>
+                    <span id="inv-total" class="text-xl font-black">0</span>
                 </div>
-                <div class="bg-slate-50 p-4 rounded-2xl space-y-2">
-                    <div class="flex justify-between border-t border-slate-200 pt-2">
-                        <span class="text-[10px] font-black text-indigo-600 uppercase">စုစုပေါင်း</span>
-                        <span id="inv-total" class="text-lg font-black text-indigo-600">0</span>
-                    </div>
-                </div>
-                <div class="text-center mt-6 no-print">
-                    <div class="flex gap-2">
-                        <button onclick="window.print()" class="flex-1 py-3 rounded-xl bg-indigo-600 text-white font-black text-xs uppercase flex items-center justify-center gap-2">
-                            <i class="fas fa-print"></i> Print
-                        </button>
-                        <button onclick="closeInvoice()" class="flex-1 py-3 rounded-xl bg-slate-900 text-white font-black text-xs uppercase">Close</button>
-                    </div>
+                <div class="mt-8 flex gap-3 no-print">
+                    <button onclick="window.print()" class="flex-1 py-4 bg-slate-900 text-white rounded-xl font-black text-xs uppercase"><i class="fas fa-print mr-2"></i> Print</button>
+                    <button onclick="closeInvoice()" class="flex-1 py-4 bg-slate-100 text-slate-500 rounded-xl font-black text-xs uppercase">Close</button>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Security PIN Modal -->
-    <div id="pin-modal" class="modal-overlay hidden" style="z-index: 7000;">
-        <div class="bg-white p-8 rounded-[2rem] w-full max-w-xs text-center shadow-2xl">
+    <!-- PIN Modal -->
+    <div id="pin-modal" class="modal-overlay hidden">
+        <div class="bg-white p-8 rounded-[2.5rem] w-full max-w-xs text-center">
             <div class="w-16 h-16 bg-indigo-50 text-indigo-600 rounded-2xl flex items-center justify-center mx-auto mb-4">
-                <i class="fas fa-lock text-2xl"></i>
+                <i class="fas fa-shield-alt text-2xl"></i>
             </div>
-            <h3 class="text-lg font-black text-slate-800 mb-2">Owner Login</h3>
-            <p class="text-xs font-bold text-slate-400 mb-6 uppercase tracking-wider">Database PIN နံပါတ်ရိုက်ထည့်ပါ</p>
-            <input type="password" id="pin-input" maxlength="4" placeholder="••••" class="w-full text-center text-2xl tracking-[0.5em] p-4 bg-slate-50 border-2 border-slate-100 rounded-2xl focus:border-indigo-600 outline-none mb-6">
+            <h3 class="text-xl font-black text-slate-800 mb-1">Admin Access</h3>
+            <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-6">Enter Database PIN</p>
+            <input type="password" id="pin-input" maxlength="4" placeholder="••••" class="w-full text-center text-3xl p-4 bg-slate-50 border-2 border-slate-100 rounded-2xl focus:border-indigo-600 outline-none mb-6 tracking-[0.5em]">
             <div class="flex gap-2">
-                <button onclick="closePinModal()" class="flex-1 py-3 text-[10px] font-black uppercase text-slate-400">Cancel</button>
-                <button id="verify-pin-btn" onclick="verifyPin()" class="flex-[2] py-3 bg-indigo-600 text-white rounded-xl text-[10px] font-black uppercase">Verify PIN</button>
+                <button onclick="closePinModal()" class="flex-1 py-3 text-xs font-black uppercase text-slate-400">Cancel</button>
+                <button id="verify-pin-btn" onclick="verifyPin()" class="flex-[2] py-4 bg-indigo-600 text-white rounded-xl text-xs font-black uppercase shadow-lg shadow-indigo-200">Verify</button>
             </div>
         </div>
     </div>
 
-    <!-- User Selection -->
-    <div id="view-welcome" class="fixed inset-0 z-[6000] bg-slate-900 flex flex-col items-center justify-center p-10 text-center">
-        <h1 class="text-3xl font-black text-white mb-2 tracking-tight">စန်းမော် ပရိဘောဂ</h1>
-        <p class="text-slate-400 text-xs font-bold uppercase tracking-widest mb-10">Access Control</p>
-        <div class="w-full space-y-3 max-w-xs">
-            <button onclick="openPinModal()" class="w-full bg-white/10 text-white font-bold py-4 rounded-2xl border border-white/5 hover:bg-indigo-600 transition-all">Owner</button>
-            <button onclick="selectUser('Cashier')" class="w-full bg-white/10 text-white font-bold py-4 rounded-2xl border border-white/5 hover:bg-emerald-600 transition-all">Cashier</button>
+    <!-- Login Selection -->
+    <div id="view-login" class="fixed inset-0 z-[6000] bg-slate-900 flex flex-col items-center justify-center p-10 text-center">
+        <div class="mb-12">
+            <h1 class="text-4xl font-black text-white mb-2 tracking-tight">စန်းမော်</h1>
+            <p class="text-indigo-400 text-xs font-black uppercase tracking-[0.3em]">Furniture Management</p>
+        </div>
+        <div class="w-full space-y-4 max-w-xs">
+            <button onclick="openPinModal()" class="w-full bg-white text-slate-900 text-sm font-black py-5 rounded-2xl shadow-xl active:scale-95 transition-all uppercase">Owner Account</button>
+            <button onclick="selectUser('Cashier')" class="w-full bg-white/10 text-white text-sm font-black py-5 rounded-2xl border border-white/10 active:scale-95 transition-all uppercase">Cashier Staff</button>
         </div>
     </div>
 
-    <div id="main-app" class="max-w-[480px] mx-auto px-5 pt-8 pb-32 hidden">
+    <!-- Main App Container -->
+    <div id="main-app" class="max-w-[500px] mx-auto px-5 pt-8 pb-32 hidden">
+        
+        <!-- Home / Entry View -->
         <div id="view-home">
-            <div class="premium-card rounded-[2.5rem] p-7 text-white mb-8">
-                <div class="flex justify-between items-start mb-6">
-                    <input type="date" id="main-date" class="bg-white/10 border-none text-[10px] font-black p-2 rounded-xl text-white outline-none">
-                    <button onclick="location.reload()" class="text-[9px] font-black uppercase tracking-widest text-white/50 flex items-center gap-1">
-                        <i class="fas fa-sign-out-alt"></i> <span id="current-user-display">User</span>
-                    </button>
-                </div>
-                <div class="grid grid-cols-2 gap-3">
-                    <div class="bg-white/5 p-4 rounded-2xl border border-white/10">
-                        <p class="text-[8px] font-black text-indigo-300 uppercase mb-1">စုစုပေါင်း ဝင်ငွေ</p>
-                        <p id="total-inc" class="text-xl font-black">0</p>
+            <div class="premium-card rounded-[2.5rem] p-8 text-white mb-8">
+                <div class="flex justify-between items-center mb-8">
+                    <input type="date" id="main-date" class="bg-white/10 border-none text-xs font-black p-3 rounded-xl text-white outline-none">
+                    <div class="flex items-center gap-2">
+                         <span id="user-tag" class="bg-white/20 px-3 py-1.5 rounded-lg text-[10px] font-black uppercase tracking-wider">User</span>
+                         <button onclick="location.reload()" class="w-8 h-8 rounded-lg bg-white/10 flex items-center justify-center"><i class="fas fa-power-off text-xs"></i></button>
                     </div>
-                    <div class="bg-white/5 p-4 rounded-2xl border border-white/10">
-                        <p class="text-[8px] font-black text-rose-300 uppercase mb-1">စုစုပေါင်း သုံးငွေ</p>
-                        <p id="total-exp" class="text-xl font-black">0</p>
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="bg-white/10 p-5 rounded-3xl border border-white/10 backdrop-blur-sm">
+                        <p class="text-[9px] font-black text-indigo-200 uppercase mb-1">Total Income</p>
+                        <p id="dash-inc" class="text-2xl font-black">0</p>
+                    </div>
+                    <div class="bg-white/10 p-5 rounded-3xl border border-white/10 backdrop-blur-sm">
+                        <p class="text-[9px] font-black text-rose-200 uppercase mb-1">Total Expense</p>
+                        <p id="dash-exp" class="text-2xl font-black">0</p>
                     </div>
                 </div>
             </div>
 
-            <div class="bg-white p-2 rounded-full border border-slate-100 mb-6 flex gap-1">
-                <button onclick="setType('income')" id="type-inc-btn" class="flex-1 py-3 rounded-full text-[10px] font-black bg-indigo-600 text-white transition-all">အရောင်း</button>
-                <button onclick="setType('expense')" id="type-exp-btn" class="flex-1 py-3 rounded-full text-[10px] font-black text-slate-400 transition-all">သုံးစရိတ်</button>
+            <!-- Entry Type Switch -->
+            <div class="flex bg-white p-1.5 rounded-full shadow-sm border border-slate-100 mb-8">
+                <button onclick="setEntryType('income')" id="tab-inc" class="flex-1 py-3.5 rounded-full text-[11px] font-black uppercase transition-all bg-indigo-600 text-white">ရောင်းရငွေ</button>
+                <button onclick="setEntryType('expense')" id="tab-exp" class="flex-1 py-3.5 rounded-full text-[11px] font-black uppercase transition-all text-slate-400">အထွေထွေအသုံးစရိတ်</button>
             </div>
 
-            <div id="income-fields" class="space-y-4">
-                <div class="bg-white p-6 rounded-3xl border border-slate-100 shadow-sm space-y-3">
-                    <p class="text-[9px] font-black text-indigo-600 uppercase tracking-widest mb-2">ဝယ်သူအချက်အလက်</p>
-                    <input type="text" id="cust-name" placeholder="ဝယ်သူအမည် (မဖြစ်မနေ)..." class="w-full p-4 input-field rounded-2xl font-bold text-xs">
+            <!-- Forms -->
+            <div id="form-income" class="space-y-5">
+                <div class="bg-white p-6 rounded-3xl border border-slate-100 shadow-sm space-y-4">
+                    <p class="text-[10px] font-black text-indigo-600 uppercase tracking-widest">Customer Info</p>
+                    <input type="text" id="cust-name" placeholder="ဝယ်သူအမည်" class="w-full p-4 input-field rounded-2xl font-bold">
                     <div class="grid grid-cols-2 gap-3">
-                        <input type="text" id="cust-phone" placeholder="ဖုန်းနံပါတ်..." class="p-4 input-field rounded-2xl font-bold text-xs">
-                        <input type="text" id="cust-address" placeholder="လိပ်စာ..." class="p-4 input-field rounded-2xl font-bold text-xs">
+                        <input type="text" id="cust-phone" placeholder="ဖုန်းနံပါတ်" class="p-4 input-field rounded-2xl font-bold">
+                        <input type="text" id="cust-address" placeholder="လိပ်စာ" class="p-4 input-field rounded-2xl font-bold">
                     </div>
                 </div>
-                <div class="space-y-4 pt-2">
+
+                <div class="space-y-4">
                     <div class="relative">
-                        <input type="text" id="sku-search" placeholder="SKU ရိုက်ပါ..." class="w-full p-4 input-field rounded-2xl font-bold text-xs uppercase pr-16">
-                        <div id="stock-badge" class="absolute right-3 top-1/2 -translate-y-1/2 hidden bg-indigo-100 text-indigo-600 px-3 py-1 rounded-lg text-[9px] font-black">
-                            STOCK: <span id="live-stock-qty">0</span>
+                        <input type="text" id="sku-search" placeholder="SKU သို့မဟုတ် ပစ္စည်းအမည်" class="w-full p-5 input-field rounded-2xl font-black uppercase pr-20">
+                        <div id="stock-hint" class="absolute right-4 top-1/2 -translate-y-1/2 hidden bg-indigo-100 text-indigo-600 px-3 py-1.5 rounded-xl text-[10px] font-black">
+                            STK: <span id="hint-qty">0</span>
                         </div>
                     </div>
                     <div class="grid grid-cols-2 gap-3">
-                        <input type="text" id="in-desc" placeholder="ပစ္စည်းအမည်..." class="p-4 input-field rounded-2xl font-bold text-xs bg-slate-50" readonly>
-                        <input type="number" id="in-orig-price" placeholder="ရောင်းစျေး" class="p-4 input-field rounded-2xl font-black text-xs">
+                        <input type="text" id="item-name" placeholder="ပစ္စည်းအမည်" class="p-4 input-field rounded-2xl font-bold bg-slate-50" readonly>
+                        <input type="number" id="item-price" placeholder="ရောင်းစျေး" class="p-4 input-field rounded-2xl font-black">
                     </div>
-                    <div class="flex gap-2">
-                        <input type="number" id="in-qty" value="1" placeholder="အရေအတွက်" class="w-24 p-4 input-field rounded-2xl font-black text-xs text-center">
-                        <button onclick="addToCart()" class="flex-1 bg-indigo-600 text-white font-black py-4 rounded-2xl text-[10px] uppercase">
-                            <i class="fas fa-plus mr-1"></i> Add to Cart
-                        </button>
+                    <div class="flex gap-3">
+                        <input type="number" id="item-qty" value="1" class="w-24 p-4 input-field rounded-2xl font-black text-center">
+                        <button onclick="addToCart()" class="flex-1 bg-indigo-600 text-white font-black py-4 rounded-2xl text-xs uppercase shadow-lg shadow-indigo-100 active:scale-95 transition-all">Add to Cart</button>
                     </div>
-                    <div id="cart-container" class="hidden">
-                        <div id="cart-list" class="mt-2"></div>
-                        <div class="flex justify-between items-center p-4 bg-indigo-600 rounded-2xl mt-4 text-white shadow-xl">
-                            <div>
-                                <p class="text-[8px] font-black text-white/50 uppercase">စုစုပေါင်း</p>
-                                <p id="cart-total-text" class="text-lg font-black">0</p>
-                            </div>
-                            <button onclick="saveInvoice()" class="bg-white text-indigo-600 px-6 py-3 rounded-xl font-black text-[10px] uppercase">စာရင်းသွင်းမည်</button>
+                </div>
+
+                <div id="cart-box" class="hidden">
+                    <div id="cart-list" class="mt-6"></div>
+                    <div class="mt-6 bg-slate-900 p-6 rounded-[2.5rem] flex justify-between items-center text-white shadow-2xl">
+                        <div>
+                            <p class="text-[9px] font-bold uppercase opacity-60">Grand Total</p>
+                            <p id="cart-total-display" class="text-2xl font-black">0 Ks</p>
                         </div>
+                        <button onclick="saveTransaction()" class="bg-indigo-600 px-8 py-4 rounded-2xl text-xs font-black uppercase shadow-xl">စာရင်းသွင်းမည်</button>
                     </div>
                 </div>
             </div>
 
-            <div id="expense-fields" class="space-y-3 hidden">
-                <input type="text" id="ex-desc" placeholder="အကြောင်းအရာ..." class="w-full p-4 input-field rounded-2xl font-bold text-xs">
-                <input type="number" id="ex-amt" placeholder="ပမာဏ" class="w-full p-4 input-field rounded-2xl font-black text-xs">
-                <button onclick="saveExpense()" class="w-full bg-rose-600 text-white font-black py-5 rounded-3xl mt-8">သုံးစရိတ်သိမ်းမည်</button>
+            <div id="form-expense" class="hidden space-y-4">
+                <div class="bg-white p-6 rounded-3xl border border-slate-100 shadow-sm space-y-4">
+                    <p class="text-[10px] font-black text-rose-600 uppercase tracking-widest">Expense Details</p>
+                    <input type="text" id="exp-desc" placeholder="အကြောင်းအရာ" class="w-full p-5 input-field rounded-2xl font-bold">
+                    <input type="number" id="exp-amt" placeholder="ပမာဏ" class="w-full p-5 input-field rounded-2xl font-black">
+                    <button onclick="saveExpense()" class="w-full bg-rose-600 text-white font-black py-5 rounded-2xl text-sm uppercase shadow-lg shadow-rose-100 mt-4 active:scale-95 transition-all">သုံးစရိတ်သိမ်းမည်</button>
+                </div>
             </div>
         </div>
 
-        <div id="view-daily-summary" class="hidden">
-            <h2 class="text-lg font-black mb-1">နေ့စဉ် အနှစ်ချုပ်</h2>
-            <p id="summary-date-label" class="text-[10px] font-bold text-slate-400 mb-6 uppercase tracking-widest"></p>
-            <div class="grid grid-cols-2 gap-3 mb-6">
-                <div class="bg-indigo-50 p-4 rounded-3xl border border-indigo-100">
-                    <p class="text-[8px] font-black text-indigo-400 uppercase mb-1">စုစုပေါင်း အရောင်း</p>
-                    <p id="sum-inc" class="text-lg font-black text-indigo-700">0</p>
+        <!-- Dashboard / Summary -->
+        <div id="view-dashboard" class="hidden">
+            <h2 class="text-2xl font-black mb-6">Daily Summary</h2>
+            <div class="grid grid-cols-2 gap-4 mb-8">
+                <div class="bg-indigo-50 p-5 rounded-3xl border border-indigo-100">
+                    <p class="text-[10px] font-black text-indigo-400 uppercase mb-1">Sales</p>
+                    <p id="sum-inc" class="text-xl font-black text-indigo-700">0</p>
                 </div>
-                <div class="bg-slate-50 p-4 rounded-3xl border border-slate-100 owner-only">
-                    <p class="text-[8px] font-black text-slate-400 uppercase mb-1">စုစုပေါင်း အရင်း</p>
-                    <p id="sum-cost" class="text-lg font-black text-slate-700">0</p>
+                <div class="bg-rose-50 p-5 rounded-3xl border border-rose-100">
+                    <p class="text-[10px] font-black text-rose-400 uppercase mb-1">Expenses</p>
+                    <p id="sum-exp" class="text-xl font-black text-rose-700">0</p>
                 </div>
-                <div class="bg-rose-50 p-4 rounded-3xl border border-rose-100">
-                    <p class="text-[8px] font-black text-rose-400 uppercase mb-1">စုစုပေါင်း အထွက်</p>
-                    <p id="sum-exp" class="text-lg font-black text-rose-700">0</p>
-                </div>
-                <div class="bg-emerald-50 p-4 rounded-3xl border border-emerald-100 owner-only">
-                    <p class="text-[8px] font-black text-emerald-400 uppercase mb-1">အသားတင်အမြတ်</p>
-                    <p id="sum-profit" class="text-lg font-black text-emerald-700">0</p>
+                <div class="bg-slate-900 p-5 rounded-3xl col-span-2 owner-only">
+                    <div class="flex justify-between items-center">
+                        <div>
+                            <p class="text-[10px] font-black text-slate-400 uppercase mb-1">Net Profit</p>
+                            <p id="sum-profit" class="text-2xl font-black text-white">0</p>
+                        </div>
+                        <i class="fas fa-chart-line text-indigo-400 text-2xl"></i>
+                    </div>
                 </div>
             </div>
-            <h3 class="text-xs font-black text-slate-400 mb-4 uppercase tracking-widest">ယနေ့ရောင်းအားစာရင်း</h3>
-            <div id="daily-summary-list" class="space-y-3"></div>
+            <div id="daily-items" class="space-y-3"></div>
         </div>
 
+        <!-- History -->
         <div id="view-records" class="hidden">
-            <h2 class="text-lg font-black mb-6">လုပ်ဆောင်ချက်မှတ်တမ်း</h2>
-            <div id="history-list" class="space-y-3"></div>
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-2xl font-black">Records</h2>
+                <span class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Recent Activity</span>
+            </div>
+            <div id="records-list" class="space-y-4"></div>
         </div>
 
+        <!-- Stock -->
         <div id="view-stock" class="hidden">
             <div class="flex justify-between items-center mb-6">
-                <h2 class="text-lg font-black">Stock လက်ကျန်</h2>
-                <button id="add-stock-btn" onclick="toggleStockAdd(true)" class="bg-indigo-600 text-white text-[9px] font-black px-4 py-2 rounded-xl uppercase owner-only">Add New</button>
+                <h2 class="text-2xl font-black">Inventory</h2>
+                <button onclick="toggleStockForm(true)" class="owner-only bg-indigo-600 text-white text-[10px] font-black px-4 py-2 rounded-xl uppercase">Add Item</button>
             </div>
-            <div id="stock-form" class="hidden bg-white p-6 rounded-3xl border border-slate-100 mb-6 space-y-3 owner-only">
-                <input type="hidden" id="edit-stock-id">
-                <input type="text" id="stock-sku" placeholder="SKU Code" class="w-full p-4 input-field rounded-xl font-bold text-xs uppercase">
-                <input type="text" id="stock-name" placeholder="ပစ္စည်းအမည်" class="w-full p-4 input-field rounded-xl font-bold text-xs">
-                <div class="grid grid-cols-3 gap-2">
-                    <input type="number" id="stock-cost" placeholder="ရင်းစျေး" class="w-full p-4 input-field rounded-xl font-bold text-xs">
-                    <input type="number" id="stock-sell" placeholder="ရောင်းစျေး" class="w-full p-4 input-field rounded-xl font-bold text-xs">
-                    <input type="number" id="stock-qty" placeholder="အရေအတွက်" class="w-full p-4 input-field rounded-xl font-bold text-xs">
+            <div id="stock-form" class="hidden bg-white p-6 rounded-3xl border border-slate-100 shadow-xl mb-8 space-y-4">
+                <input type="hidden" id="edit-id">
+                <input type="text" id="s-sku" placeholder="SKU CODE" class="w-full p-4 input-field rounded-2xl font-black uppercase">
+                <input type="text" id="s-name" placeholder="ပစ္စည်းအမည်" class="w-full p-4 input-field rounded-2xl font-bold">
+                <div class="grid grid-cols-3 gap-3">
+                    <input type="number" id="s-cost" placeholder="ရင်းစျေး" class="p-4 input-field rounded-2xl font-bold">
+                    <input type="number" id="s-sell" placeholder="ရောင်းစျေး" class="p-4 input-field rounded-2xl font-bold">
+                    <input type="number" id="s-qty" placeholder="Qty" class="p-4 input-field rounded-2xl font-bold">
                 </div>
-                <div class="flex gap-2 pt-2">
-                    <button onclick="toggleStockAdd(false)" class="flex-1 py-3 text-slate-400 font-bold text-[10px] uppercase">Cancel</button>
-                    <button onclick="saveStock()" class="flex-[2] bg-indigo-600 text-white font-black py-3 rounded-xl text-xs uppercase">Save Stock</button>
+                <div class="flex gap-2">
+                    <button onclick="toggleStockForm(false)" class="flex-1 py-4 text-xs font-black text-slate-400 uppercase">Cancel</button>
+                    <button onclick="saveStock()" class="flex-[2] py-4 bg-indigo-600 text-white rounded-2xl text-xs font-black uppercase">Save Product</button>
                 </div>
             </div>
-            <div id="stock-list" class="space-y-3"></div>
+            <div id="stock-list" class="space-y-4"></div>
         </div>
 
-        <div id="view-accounting" class="hidden">
-            <h2 class="text-lg font-black mb-1">၁၅ ရက်စာ စာရင်းများ</h2>
-            <div id="accounting-list" class="space-y-4"></div>
+        <!-- Reports -->
+        <div id="view-reports" class="hidden owner-only">
+            <h2 class="text-2xl font-black mb-6">Reports</h2>
+            <div id="reports-list" class="space-y-6"></div>
         </div>
 
-        <div class="fixed bottom-6 left-1/2 -translate-x-1/2 w-[92%] max-w-[420px] z-[5000] no-print">
-            <div class="bg-slate-900 p-2 rounded-full shadow-2xl flex justify-between items-center px-4">
-                <button onclick="switchView('home')" id="nav-home" class="nav-btn active flex-1 py-3"><i class="fas fa-plus-circle text-lg"></i></button>
-                <button onclick="switchView('daily-summary')" id="nav-daily-summary" class="nav-btn flex-1 py-3"><i class="fas fa-file-invoice-dollar text-lg"></i></button>
-                <button onclick="switchView('records')" id="nav-records" class="nav-btn flex-1 py-3"><i class="fas fa-history text-lg"></i></button>
-                <button onclick="switchView('stock')" id="nav-stock" class="nav-btn flex-1 py-3"><i class="fas fa-box text-lg"></i></button>
-                <button onclick="switchView('accounting')" id="nav-accounting" class="nav-btn flex-1 py-3 owner-only"><i class="fas fa-chart-line text-lg"></i></button>
+        <!-- Bottom Navigation -->
+        <div class="fixed bottom-6 left-5 right-5 z-[5000] no-print">
+            <div class="bg-slate-900 p-2 rounded-full shadow-2xl flex justify-around items-center">
+                <button onclick="switchView('home')" id="nav-home" class="nav-btn active"><i class="fas fa-plus-circle text-lg"></i></button>
+                <button onclick="switchView('dashboard')" id="nav-dashboard" class="nav-btn"><i class="fas fa-th-large text-lg"></i></button>
+                <button onclick="switchView('records')" id="nav-records" class="nav-btn"><i class="fas fa-history text-lg"></i></button>
+                <button onclick="switchView('stock')" id="nav-stock" class="nav-btn"><i class="fas fa-box text-lg"></i></button>
+                <button onclick="switchView('reports')" id="nav-reports" class="nav-btn owner-only"><i class="fas fa-chart-bar text-lg"></i></button>
             </div>
         </div>
     </div>
@@ -329,7 +339,7 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-app.js";
         import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-auth.js";
-        import { getFirestore, collection, addDoc, onSnapshot, serverTimestamp, doc, updateDoc, deleteDoc, increment, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-firestore.js";
+        import { getFirestore, collection, addDoc, onSnapshot, serverTimestamp, doc, updateDoc, deleteDoc, increment, getDoc, setDoc, enableIndexedDbPersistence } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyD3tkweZh5VKBvkciZ4Yv5MHXcW7DuMIsQ",
@@ -345,26 +355,37 @@
         const db = getFirestore(app);
         const appId = 'san-maw-inventory';
 
-        let currentUser = '';
+        let userRole = '';
         let records = [];
         let stocks = [];
         let cart = [];
-        let currentType = 'income';
+        let entryType = 'income';
 
-        window.showToast = (msg, isError = true) => {
+        // --- Utils ---
+        window.showToast = (msg, isErr = true) => {
             const t = document.getElementById('toast');
             t.innerText = msg;
-            t.style.background = isError ? '#f43f5e' : '#10b981';
+            t.style.background = isErr ? '#f43f5e' : '#10b981';
             t.style.display = 'block';
-            setTimeout(() => { t.style.display = 'none'; }, 3000);
+            setTimeout(() => t.style.display = 'none', 3000);
         };
 
-        // --- SECURITY LOGIC (FIXED WHITE SCREEN) ---
-        window.openPinModal = () => {
-            document.getElementById('pin-modal').classList.remove('hidden');
-            document.getElementById('pin-input').focus();
+        const checkConnectivity = () => {
+            const status = document.getElementById('db-status');
+            if (navigator.onLine) {
+                status.innerHTML = '<span class="w-2 h-2 rounded-full bg-emerald-500"></span> Online';
+                status.classList.replace('text-slate-500', 'text-emerald-600');
+            } else {
+                status.innerHTML = '<span class="w-2 h-2 rounded-full bg-rose-500 animate-pulse"></span> Offline';
+                status.classList.replace('text-emerald-600', 'text-rose-600');
+            }
         };
+        window.addEventListener('online', checkConnectivity);
+        window.addEventListener('offline', checkConnectivity);
+        checkConnectivity();
 
+        // --- PIN Security ---
+        window.openPinModal = () => document.getElementById('pin-modal').classList.remove('hidden');
         window.closePinModal = () => {
             document.getElementById('pin-modal').classList.add('hidden');
             document.getElementById('pin-input').value = '';
@@ -372,37 +393,35 @@
 
         window.verifyPin = async () => {
             const btn = document.getElementById('verify-pin-btn');
-            const input = document.getElementById('pin-input').value;
-            if(!input) return showToast("PIN နံပါတ်ရိုက်ပါ");
-
+            const pin = document.getElementById('pin-input').value;
+            if(!pin) return;
+            
             btn.disabled = true;
             btn.innerText = "Checking...";
 
             try {
-                // Ensure auth before fetching
                 await signInAnonymously(auth);
-                
-                // Set path following the strict mandatory rules
                 const configRef = doc(db, 'artifacts', appId, 'public', 'data', 'settings', 'admin_config');
-                let snap = await getDoc(configRef);
-
-                if (!snap.exists()) {
+                const snap = await getDoc(configRef);
+                
+                let correctPin = "2026"; // Default
+                if(snap.exists()) {
+                    correctPin = snap.data().pin;
+                } else {
                     await setDoc(configRef, { pin: "2026" });
-                    snap = await getDoc(configRef);
                 }
 
-                if(input === snap.data().pin) {
+                if(pin === correctPin) {
                     closePinModal();
                     enterApp('Owner');
                 } else {
                     showToast("PIN နံပါတ် မှားယွင်းနေပါသည်။");
                 }
-            } catch (err) {
-                console.error("Auth Error:", err);
-                showToast("Database ချိတ်ဆက်မှု အခက်အခဲရှိနေပါသည်။");
+            } catch(e) {
+                showToast("Database Error");
             } finally {
                 btn.disabled = false;
-                btn.innerText = "Verify PIN";
+                btn.innerText = "Verify";
             }
         };
 
@@ -412,129 +431,156 @@
         };
 
         function enterApp(role) {
-            currentUser = role;
-            document.getElementById('view-welcome').classList.add('hidden');
+            userRole = role;
+            document.getElementById('view-login').classList.add('hidden');
             document.getElementById('main-app').classList.remove('hidden');
-            document.getElementById('current-user-display').innerText = role;
+            document.getElementById('user-tag').innerText = role;
             document.getElementById('main-date').value = new Date().toISOString().split('T')[0];
-            applyPermissions();
-            initSync();
+            
+            document.querySelectorAll('.owner-only').forEach(el => {
+                if(role !== 'Owner') el.classList.add('hidden');
+            });
+
+            initDataSync();
         }
 
-        // --- CORE BUSINESS LOGIC (UNTOUCHED) ---
-        function applyPermissions() {
-            const isOwner = currentUser === 'Owner';
-            document.querySelectorAll('.owner-only').forEach(el => el.classList.toggle('hidden', !isOwner));
-        }
+        // --- Data Logic ---
+        function initDataSync() {
+            onSnapshot(collection(db, 'artifacts', appId, 'public', 'data', 'stock'), (s) => {
+                stocks = s.docs.map(d => ({ id: d.id, ...d.data() }));
+                renderStock();
+            });
 
-        function initSync() {
             onSnapshot(collection(db, 'artifacts', appId, 'public', 'data', 'records'), (s) => {
                 records = s.docs.map(d => ({ id: d.id, ...d.data() }));
                 updateDashboard();
                 renderRecords();
-                renderAccounting();
-                renderDailySummary();
-            }, (err) => console.error("Records Sync Error:", err));
-
-            onSnapshot(collection(db, 'artifacts', appId, 'public', 'data', 'stock'), (s) => {
-                stocks = s.docs.map(d => ({ id: d.id, ...d.data() }));
-                renderStock();
-            }, (err) => console.error("Stock Sync Error:", err));
+                renderReports();
+            });
         }
 
-        window.setType = (t) => {
-            currentType = t;
-            document.getElementById('type-inc-btn').className = t === 'income' ? 'flex-1 py-3 rounded-full text-[10px] font-black bg-indigo-600 text-white' : 'flex-1 py-3 rounded-full text-[10px] font-black text-slate-400';
-            document.getElementById('type-exp-btn').className = t === 'expense' ? 'flex-1 py-3 rounded-full text-[10px] font-black bg-rose-600 text-white' : 'flex-1 py-3 rounded-full text-[10px] font-black text-slate-400';
-            document.getElementById('income-fields').classList.toggle('hidden', t !== 'income');
-            document.getElementById('expense-fields').classList.toggle('hidden', t !== 'expense');
-            cart = [];
-            renderCart();
+        window.setEntryType = (t) => {
+            entryType = t;
+            document.getElementById('tab-inc').className = t === 'income' ? 'flex-1 py-3.5 rounded-full text-[11px] font-black uppercase bg-indigo-600 text-white shadow-md' : 'flex-1 py-3.5 rounded-full text-[11px] font-black uppercase text-slate-400';
+            document.getElementById('tab-exp').className = t === 'expense' ? 'flex-1 py-3.5 rounded-full text-[11px] font-black uppercase bg-rose-600 text-white shadow-md' : 'flex-1 py-3.5 rounded-full text-[11px] font-black uppercase text-slate-400';
+            document.getElementById('form-income').classList.toggle('hidden', t !== 'income');
+            document.getElementById('form-expense').classList.toggle('hidden', t !== 'expense');
         };
 
         document.getElementById('sku-search').oninput = (e) => {
             const val = e.target.value.trim().toUpperCase();
-            const found = stocks.find(s => s.sku === val);
-            const badge = document.getElementById('stock-badge');
+            const found = stocks.find(s => s.sku === val || s.name.includes(val));
+            const hint = document.getElementById('stock-hint');
             if(found) {
-                document.getElementById('in-desc').value = found.name;
-                document.getElementById('in-orig-price').value = found.sell;
-                document.getElementById('live-stock-qty').innerText = found.qty;
-                badge.classList.remove('hidden');
+                document.getElementById('item-name').value = found.name;
+                document.getElementById('item-price').value = found.sell;
+                document.getElementById('hint-qty').innerText = found.qty;
+                hint.classList.remove('hidden');
             } else {
-                document.getElementById('in-desc').value = '';
-                badge.classList.add('hidden');
+                document.getElementById('item-name').value = '';
+                hint.classList.add('hidden');
             }
         };
 
         window.addToCart = () => {
-            const sku = document.getElementById('sku-search').value.trim().toUpperCase();
-            const stockItem = stocks.find(s => s.sku === sku);
-            const qty = parseInt(document.getElementById('in-qty').value) || 0;
-            const sellPrice = parseFloat(document.getElementById('in-orig-price').value) || 0;
-            if(!stockItem) return showToast("Error: SKU မမှန်ပါ။");
-            if(qty <= 0 || qty > stockItem.qty) return showToast("အရေအတွက် မှားယွင်းနေပါသည်။");
-            cart.push({ sku, desc: stockItem.name, cost: stockItem.cost, sell: sellPrice, qty, stockDocId: stockItem.id });
+            const skuVal = document.getElementById('sku-search').value.trim().toUpperCase();
+            const found = stocks.find(s => s.sku === skuVal);
+            const qty = parseInt(document.getElementById('item-qty').value) || 0;
+            const price = parseFloat(document.getElementById('item-price').value) || 0;
+
+            if(!found) return showToast("ပစ္စည်း မရှိပါ");
+            if(qty <= 0 || qty > found.qty) return showToast("လက်ကျန်ထက် ကျော်လွန်နေပါသည်");
+
+            cart.push({ 
+                sku: found.sku, 
+                name: found.name, 
+                qty, 
+                sell: price, 
+                cost: found.cost, 
+                stockId: found.id 
+            });
+
             document.getElementById('sku-search').value = '';
-            document.getElementById('in-qty').value = '1';
+            document.getElementById('item-qty').value = '1';
             renderCart();
         };
 
         function renderCart() {
-            const container = document.getElementById('cart-container');
+            const box = document.getElementById('cart-box');
             const list = document.getElementById('cart-list');
-            if(cart.length === 0) { container.classList.add('hidden'); return; }
-            container.classList.remove('hidden');
+            if(cart.length === 0) { box.classList.add('hidden'); return; }
+            box.classList.remove('hidden');
+            
             let total = 0;
             list.innerHTML = cart.map((item, idx) => {
-                total += (item.sell * item.qty);
-                return `<div class="cart-item flex justify-between items-center shadow-sm">
-                    <div><p class="text-[10px] font-black">${item.desc}</p><p class="text-[8px]">${item.qty} x ${item.sell.toLocaleString()}</p></div>
-                    <button onclick="removeFromCart(${idx})" class="text-rose-400 p-2"><i class="fas fa-trash-alt text-[9px]"></i></button>
+                total += (item.qty * item.sell);
+                return `<div class="cart-item flex justify-between items-center">
+                    <div><p class="text-sm font-black">${item.name}</p><p class="text-[10px] font-bold text-slate-400">${item.qty} x ${item.sell.toLocaleString()} Ks</p></div>
+                    <button onclick="removeFromCart(${idx})" class="text-rose-400 p-2"><i class="fas fa-times"></i></button>
                 </div>`;
             }).join('');
-            document.getElementById('cart-total-text').innerText = total.toLocaleString();
+            document.getElementById('cart-total-display').innerText = total.toLocaleString() + " Ks";
         }
 
-        window.removeFromCart = (i) => { cart.splice(i, 1); renderCart(); };
+        window.removeFromCart = (idx) => { cart.splice(idx, 1); renderCart(); };
 
-        window.saveInvoice = async () => {
-            const name = document.getElementById('cust-name').value.trim();
-            if(!name || cart.length === 0) return showToast("အချက်အလက်အပြည့်အစုံထည့်ပါ");
-            const totalAmt = cart.reduce((s, i) => s + (i.sell * i.qty), 0);
-            const totalCost = cart.reduce((s, i) => s + (i.cost * i.qty), 0);
-            const docData = {
-                type: 'income', date: document.getElementById('main-date').value,
-                user: currentUser, customer: name, items: cart, amt: totalAmt, cost: totalCost,
-                desc: cart.length > 1 ? `${cart[0].desc} နှင့် အခြား...` : cart[0].desc,
-                createdAt: serverTimestamp()
-            };
-            const dr = await addDoc(collection(db, 'artifacts', appId, 'public', 'data', 'records'), docData);
-            for(let item of cart) await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'stock', item.stockDocId), { qty: increment(-item.qty) });
-            showToast("အောင်မြင်စွာသိမ်းဆည်းပြီးပါပြီ", false);
-            viewInvoice(dr.id);
+        window.saveTransaction = async () => {
+            const name = document.getElementById('cust-name').value.trim() || 'General Customer';
+            const date = document.getElementById('main-date').value;
+            const totalAmt = cart.reduce((s,i) => s + (i.qty * i.sell), 0);
+            const totalCost = cart.reduce((s,i) => s + (i.qty * i.cost), 0);
+
+            const docRef = await addDoc(collection(db, 'artifacts', appId, 'public', 'data', 'records'), {
+                type: 'income', date, customer: name,
+                phone: document.getElementById('cust-phone').value,
+                address: document.getElementById('cust-address').value,
+                items: cart, amt: totalAmt, cost: totalCost, user: userRole,
+                createdAt: serverTimestamp(),
+                desc: cart.length > 1 ? `${cart[0].name} နှင့် အခြား` : cart[0].name
+            });
+
+            for(let item of cart) {
+                await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'stock', item.stockId), {
+                    qty: increment(-item.qty)
+                });
+            }
+
+            showToast("စာရင်းသွင်းပြီးပါပြီ", false);
+            viewInvoice(docRef.id);
             cart = []; renderCart();
+            document.getElementById('cust-name').value = '';
         };
 
         window.saveExpense = async () => {
-            const d = document.getElementById('ex-desc').value;
-            const a = parseFloat(document.getElementById('ex-amt').value) || 0;
-            if(!d || a <= 0) return showToast("အချက်အလက် ထည့်ပါ");
+            const desc = document.getElementById('exp-desc').value.trim();
+            const amt = parseFloat(document.getElementById('exp-amt').value) || 0;
+            const date = document.getElementById('main-date').value;
+
+            if(!desc || amt <= 0) return showToast("အချက်အလက် ပြည့်စုံစွာဖြည့်ပါ");
+
             await addDoc(collection(db, 'artifacts', appId, 'public', 'data', 'records'), {
-                type: 'expense', date: document.getElementById('main-date').value,
-                user: currentUser, desc: d, amt: a, createdAt: serverTimestamp()
+                type: 'expense', date, desc, amt, user: userRole, createdAt: serverTimestamp()
             });
-            document.getElementById('ex-desc').value = ''; document.getElementById('ex-amt').value = '';
+
+            document.getElementById('exp-desc').value = '';
+            document.getElementById('exp-amt').value = '';
             showToast("သိမ်းပြီးပါပြီ", false);
         };
 
+        // --- UI Renders ---
         window.viewInvoice = (id) => {
             const r = records.find(x => x.id === id);
             if(!r) return;
             document.getElementById('inv-date').innerText = r.date;
-            document.getElementById('inv-customer').innerText = r.customer || '-';
-            document.getElementById('inv-items-list').innerHTML = r.items.map(i => `<div class="flex justify-between text-[11px] mb-1"><span>${i.desc} (${i.qty})</span><span>${(i.qty * i.sell).toLocaleString()}</span></div>`).join('');
-            document.getElementById('inv-total').innerText = r.amt.toLocaleString();
+            document.getElementById('inv-customer').innerText = r.customer;
+            document.getElementById('inv-phone').innerText = r.phone || '';
+            document.getElementById('inv-items-list').innerHTML = r.items.map(i => `
+                <div class="flex justify-between text-xs">
+                    <span class="text-slate-600">${i.name} (${i.qty})</span>
+                    <span class="font-bold">${(i.qty * i.sell).toLocaleString()}</span>
+                </div>
+            `).join('');
+            document.getElementById('inv-total').innerText = r.amt.toLocaleString() + " Ks";
             document.getElementById('invoice-modal').classList.remove('hidden');
         };
 
@@ -543,91 +589,151 @@
         function updateDashboard() {
             const d = document.getElementById('main-date').value;
             const today = records.filter(r => r.date === d);
-            document.getElementById('total-inc').innerText = today.filter(r => r.type === 'income').reduce((s,i) => s + i.amt, 0).toLocaleString();
-            document.getElementById('total-exp').innerText = today.filter(r => r.type === 'expense').reduce((s,i) => s + i.amt, 0).toLocaleString();
-        }
+            const inc = today.filter(r => r.type === 'income').reduce((s,i) => s + i.amt, 0);
+            const exp = today.filter(r => r.type === 'expense').reduce((s,i) => s + i.amt, 0);
+            const cost = today.filter(r => r.type === 'income').reduce((s,i) => s + i.cost, 0);
 
-        function renderDailySummary() {
-            const d = document.getElementById('main-date').value;
-            const today = records.filter(r => r.date === d);
-            const incs = today.filter(r => r.type === 'income');
-            const totalInc = incs.reduce((s,i) => s + i.amt, 0);
-            const totalCost = incs.reduce((s,i) => s + (i.cost || 0), 0);
-            const totalExp = today.filter(r => r.type === 'expense').reduce((s,i) => s + i.amt, 0);
-            document.getElementById('summary-date-label').innerText = d;
-            document.getElementById('sum-inc').innerText = totalInc.toLocaleString();
-            document.getElementById('sum-cost').innerText = totalCost.toLocaleString();
-            document.getElementById('sum-exp').innerText = totalExp.toLocaleString();
-            document.getElementById('sum-profit').innerText = (totalInc - totalCost - totalExp).toLocaleString();
-            document.getElementById('daily-summary-list').innerHTML = incs.map(r => `<div class="record-card p-4 border-l-4 border-indigo-500 flex justify-between"><div><p class="text-xs font-black">${r.customer}</p><p class="text-[9px] font-bold text-slate-400">${r.desc}</p></div><p class="text-xs font-black text-indigo-600">${r.amt.toLocaleString()}</p></div>`).join('');
+            document.getElementById('dash-inc').innerText = inc.toLocaleString();
+            document.getElementById('dash-exp').innerText = exp.toLocaleString();
+            document.getElementById('sum-inc').innerText = inc.toLocaleString();
+            document.getElementById('sum-exp').innerText = exp.toLocaleString();
+            document.getElementById('sum-profit').innerText = (inc - exp - cost).toLocaleString() + " Ks";
+
+            document.getElementById('daily-items').innerHTML = today.filter(r => r.type === 'income').map(r => `
+                <div class="record-card p-4 flex justify-between items-center shadow-sm">
+                    <div><p class="text-xs font-black text-slate-800">${r.customer}</p><p class="text-[10px] text-slate-400 font-bold">${r.desc}</p></div>
+                    <p class="text-sm font-black text-indigo-600">${r.amt.toLocaleString()}</p>
+                </div>
+            `).join('');
         }
 
         function renderRecords() {
             const sorted = [...records].sort((a,b) => new Date(b.date) - new Date(a.date));
-            document.getElementById('history-list').innerHTML = sorted.map(r => `<div class="record-card p-4 mb-2"><div class="flex justify-between"><div><p class="text-[9px] font-black uppercase ${r.type === 'income' ? 'text-indigo-500' : 'text-rose-500'}">${r.type}</p><p class="text-xs font-black">${r.desc}</p><p class="text-[8px] text-slate-400">${r.date}</p></div><p class="text-xs font-black">${r.amt.toLocaleString()}</p></div><div class="flex justify-between mt-2">${r.type === 'income' ? `<button onclick="viewInvoice('${r.id}')" class="text-[9px] bg-indigo-50 px-2 py-1 rounded">Detail</button>` : '<span></span>'}${currentUser === 'Owner' ? `<button onclick="deleteRecord('${r.id}')" class="text-rose-200"><i class="fas fa-trash-alt text-[9px]"></i></button>` : ''}</div></div>`).join('');
+            document.getElementById('records-list').innerHTML = sorted.map(r => `
+                <div class="record-card p-5 shadow-sm">
+                    <div class="flex justify-between items-start mb-3">
+                        <div>
+                            <span class="text-[9px] font-black uppercase px-2 py-0.5 rounded-md ${r.type === 'income' ? 'bg-indigo-50 text-indigo-600' : 'bg-rose-50 text-rose-600'}">${r.type}</span>
+                            <p class="text-sm font-black mt-2">${r.type === 'income' ? r.customer : r.desc}</p>
+                            <p class="text-[10px] font-bold text-slate-400">${r.date}</p>
+                        </div>
+                        <p class="text-sm font-black">${r.amt.toLocaleString()} Ks</p>
+                    </div>
+                    <div class="flex justify-between items-center pt-3 border-t border-slate-50">
+                        ${r.type === 'income' ? `<button onclick="viewInvoice('${r.id}')" class="text-[10px] font-black text-indigo-500 uppercase">Receipt</button>` : '<span></span>'}
+                        ${userRole === 'Owner' ? `<button onclick="deleteRec('${r.id}')" class="text-rose-200 hover:text-rose-500"><i class="fas fa-trash-alt"></i></button>` : ''}
+                    </div>
+                </div>
+            `).join('');
         }
 
-        window.deleteRecord = async (id) => { if(confirm("ဖျက်မည်လား?")) await deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', 'records', id)); };
+        window.deleteRec = async (id) => { if(confirm("ဖျက်မည်လား?")) await deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', 'records', id)); };
 
-        function renderAccounting() {
-            const periods = {};
-            records.forEach(r => {
-                const date = new Date(r.date);
-                if(isNaN(date)) return;
-                const pKey = `${date.getFullYear()}-${date.getMonth()+1}-${date.getDate() <= 15 ? 'P1' : 'P2'}`;
-                if(!periods[pKey]) periods[pKey] = { label: `${date.toLocaleString('default', { month: 'short' })} ${date.getDate() <= 15 ? '1-15' : '16-End'}`, inc: 0, cost: 0, exp: 0 };
-                if(r.type === 'income') { periods[pKey].inc += r.amt; periods[pKey].cost += r.cost || 0; } else periods[pKey].exp += r.amt;
-            });
-            document.getElementById('accounting-list').innerHTML = Object.values(periods).map(p => `<div class="bg-white p-5 rounded-3xl shadow-sm border-t-4 border-indigo-600 mb-3"><p class="text-[10px] font-black text-indigo-600 mb-3">${p.label}</p><div class="grid grid-cols-2 gap-2"><div class="bg-slate-50 p-3 rounded-xl"><p class="text-[7px]">Sales</p><p class="text-xs font-black">${p.inc.toLocaleString()}</p></div><div class="bg-indigo-50 p-3 rounded-xl"><p class="text-[7px]">Cost</p><p class="text-xs font-black">${p.cost.toLocaleString()}</p></div><div class="bg-rose-50 p-3 rounded-xl"><p class="text-[7px]">Exp</p><p class="text-xs font-black">${p.exp.toLocaleString()}</p></div><div class="bg-emerald-50 p-3 rounded-xl"><p class="text-[7px]">Net</p><p class="text-xs font-black">${(p.inc - p.cost - p.exp).toLocaleString()}</p></div></div></div>`).join('');
+        function renderStock() {
+            document.getElementById('stock-list').innerHTML = stocks.map(s => `
+                <div class="record-card p-5 flex justify-between items-center shadow-sm">
+                    <div>
+                        <span class="text-[9px] font-black bg-slate-100 px-2 py-1 rounded text-slate-500 uppercase">${s.sku}</span>
+                        <p class="text-sm font-black mt-2">${s.name}</p>
+                        <p class="text-[10px] font-bold text-slate-400">Sell: ${s.sell.toLocaleString()} Ks</p>
+                    </div>
+                    <div class="flex items-center gap-4">
+                        <div class="text-right">
+                            <p class="text-xl font-black ${s.qty < 5 ? 'text-rose-500' : 'text-slate-900'}">${s.qty}</p>
+                            <p class="text-[9px] font-black text-slate-400 uppercase">Stock</p>
+                        </div>
+                        ${userRole === 'Owner' ? `<button onclick="editStock('${s.id}')" class="text-slate-300"><i class="fas fa-pen text-xs"></i></button>` : ''}
+                    </div>
+                </div>
+            `).join('');
         }
 
-        window.saveStock = async () => {
-            const id = document.getElementById('edit-stock-id').value;
-            const data = {
-                sku: document.getElementById('stock-sku').value.trim().toUpperCase(),
-                name: document.getElementById('stock-name').value,
-                cost: parseFloat(document.getElementById('stock-cost').value) || 0,
-                sell: parseFloat(document.getElementById('stock-sell').value) || 0,
-                qty: parseInt(document.getElementById('stock-qty').value) || 0
-            };
-            if(id) await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'stock', id), data);
-            else await addDoc(collection(db, 'artifacts', appId, 'public', 'data', 'stock'), data);
-            toggleStockAdd(false);
+        window.toggleStockForm = (show) => {
+            document.getElementById('stock-form').classList.toggle('hidden', !show);
+            if(!show) ['edit-id','s-sku','s-name','s-cost','s-sell','s-qty'].forEach(i => document.getElementById(i).value = '');
         };
 
         window.editStock = (id) => {
             const s = stocks.find(x => x.id === id);
-            document.getElementById('edit-stock-id').value = id;
-            document.getElementById('stock-sku').value = s.sku;
-            document.getElementById('stock-name').value = s.name;
-            document.getElementById('stock-cost').value = s.cost;
-            document.getElementById('stock-sell').value = s.sell;
-            document.getElementById('stock-qty').value = s.qty;
-            toggleStockAdd(true);
+            document.getElementById('edit-id').value = id;
+            document.getElementById('s-sku').value = s.sku;
+            document.getElementById('s-name').value = s.name;
+            document.getElementById('s-cost').value = s.cost;
+            document.getElementById('s-sell').value = s.sell;
+            document.getElementById('s-qty').value = s.qty;
+            toggleStockForm(true);
         };
 
-        window.deleteStock = async (id) => { if(confirm("ဖျက်မည်လား?")) await deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', 'stock', id)); };
-
-        window.toggleStockAdd = (s) => {
-            document.getElementById('stock-form').classList.toggle('hidden', !s);
-            if(!s) ['edit-stock-id','stock-sku','stock-name','stock-cost','stock-sell','stock-qty'].forEach(i => document.getElementById(i).value = '');
+        window.saveStock = async () => {
+            const id = document.getElementById('edit-id').value;
+            const data = {
+                sku: document.getElementById('s-sku').value.trim().toUpperCase(),
+                name: document.getElementById('s-name').value.trim(),
+                cost: parseFloat(document.getElementById('s-cost').value) || 0,
+                sell: parseFloat(document.getElementById('s-sell').value) || 0,
+                qty: parseInt(document.getElementById('s-qty').value) || 0
+            };
+            if(!data.sku || !data.name) return showToast("အချက်အလက်ဖြည့်ပါ");
+            
+            if(id) await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'stock', id), data);
+            else await addDoc(collection(db, 'artifacts', appId, 'public', 'data', 'stock'), data);
+            
+            toggleStockForm(false);
+            showToast("Stock Updated", false);
         };
 
-        function renderStock() {
-            document.getElementById('stock-list').innerHTML = stocks.map(s => `<div class="record-card p-4 flex justify-between items-center mb-2"><div class="flex-1"><span class="bg-indigo-50 text-indigo-600 text-[8px] font-black px-2 py-1 rounded">${s.sku}</span><p class="text-xs font-bold mt-2">${s.name}</p><p class="text-[9px] text-slate-400">S: ${s.sell.toLocaleString()}</p></div><div class="flex items-center gap-3"><div class="text-right border-r px-3"><p class="text-sm font-black">${s.qty}</p><p class="text-[8px]">PCS</p></div>${currentUser === 'Owner' ? `<div class="flex gap-1"><button onclick="editStock('${s.id}')" class="text-slate-300 p-2"><i class="fas fa-pen text-[10px]"></i></button><button onclick="deleteStock('${s.id}')" class="text-rose-200 p-2"><i class="fas fa-trash-alt text-[10px]"></i></button></div>` : ''}</div></div>`).join('');
+        function renderReports() {
+            const periods = {};
+            records.forEach(r => {
+                const date = new Date(r.date);
+                if(isNaN(date)) return;
+                const key = `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate() <= 15 ? 'P1' : 'P2'}`;
+                if(!periods[key]) {
+                    periods[key] = { 
+                        label: `${date.toLocaleString('default', { month: 'short' })} ${date.getDate() <= 15 ? '1-15' : '16-End'}`,
+                        sales: 0, cost: 0, exp: 0 
+                    };
+                }
+                if(r.type === 'income') { periods[key].sales += r.amt; periods[key].cost += r.cost || 0; }
+                else periods[key].exp += r.amt;
+            });
+
+            document.getElementById('reports-list').innerHTML = Object.values(periods).map(p => `
+                <div class="bg-white p-6 rounded-[2rem] border border-slate-100 shadow-sm">
+                    <p class="text-xs font-black text-indigo-600 uppercase mb-4 tracking-widest">${p.label}</p>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="bg-slate-50 p-4 rounded-2xl">
+                            <p class="text-[9px] font-bold text-slate-400 uppercase">Revenue</p>
+                            <p class="text-sm font-black">${p.sales.toLocaleString()}</p>
+                        </div>
+                        <div class="bg-indigo-50 p-4 rounded-2xl">
+                            <p class="text-[9px] font-bold text-indigo-400 uppercase">COGS</p>
+                            <p class="text-sm font-black">${p.cost.toLocaleString()}</p>
+                        </div>
+                        <div class="bg-rose-50 p-4 rounded-2xl">
+                            <p class="text-[9px] font-bold text-rose-400 uppercase">Expense</p>
+                            <p class="text-sm font-black">${p.exp.toLocaleString()}</p>
+                        </div>
+                        <div class="bg-emerald-50 p-4 rounded-2xl">
+                            <p class="text-[9px] font-bold text-emerald-400 uppercase">Net</p>
+                            <p class="text-sm font-black">${(p.sales - p.cost - p.exp).toLocaleString()}</p>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
         }
 
         window.switchView = (v) => {
-            ['home', 'daily-summary', 'records', 'stock', 'accounting'].forEach(view => {
+            ['home', 'dashboard', 'records', 'stock', 'reports'].forEach(view => {
                 document.getElementById(`view-${view}`)?.classList.add('hidden');
                 document.getElementById(`nav-${view}`)?.classList.remove('active');
             });
             document.getElementById(`view-${v}`)?.classList.remove('hidden');
             document.getElementById(`nav-${v}`)?.classList.add('active');
-            if(v === 'home' || v === 'daily-summary') { updateDashboard(); renderDailySummary(); }
+            window.scrollTo(0,0);
         };
 
-        document.getElementById('main-date').onchange = () => { updateDashboard(); renderDailySummary(); };
+        document.getElementById('main-date').onchange = updateDashboard;
     </script>
 </body>
 </html>
