@@ -362,15 +362,22 @@
             setTimeout(() => { t.style.display = 'none'; }, 3000);
         };
 
+        // FIXED: Improved Print Function to prevent blank pages on second print
         window.handleSafariPrint = () => {
             const printContent = document.getElementById('invoice-paper').innerHTML;
+            
+            // 1. Remove any old iframe first
             const existingFrame = document.getElementById('print-iframe');
             if (existingFrame) existingFrame.remove();
 
+            // 2. Create a completely new iframe
             const iframe = document.createElement('iframe');
             iframe.id = 'print-iframe';
             iframe.style.position = 'fixed';
-            iframe.style.visibility = 'hidden';
+            iframe.style.top = '-1000px'; // Move out of view
+            iframe.style.left = '-1000px';
+            iframe.style.width = '100%';
+            iframe.style.height = '100%';
             document.body.appendChild(iframe);
 
             const doc = iframe.contentWindow.document;
@@ -393,7 +400,20 @@
                             .flex { display: flex; } .justify-between { justify-content: space-between; } .text-right { text-align: right; } .text-center { text-align: center; } .font-bold { font-weight: 700; } .font-black { font-weight: 900; } .space-y-2 > * + * { margin-top: 0.5rem; } .mt-8 { margin-top: 2rem; } .pt-4 { padding-top: 1rem; } .border-t { border-top: 1px solid #000; } .text-[19px] { font-size: 19px; } .tracking-wide { letter-spacing: 1.8px; }
                         </style>
                     </head>
-                    <body><div id="print-container">${printContent}</div><script>window.onload = function() { window.print(); setTimeout(function() { window.parent.document.getElementById('print-iframe').remove(); }, 500); };<\/script></body>
+                    <body>
+                        <div id="print-container">${printContent}</div>
+                        <script>
+                            window.onload = function() { 
+                                setTimeout(function() { 
+                                    window.print();
+                                    // Let the browser handle the print dialog, then cleanup
+                                    setTimeout(function() {
+                                        window.parent.document.getElementById('print-iframe').remove();
+                                    }, 1000);
+                                }, 500); 
+                            };
+                        <\/script>
+                    </body>
                 </html>
             `);
             doc.close();
