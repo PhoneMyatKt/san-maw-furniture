@@ -78,10 +78,11 @@
             .no-print { display: none !important; }
             #invoice-paper {
                 width: 80mm !important;
-                margin-left: 15.2mm !important; /* Total 0.6 inch to the right (added 0.3) */
-                margin-top: -15mm !important; /* Move up further to strictly hide browser footers/headers */
+                margin-left: 15.2mm !important; 
+                margin-top: -15mm !important; 
                 padding: 4mm !important; 
-                padding-top: 5.27mm !important; /* Added 0.05 inch (1.27mm) drop from top */
+                /* 0.05 + 0.15 = 0.2 inch total (approx 9.1mm) */
+                padding-top: 9.1mm !important; 
                 visibility: visible !important;
                 display: block !important;
             }
@@ -372,10 +373,11 @@
                             }
                             #print-container {
                                 width: 80mm;
-                                margin-left: 15.2mm; /* Added 0.3 inch (7.6mm) to previous 0.3 inch */
-                                margin-top: -15mm; /* Hide browser headers/links */
+                                margin-left: 15.2mm; 
+                                margin-top: -15mm; 
                                 padding: 6mm 4mm;
-                                padding-top: 5.27mm; /* 0.05 inch drop from top */
+                                /* 5.27mm (prev) + 3.81mm (0.15 inch) = ~9.1mm */
+                                padding-top: 9.1mm; 
                                 box-sizing: border-box;
                             }
                             .inv-header { text-align: center; margin-bottom: 15px; border-bottom: 1.5px dashed #000; padding-bottom: 10px; }
