@@ -1,3 +1,4 @@
+```html
 <!DOCTYPE html>
 <html lang="my">
 <head>
@@ -433,7 +434,7 @@
         window.verifyPin = async () => {
             const btn = document.getElementById('verify-pin-btn');
             const input = document.getElementById('pin-input').value;
-            if(!input) return showToast("PIN နံပါတ်ရိုက်ပါ");
+            if(!input) return showToast("PIN နံပါတ်ရိုက်ထည့်ပါ");
             btn.disabled = true; btn.innerText = "Checking...";
             try {
                 await signInAnonymously(auth);
@@ -689,7 +690,26 @@
 
         function renderStock(filterSku = '') {
             const filtered = filterSku ? stocks.filter(s => s.sku.includes(filterSku)) : stocks;
-            document.getElementById('stock-list').innerHTML = filtered.map(s => `<div class="record-card p-5 flex justify-between items-center mb-3"><div class="flex-1"><span class="bg-indigo-50 text-indigo-600 text-[10px] font-black px-3 py-1 rounded-lg uppercase">${s.sku}</span><p class="text-sm font-black mt-3">${s.name}</p></div><div class="flex items-center gap-4"><div class="text-right border-r pr-4"><p class="text-lg font-black">${s.qty}</p></div>${currentUser === 'Owner' ? `<div class="flex gap-1"><button onclick="editStock('${s.id}')" class="text-slate-300 p-2"><i class="fas fa-pen text-xs"></i></button><button onclick="deleteStock('${s.id}')" class="text-rose-200 p-2"><i class="fas fa-trash-alt text-xs"></i></button></div>` : ''}</div></div>`).join('');
+            document.getElementById('stock-list').innerHTML = filtered.map(s => `
+                <div class="record-card p-5 flex justify-between items-center mb-3">
+                    <div class="flex-1">
+                        <span class="bg-indigo-50 text-indigo-600 text-[10px] font-black px-3 py-1 rounded-lg uppercase">${s.sku}</span>
+                        <p class="text-sm font-black mt-3">${s.name}</p>
+                        <p class="text-[11px] font-bold text-emerald-600 mt-1 uppercase tracking-wider">Sell: ${s.sell.toLocaleString()} Ks</p>
+                    </div>
+                    <div class="flex items-center gap-4">
+                        <div class="text-right border-r pr-4">
+                            <p class="text-[10px] font-bold text-slate-400 uppercase">Stock</p>
+                            <p class="text-lg font-black">${s.qty}</p>
+                        </div>
+                        ${currentUser === 'Owner' ? `
+                        <div class="flex gap-1">
+                            <button onclick="editStock('${s.id}')" class="text-slate-300 p-2"><i class="fas fa-pen text-xs"></i></button>
+                            <button onclick="deleteStock('${s.id}')" class="text-rose-200 p-2"><i class="fas fa-trash-alt text-xs"></i></button>
+                        </div>
+                        ` : ''}
+                    </div>
+                </div>`).join('');
         }
 
         window.switchView = (v) => {
@@ -711,3 +731,5 @@
     </script>
 </body>
 </html>
+
+```
