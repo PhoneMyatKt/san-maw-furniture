@@ -75,7 +75,6 @@
                 size: 80mm auto;
                 margin: 0; 
             }
-            /* Remove footer website links and browser headers */
             html, body { 
                 margin: 0; 
                 padding: 0; 
@@ -88,7 +87,6 @@
                 margin: 0 !important;
                 padding: 4mm !important; 
                 padding-top: 13.6mm !important; 
-                /* Ensures no extra blank space at the bottom */
                 min-height: 0 !important;
                 overflow: visible !important;
                 display: block !important;
@@ -115,7 +113,6 @@
             <div id="invoice-paper">
                 <div class="inv-header">
                     <div class="inv-title">စန်းမော် ပရိဘောဂ</div>
-                    <!-- ဖျက်လိုက်သော စာသား: ဝယ်ယူအားပေးမှုကို အထူးကျေးဇူးတင်ပါသည်။ -->
                     <div class="mt-2 font-black uppercase tracking-tighter text-[17px] border border-black inline-block px-3 py-1">Cash Receipt / ပြေစာ</div>
                 </div>
 
@@ -274,6 +271,8 @@
         <div id="view-daily-summary" class="hidden">
             <h2 class="text-2xl font-black mb-1">နေ့စဉ် အနှစ်ချုပ်</h2>
             <p id="summary-date-label" class="text-xs font-bold text-slate-400 mb-6 uppercase tracking-widest"></p>
+            <!-- Dashboard Stats for Daily Summary -->
+            <div id="daily-stats-container" class="mb-6"></div>
             <div id="daily-summary-list" class="space-y-4"></div>
         </div>
 
@@ -283,12 +282,18 @@
         </div>
 
         <div id="view-stock" class="hidden">
-            <div class="flex justify-between items-center mb-4">
-                <h2 class="text-2xl font-black">Stock လက်ကျန်</h2>
-                <button id="add-stock-btn" onclick="toggleStockAdd(true)" class="bg-indigo-600 text-white text-xs font-black px-5 py-3 rounded-xl uppercase owner-only shadow-md">Add New</button>
+            <div class="flex flex-col gap-4 mb-4">
+                <div class="flex justify-between items-center">
+                    <h2 class="text-2xl font-black">Stock လက်ကျန်</h2>
+                    <button id="add-stock-btn" onclick="toggleStockAdd(true)" class="bg-indigo-600 text-white text-xs font-black px-5 py-3 rounded-xl uppercase owner-only shadow-md">Add New</button>
+                </div>
+                <!-- ပြင်ဆင်မှု: Stock Search အလုပ်လုပ်အောင် ထည့်ထားသည် -->
+                <div class="relative">
+                    <input type="text" id="stock-list-search" placeholder="ရှာဖွေရန် (SKU သို့မဟုတ် အမည်)..." class="w-full p-4 input-field rounded-2xl font-bold shadow-sm pl-12">
+                    <i class="fas fa-search absolute left-5 top-1/2 -translate-y-1/2 text-slate-400"></i>
+                </div>
             </div>
             
-            <!-- ပြင်ဆင်မှု: Stock Form ကို Stock List ရဲ့ အပေါ်ဆုံးမှာ ထားလိုက်ပါတယ် -->
             <div id="stock-form" class="hidden bg-white p-6 rounded-3xl border border-slate-100 shadow-lg space-y-4 mb-6">
                 <h3 id="stock-form-title" class="text-sm font-black uppercase text-indigo-600">Stock အသစ်ထည့်ရန်</h3>
                 <input type="hidden" id="edit-stock-id">
@@ -376,56 +381,19 @@
                         <title>Invoice</title>
                         <style>
                             @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&family=Pyidaungsu:wght@400;700&display=swap');
-                            @page { 
-                                size: 80mm auto; 
-                                margin: 0; 
-                            }
-                            html, body { 
-                                font-family: 'Plus Jakarta Sans', 'Pyidaungsu', sans-serif; 
-                                margin: 0; padding: 0; background: #fff; color: #000;
-                                height: auto !important;
-                                min-height: 0 !important;
-                                overflow: visible !important;
-                            }
-                            #print-container {
-                                width: 80mm;
-                                margin: 0 !important;
-                                margin-left: 15.2mm !important; 
-                                margin-top: -15mm !important; 
-                                padding: 6mm 4mm;
-                                padding-top: 13.6mm; 
-                                box-sizing: border-box;
-                                letter-spacing: 0.8px;
-                            }
+                            @page { size: 80mm auto; margin: 0; }
+                            html, body { font-family: 'Plus Jakarta Sans', 'Pyidaungsu', sans-serif; margin: 0; padding: 0; background: #fff; color: #000; height: auto !important; min-height: 0 !important; overflow: visible !important; }
+                            #print-container { width: 80mm; margin: 0 !important; margin-left: 15.2mm !important; margin-top: -15mm !important; padding: 6mm 4mm; padding-top: 13.6mm; box-sizing: border-box; letter-spacing: 0.8px; }
                             .inv-header { text-align: center; margin-bottom: 15px; border-bottom: 1.5px dashed #000; padding-bottom: 10px; }
                             .inv-title { font-size: 29px; font-weight: 800; }
                             .inv-table { width: 100%; border-collapse: collapse; margin: 12px 0; }
                             .inv-table th { border-bottom: 1.5px solid #000; padding: 8px 0; text-align: left; font-size: 20px; font-weight: 800; }
                             .inv-table td { padding: 10px 0; border-bottom: 1px dotted #ccc; font-size: 20px; font-weight: 700; vertical-align: top; }
                             .inv-grand-total { border-top: 2px solid #000; margin-top: 10px; padding-top: 10px; font-weight: 900; font-size: 23px; }
-                            .flex { display: flex; }
-                            .justify-between { justify-content: space-between; }
-                            .text-right { text-align: right; }
-                            .text-center { text-align: center; }
-                            .font-bold { font-weight: 700; }
-                            .font-black { font-weight: 900; }
-                            .space-y-2 > * + * { margin-top: 0.5rem; }
-                            .mt-8 { margin-top: 2rem; }
-                            .pt-4 { padding-top: 1rem; }
-                            .border-t { border-top: 1px solid #000; }
-                            .text-[19px] { font-size: 19px; }
-                            .tracking-wide { letter-spacing: 1.8px; }
+                            .flex { display: flex; } .justify-between { justify-content: space-between; } .text-right { text-align: right; } .text-center { text-align: center; } .font-bold { font-weight: 700; } .font-black { font-weight: 900; } .space-y-2 > * + * { margin-top: 0.5rem; } .mt-8 { margin-top: 2rem; } .pt-4 { padding-top: 1rem; } .border-t { border-top: 1px solid #000; } .text-[19px] { font-size: 19px; } .tracking-wide { letter-spacing: 1.8px; }
                         </style>
                     </head>
-                    <body>
-                        <div id="print-container">${printContent}</div>
-                        <script>
-                            window.onload = function() {
-                                window.print();
-                                setTimeout(function() { window.parent.document.getElementById('print-iframe').remove(); }, 500);
-                            };
-                        <\/script>
-                    </body>
+                    <body><div id="print-container">${printContent}</div><script>window.onload = function() { window.print(); setTimeout(function() { window.parent.document.getElementById('print-iframe').remove(); }, 500); };<\/script></body>
                 </html>
             `);
             doc.close();
@@ -461,11 +429,11 @@
             onSnapshot(collection(db, 'artifacts', appId, 'public', 'data', 'records'), (s) => {
                 records = s.docs.map(d => ({ id: d.id, ...d.data() }));
                 updateDashboard(); renderRecords(); renderAccounting(); renderDailySummary();
-            }, (err) => console.error(err));
+            });
             onSnapshot(collection(db, 'artifacts', appId, 'public', 'data', 'stock'), (s) => {
                 stocks = s.docs.map(d => ({ id: d.id, ...d.data() }));
                 renderStock();
-            }, (err) => console.error(err));
+            });
         }
         function monitorConnection() {
             const statusEl = document.getElementById('db-status');
@@ -490,6 +458,8 @@
             document.getElementById('expense-fields').classList.toggle('hidden', t !== 'expense');
             cart = []; renderCart();
         };
+
+        // Stock Search - SKU ရိုက်တာနဲ့ တန်းပြပေးသည်
         document.getElementById('sku-search').oninput = (e) => {
             const val = e.target.value.trim().toUpperCase();
             const found = stocks.find(s => s.sku === val);
@@ -503,6 +473,12 @@
                 document.getElementById('stock-badge').classList.add('hidden');
             }
         };
+
+        // Stock List Search - ရိုက်တာနဲ့ တန်းပြပေးသည်
+        document.getElementById('stock-list-search').oninput = (e) => {
+            renderStock(e.target.value.trim().toLowerCase());
+        };
+
         window.addToCart = () => {
             const sku = document.getElementById('sku-search').value.trim().toUpperCase();
             const stockItem = stocks.find(s => s.sku === sku);
@@ -518,6 +494,7 @@
             document.getElementById('stock-badge').classList.add('hidden');
             renderCart();
         };
+
         function renderCart() {
             const container = document.getElementById('cart-container');
             const list = document.getElementById('cart-list');
@@ -533,7 +510,9 @@
             }).join('');
             document.getElementById('cart-total-text').innerText = total.toLocaleString() + " Ks";
         }
+
         window.removeFromCart = (i) => { cart.splice(i, 1); renderCart(); };
+
         window.saveInvoice = async () => {
             const name = document.getElementById('cust-name').value.trim();
             if(!name || cart.length === 0) return showToast("အချက်အလက်အပြည့်အစုံထည့်ပါ");
@@ -557,6 +536,7 @@
             document.getElementById('cust-address').value = '';
             cart = []; renderCart();
         };
+
         window.saveExpense = async () => {
             const d = document.getElementById('ex-desc').value;
             const a = parseFloat(document.getElementById('ex-amt').value) || 0;
@@ -568,6 +548,7 @@
             document.getElementById('ex-desc').value = ''; document.getElementById('ex-amt').value = '';
             showToast("သိမ်းပြီးပါပြီ", false);
         };
+
         window.viewInvoice = (id) => {
             const r = records.find(x => x.id === id);
             if(!r) return;
@@ -579,35 +560,72 @@
             else { document.getElementById('inv-address-row').classList.add('hidden'); }
             
             document.getElementById('inv-items-list').innerHTML = r.items.map((i) => `
-                <tr>
-                    <td class="font-bold">
-                        <div class="text-[20px] tracking-wider">${i.desc}</div>
-                    </td>
-                    <td class="text-center font-bold text-[20px]">${i.qty}</td>
-                    <td class="text-right font-bold text-[20px]">${(i.qty * i.sell).toLocaleString()}</td>
-                </tr>
+                <tr><td class="font-bold"><div class="text-[20px] tracking-wider">${i.desc}</div></td><td class="text-center font-bold text-[20px]">${i.qty}</td><td class="text-right font-bold text-[20px]">${(i.qty * i.sell).toLocaleString()}</td></tr>
             `).join('');
             document.getElementById('inv-total').innerText = r.amt.toLocaleString() + " Ks";
             document.getElementById('invoice-modal').classList.remove('hidden');
         };
+
         window.closeInvoice = () => document.getElementById('invoice-modal').classList.add('hidden');
+
         function updateDashboard() {
             const d = document.getElementById('main-date').value;
             const today = records.filter(r => r.date === d);
             document.getElementById('total-inc').innerText = today.filter(r => r.type === 'income').reduce((s,i) => s + i.amt, 0).toLocaleString();
             document.getElementById('total-exp').innerText = today.filter(r => r.type === 'expense').reduce((s,i) => s + i.amt, 0).toLocaleString();
         }
+
+        // Daily Summary: Cashier vs Owner roles logic
         function renderDailySummary() {
             const d = document.getElementById('main-date').value;
             const today = records.filter(r => r.date === d);
             const incs = today.filter(r => r.type === 'income');
+            const exps = today.filter(r => r.type === 'expense');
+            const totalSales = incs.reduce((s, i) => s + i.amt, 0);
+            const totalCost = incs.reduce((s, i) => s + (i.cost || 0), 0);
+            const totalExp = exps.reduce((s, i) => s + i.amt, 0);
+            const totalProfit = totalSales - totalCost - totalExp;
+
             document.getElementById('summary-date-label').innerText = d;
-            document.getElementById('daily-summary-list').innerHTML = incs.map(r => `<div class="record-card p-5 border-l-4 border-indigo-500 flex justify-between"><div><p class="text-sm font-black">${r.customer}</p><p class="text-xs font-bold text-slate-400">${r.desc}</p></div><p class="text-sm font-black text-indigo-600">${r.amt.toLocaleString()}</p></div>`).join('');
+
+            // Stats Cards based on Role
+            const statsContainer = document.getElementById('daily-stats-container');
+            if (currentUser === 'Owner') {
+                statsContainer.innerHTML = `
+                    <div class="grid grid-cols-2 gap-3">
+                        <div class="bg-indigo-600 p-4 rounded-2xl text-white"><p class="text-[9px] font-black uppercase opacity-70">Sales</p><p class="text-lg font-black">${totalSales.toLocaleString()}</p></div>
+                        <div class="bg-slate-800 p-4 rounded-2xl text-white"><p class="text-[9px] font-black uppercase opacity-70">Cost</p><p class="text-lg font-black">${totalCost.toLocaleString()}</p></div>
+                        <div class="bg-rose-600 p-4 rounded-2xl text-white"><p class="text-[9px] font-black uppercase opacity-70">Exp</p><p class="text-lg font-black">${totalExp.toLocaleString()}</p></div>
+                        <div class="bg-emerald-600 p-4 rounded-2xl text-white"><p class="text-[9px] font-black uppercase opacity-70">Profit</p><p class="text-lg font-black">${totalProfit.toLocaleString()}</p></div>
+                    </div>
+                `;
+            } else {
+                statsContainer.innerHTML = `
+                    <div class="grid grid-cols-2 gap-3">
+                        <div class="bg-indigo-600 p-4 rounded-2xl text-white"><p class="text-[9px] font-black uppercase opacity-70">အရောင်းစုစုပေါင်း</p><p class="text-lg font-black">${totalSales.toLocaleString()}</p></div>
+                        <div class="bg-rose-600 p-4 rounded-2xl text-white"><p class="text-[9px] font-black uppercase opacity-70">အထွက်စုစုပေါင်း</p><p class="text-lg font-black">${totalExp.toLocaleString()}</p></div>
+                    </div>
+                `;
+            }
+
+            // Combine Incomes and Expenses for the list
+            const combinedList = [...today].sort((a,b) => b.createdAt?.seconds - a.createdAt?.seconds);
+            document.getElementById('daily-summary-list').innerHTML = combinedList.map(r => `
+                <div class="record-card p-5 border-l-4 ${r.type === 'income' ? 'border-indigo-500' : 'border-rose-500'} flex justify-between items-center">
+                    <div>
+                        <p class="text-sm font-black">${r.type === 'income' ? r.customer : r.desc}</p>
+                        <p class="text-xs font-bold text-slate-400">${r.type === 'income' ? r.desc : 'အထွက်စာရင်း'}</p>
+                    </div>
+                    <p class="text-sm font-black ${r.type === 'income' ? 'text-indigo-600' : 'text-rose-600'}">${r.type === 'income' ? '+' : '-'}${r.amt.toLocaleString()}</p>
+                </div>
+            `).join('');
         }
+
         function renderRecords() {
-            const sorted = [...records].sort((a,b) => new Date(b.date) - new Date(a.date));
+            const sorted = [...records].sort((a,b) => new Date(b.date) - new Date(a.date) || b.createdAt?.seconds - a.createdAt?.seconds);
             document.getElementById('history-list').innerHTML = sorted.map(r => `<div class="record-card p-5 mb-3"><div class="flex justify-between"><div><p class="text-[10px] font-black uppercase ${r.type === 'income' ? 'text-indigo-500' : 'text-rose-500'}">${r.type}</p><p class="text-sm font-black">${r.desc}</p><p class="text-[10px] text-slate-400 font-bold mt-1">${r.date}</p></div><p class="text-sm font-black">${r.amt.toLocaleString()}</p></div><div class="flex justify-between mt-4">${r.type === 'income' ? `<button onclick="viewInvoice('${r.id}')" class="text-[10px] font-black bg-indigo-50 text-indigo-600 px-3 py-1.5 rounded-lg uppercase">View Receipt</button>` : '<span></span>'}${currentUser === 'Owner' ? `<button onclick="deleteRecord('${r.id}')" class="text-rose-200 hover:text-rose-500"><i class="fas fa-trash-alt"></i></button>` : ''}</div></div>`).join('');
         }
+
         window.deleteRecord = async (id) => { 
             if(confirm("ဤစာရင်းကို ဖျက်မည်လား?")) {
                 const rec = records.find(x => x.id === id);
@@ -621,6 +639,7 @@
                 showToast("ဖျက်ပြီးပါပြီ။", false);
             }
         };
+
         function renderAccounting() {
             const periods = {};
             records.forEach(r => {
@@ -631,6 +650,7 @@
             });
             document.getElementById('accounting-list').innerHTML = Object.values(periods).map(p => `<div class="bg-white p-6 rounded-3xl shadow-md border-t-4 border-indigo-600 mb-4"><p class="text-sm font-black text-indigo-600 mb-4">${p.label}</p><div class="grid grid-cols-2 gap-3"><div class="bg-slate-50 p-4 rounded-2xl"><p class="text-[10px] font-bold text-slate-400">Sales</p><p class="text-sm font-black">${p.inc.toLocaleString()}</p></div><div class="bg-indigo-50 p-4 rounded-2xl"><p class="text-[10px] font-bold text-indigo-400">Cost</p><p class="text-sm font-black">${p.cost.toLocaleString()}</p></div><div class="bg-rose-50 p-4 rounded-2xl"><p class="text-[10px] font-bold text-rose-400">Exp</p><p class="text-sm font-black">${p.exp.toLocaleString()}</p></div><div class="bg-emerald-50 p-4 rounded-2xl"><p class="text-[10px] font-bold text-emerald-400">Profit</p><p class="text-sm font-black">${(p.inc - p.cost - p.exp).toLocaleString()}</p></div></div></div>`).join('');
         }
+
         window.saveStock = async () => {
             const id = document.getElementById('edit-stock-id').value;
             const data = {
@@ -645,6 +665,7 @@
             toggleStockAdd(false);
             window.scrollTo({ top: 0, behavior: 'smooth' });
         };
+
         window.editStock = (id) => {
             const s = stocks.find(x => x.id === id);
             document.getElementById('edit-stock-id').value = id;
@@ -657,7 +678,9 @@
             toggleStockAdd(true);
             window.scrollTo({ top: 0, behavior: 'smooth' });
         };
+
         window.deleteStock = async (id) => { if(confirm("ဖျက်မည်လား?")) await deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', 'stock', id)); };
+
         window.toggleStockAdd = (s) => {
             const form = document.getElementById('stock-form');
             form.classList.toggle('hidden', !s);
@@ -668,12 +691,15 @@
                 window.scrollTo({ top: 0, behavior: 'smooth' });
             }
         };
-        function renderStock() {
-            document.getElementById('stock-list').innerHTML = stocks.map(s => `
+
+        function renderStock(filter = '') {
+            const filteredStocks = stocks.filter(s => s.sku.toLowerCase().includes(filter) || s.name.toLowerCase().includes(filter));
+            document.getElementById('stock-list').innerHTML = filteredStocks.map(s => `
                 <div class="record-card p-5 flex justify-between items-center mb-3">
                     <div class="flex-1">
                         <span class="bg-indigo-50 text-indigo-600 text-[10px] font-black px-3 py-1 rounded-lg uppercase">${s.sku}</span>
                         <p class="text-sm font-black mt-3">${s.name}</p>
+                        <p class="text-[11px] font-bold text-indigo-500 mt-1">ရောင်းစျေး - ${s.sell.toLocaleString()} Ks</p>
                     </div>
                     <div class="flex items-center gap-4">
                         <div class="text-right border-r pr-4"><p class="text-[10px] font-bold text-slate-400 uppercase">Stock</p><p class="text-lg font-black">${s.qty}</p></div>
@@ -685,6 +711,7 @@
                     </div>
                 </div>`).join('');
         }
+
         window.switchView = (v) => {
             ['home', 'daily-summary', 'records', 'stock', 'accounting'].forEach(view => {
                 document.getElementById(`view-${view}`)?.classList.add('hidden');
@@ -696,6 +723,7 @@
             if(v !== 'stock') toggleStockAdd(false);
             window.scrollTo({ top: 0, behavior: 'smooth' });
         };
+
         document.getElementById('main-date').onchange = () => { updateDashboard(); renderDailySummary(); };
         function applyPermissions() {
             const isOwner = currentUser === 'Owner';
