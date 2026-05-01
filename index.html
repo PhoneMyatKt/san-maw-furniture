@@ -54,19 +54,20 @@
             line-height: 1.4;
             width: 100%;
             box-sizing: border-box;
+            letter-spacing: 0.5px; /* Added spacing */
         }
 
         .inv-header { text-align: center; margin-bottom: 15px; border-bottom: 1px dashed #000; padding-bottom: 10px; }
-        .inv-title { font-size: 31px; font-weight: 800; margin-bottom: 2px; } 
+        .inv-title { font-size: 30px; font-weight: 800; margin-bottom: 2px; } /* -1px */
         
         .inv-table { width: 100%; border-collapse: collapse; margin: 10px 0; }
-        .inv-table th { border-bottom: 1px solid #000; padding: 8px 2px; text-align: left; font-size: 22px; font-weight: 800; } 
-        .inv-table td { padding: 8px 2px; border-bottom: 1px dotted #eee; font-size: 22px; vertical-align: top; } 
+        .inv-table th { border-bottom: 1px solid #000; padding: 8px 2px; text-align: left; font-size: 21px; font-weight: 800; } /* -1px */
+        .inv-table td { padding: 8px 2px; border-bottom: 1px dotted #eee; font-size: 21px; vertical-align: top; } /* -1px */
         
         .inv-total-row { display: flex; justify-content: flex-end; margin-top: 10px; }
         .inv-total-box { width: 100%; }
-        .inv-total-item { display: flex; justify-content: space-between; padding: 4px 0; font-size: 23px; } 
-        .inv-grand-total { border-top: 2px solid #000; margin-top: 5px; padding-top: 8px; font-weight: 900; font-size: 25px; }
+        .inv-total-item { display: flex; justify-content: space-between; padding: 4px 0; font-size: 22px; } /* -1px */
+        .inv-grand-total { border-top: 2px solid #000; margin-top: 5px; padding-top: 8px; font-weight: 900; font-size: 24px; } /* -1px */
 
         /* General Print Fix */
         @media print {
@@ -81,8 +82,8 @@
                 margin-left: 15.2mm !important; 
                 margin-top: -15mm !important; 
                 padding: 4mm !important; 
-                /* 0.05 + 0.15 = 0.2 inch total (approx 9.1mm) */
-                padding-top: 9.1mm !important; 
+                /* Original 9.1mm + 0.08 inch (approx 2mm) = 11.1mm */
+                padding-top: 11.1mm !important; 
                 visibility: visible !important;
                 display: block !important;
             }
@@ -106,11 +107,11 @@
             <div id="invoice-paper">
                 <div class="inv-header">
                     <div class="inv-title">စန်းမော် ပရိဘောဂ</div>
-                    <div class="text-[21px] font-bold">ဝယ်ယူအားပေးမှုကို အထူးကျေးဇူးတင်ပါသည်။</div>
-                    <div class="mt-2 font-black uppercase tracking-tighter text-[19px] border border-black inline-block px-3 py-1">Cash Receipt / ပြေစာ</div>
+                    <div class="text-[20px] font-bold">ဝယ်ယူအားပေးမှုကို အထူးကျေးဇူးတင်ပါသည်။</div>
+                    <div class="mt-2 font-black uppercase tracking-tighter text-[18px] border border-black inline-block px-3 py-1">Cash Receipt / ပြေစာ</div>
                 </div>
 
-                <div class="space-y-2 mb-4 text-[21px]">
+                <div class="space-y-2 mb-4 text-[20px] tracking-wide">
                     <div class="flex justify-between">
                         <span class="text-gray-500">နေ့စွဲ:</span>
                         <span id="inv-date" class="font-bold"></span>
@@ -123,7 +124,7 @@
                         <span class="text-gray-500">ဖုန်း:</span>
                         <span id="inv-phone" class="font-bold"></span>
                     </div>
-                    <div id="inv-address-row" class="text-right text-[20px] text-gray-600 italic">
+                    <div id="inv-address-row" class="text-right text-[19px] text-gray-600 italic">
                         <span id="inv-address"></span>
                     </div>
                 </div>
@@ -150,7 +151,7 @@
                 </div>
 
                 <div class="text-center mt-8 pt-4 border-t border-dotted border-gray-400">
-                    <p class="text-[21px] font-bold">ကျေးဇူးတင်ပါသည်</p>
+                    <p class="text-[20px] font-bold">ကျေးဇူးတင်ပါသည်</p>
                 </div>
             </div>
 
@@ -376,16 +377,17 @@
                                 margin-left: 15.2mm; 
                                 margin-top: -15mm; 
                                 padding: 6mm 4mm;
-                                /* 5.27mm (prev) + 3.81mm (0.15 inch) = ~9.1mm */
-                                padding-top: 9.1mm; 
+                                /* Increased padding-top for 0.08 inch down (Original 9.1mm + 2mm ≈ 11.1mm) */
+                                padding-top: 11.1mm; 
                                 box-sizing: border-box;
+                                letter-spacing: 0.8px;
                             }
                             .inv-header { text-align: center; margin-bottom: 15px; border-bottom: 1.5px dashed #000; padding-bottom: 10px; }
-                            .inv-title { font-size: 31px; font-weight: 800; }
+                            .inv-title { font-size: 30px; font-weight: 800; }
                             .inv-table { width: 100%; border-collapse: collapse; margin: 12px 0; }
-                            .inv-table th { border-bottom: 1.5px solid #000; padding: 8px 0; text-align: left; font-size: 22px; font-weight: 800; }
-                            .inv-table td { padding: 10px 0; border-bottom: 1px dotted #ccc; font-size: 22px; font-weight: 700; vertical-align: top; }
-                            .inv-grand-total { border-top: 2px solid #000; margin-top: 10px; padding-top: 10px; font-weight: 900; font-size: 25px; }
+                            .inv-table th { border-bottom: 1.5px solid #000; padding: 8px 0; text-align: left; font-size: 21px; font-weight: 800; }
+                            .inv-table td { padding: 10px 0; border-bottom: 1px dotted #ccc; font-size: 21px; font-weight: 700; vertical-align: top; }
+                            .inv-grand-total { border-top: 2px solid #000; margin-top: 10px; padding-top: 10px; font-weight: 900; font-size: 24px; }
                             .flex { display: flex; }
                             .justify-between { justify-content: space-between; }
                             .text-right { text-align: right; }
@@ -396,7 +398,8 @@
                             .mt-8 { margin-top: 2rem; }
                             .pt-4 { padding-top: 1rem; }
                             .border-t { border-top: 1px solid #000; }
-                            .text-[21px] { font-size: 21px; }
+                            .text-[20px] { font-size: 20px; }
+                            .tracking-wide { letter-spacing: 1.5px; } /* Wider character spacing */
                         </style>
                     </head>
                     <body>
@@ -443,11 +446,11 @@
             onSnapshot(collection(db, 'artifacts', appId, 'public', 'data', 'records'), (s) => {
                 records = s.docs.map(d => ({ id: d.id, ...d.data() }));
                 updateDashboard(); renderRecords(); renderAccounting(); renderDailySummary();
-            });
+            }, (err) => console.error(err));
             onSnapshot(collection(db, 'artifacts', appId, 'public', 'data', 'stock'), (s) => {
                 stocks = s.docs.map(d => ({ id: d.id, ...d.data() }));
                 renderStock();
-            });
+            }, (err) => console.error(err));
         }
         function monitorConnection() {
             const statusEl = document.getElementById('db-status');
@@ -563,10 +566,10 @@
             document.getElementById('inv-items-list').innerHTML = r.items.map((i) => `
                 <tr>
                     <td class="font-bold">
-                        <div class="text-[22px]">${i.desc}</div>
+                        <div class="text-[21px] tracking-wider">${i.desc}</div>
                     </td>
-                    <td class="text-center font-bold text-[22px]">${i.qty}</td>
-                    <td class="text-right font-bold text-[22px]">${(i.qty * i.sell).toLocaleString()}</td>
+                    <td class="text-center font-bold text-[21px]">${i.qty}</td>
+                    <td class="text-right font-bold text-[21px]">${(i.qty * i.sell).toLocaleString()}</td>
                 </tr>
             `).join('');
             document.getElementById('inv-total').innerText = r.amt.toLocaleString() + " Ks";
