@@ -54,20 +54,20 @@
             line-height: 1.4;
             width: 100%;
             box-sizing: border-box;
-            letter-spacing: 0.8px; /* Increased letter spacing */
+            letter-spacing: 0.8px;
         }
 
         .inv-header { text-align: center; margin-bottom: 15px; border-bottom: 1px dashed #000; padding-bottom: 10px; }
-        .inv-title { font-size: 29px; font-weight: 800; margin-bottom: 2px; } /* -1px from 30px */
+        .inv-title { font-size: 29px; font-weight: 800; margin-bottom: 2px; }
         
         .inv-table { width: 100%; border-collapse: collapse; margin: 10px 0; }
-        .inv-table th { border-bottom: 1px solid #000; padding: 8px 2px; text-align: left; font-size: 20px; font-weight: 800; } /* -1px from 21px */
-        .inv-table td { padding: 8px 2px; border-bottom: 1px dotted #eee; font-size: 20px; vertical-align: top; } /* -1px from 21px */
+        .inv-table th { border-bottom: 1px solid #000; padding: 8px 2px; text-align: left; font-size: 20px; font-weight: 800; }
+        .inv-table td { padding: 8px 2px; border-bottom: 1px dotted #eee; font-size: 20px; vertical-align: top; }
         
         .inv-total-row { display: flex; justify-content: flex-end; margin-top: 10px; }
         .inv-total-box { width: 100%; }
-        .inv-total-item { display: flex; justify-content: space-between; padding: 4px 0; font-size: 21px; } /* -1px from 22px */
-        .inv-grand-total { border-top: 2px solid #000; margin-top: 5px; padding-top: 8px; font-weight: 900; font-size: 23px; } /* -1px from 24px */
+        .inv-total-item { display: flex; justify-content: space-between; padding: 4px 0; font-size: 21px; }
+        .inv-grand-total { border-top: 2px solid #000; margin-top: 5px; padding-top: 8px; font-weight: 900; font-size: 23px; }
 
         /* General Print Fix */
         @media print {
@@ -75,17 +75,24 @@
                 size: 80mm auto;
                 margin: 0; 
             }
-            body { margin: 0; padding: 0; background: white; }
+            /* Remove footer website links and browser headers */
+            html, body { 
+                margin: 0; 
+                padding: 0; 
+                height: auto; 
+                background: white;
+            }
             .no-print { display: none !important; }
             #invoice-paper {
                 width: 80mm !important;
-                margin-left: 15.2mm !important; 
-                margin-top: -15mm !important; 
+                margin: 0 !important;
                 padding: 4mm !important; 
-                /* Added 0.1 inch (approx 2.5mm) to the previous 11.1mm padding-top = 13.6mm */
                 padding-top: 13.6mm !important; 
-                visibility: visible !important;
+                /* Ensures no extra blank space at the bottom */
+                min-height: 0 !important;
+                overflow: visible !important;
                 display: block !important;
+                visibility: visible !important;
                 letter-spacing: 0.8px !important;
             }
         }
@@ -108,11 +115,11 @@
             <div id="invoice-paper">
                 <div class="inv-header">
                     <div class="inv-title">စန်းမော် ပရိဘောဂ</div>
-                    <div class="text-[19px] font-bold">ဝယ်ယူအားပေးမှုကို အထူးကျေးဇူးတင်ပါသည်။</div> <!-- -1px from 20px -->
-                    <div class="mt-2 font-black uppercase tracking-tighter text-[17px] border border-black inline-block px-3 py-1">Cash Receipt / ပြေစာ</div> <!-- -1px from 18px -->
+                    <!-- ဖျက်လိုက်သော စာသား: ဝယ်ယူအားပေးမှုကို အထူးကျေးဇူးတင်ပါသည်။ -->
+                    <div class="mt-2 font-black uppercase tracking-tighter text-[17px] border border-black inline-block px-3 py-1">Cash Receipt / ပြေစာ</div>
                 </div>
 
-                <div class="space-y-2 mb-4 text-[19px] tracking-wide"> <!-- -1px from 20px -->
+                <div class="space-y-2 mb-4 text-[19px] tracking-wide">
                     <div class="flex justify-between">
                         <span class="text-gray-500">နေ့စွဲ:</span>
                         <span id="inv-date" class="font-bold"></span>
@@ -125,7 +132,7 @@
                         <span class="text-gray-500">ဖုန်း:</span>
                         <span id="inv-phone" class="font-bold"></span>
                     </div>
-                    <div id="inv-address-row" class="text-right text-[18px] text-gray-600 italic"> <!-- -1px from 19px -->
+                    <div id="inv-address-row" class="text-right text-[18px] text-gray-600 italic">
                         <span id="inv-address"></span>
                     </div>
                 </div>
@@ -152,7 +159,7 @@
                 </div>
 
                 <div class="text-center mt-8 pt-4 border-t border-dotted border-gray-400">
-                    <p class="text-[19px] font-bold">ကျေးဇူးတင်ပါသည်</p> <!-- -1px from 20px -->
+                    <p class="text-[19px] font-bold">ကျေးဇူးတင်ပါသည်</p>
                 </div>
             </div>
 
@@ -167,14 +174,13 @@
         </div>
     </div>
 
-    <!-- Rest of the UI (Login, Home, etc.) -->
+    <!-- User Selection / PIN Modal -->
     <div id="pin-modal" class="modal-overlay hidden">
         <div class="bg-white p-8 rounded-[2rem] w-full max-w-xs text-center shadow-2xl">
             <div class="w-16 h-16 bg-indigo-50 text-indigo-600 rounded-2xl flex items-center justify-center mx-auto mb-4">
                 <i class="fas fa-lock text-2xl"></i>
             </div>
             <h3 class="text-xl font-black text-slate-800 mb-2">Owner Login</h3>
-            <p class="text-xs font-bold text-slate-400 mb-6 uppercase tracking-wider">Database PIN နံပါတ်ရိုက်ထည့်ပါ</p>
             <input type="password" id="pin-input" maxlength="4" placeholder="••••" class="w-full text-center text-3xl tracking-[0.5em] p-4 bg-slate-50 border-2 border-slate-100 rounded-2xl focus:border-indigo-600 outline-none mb-6">
             <div class="flex gap-2">
                 <button onclick="closePinModal()" class="flex-1 py-3 text-xs font-black uppercase text-slate-400">Cancel</button>
@@ -192,6 +198,7 @@
         </div>
     </div>
 
+    <!-- Main App -->
     <div id="main-app" class="max-w-[500px] mx-auto px-5 pt-8 pb-32 hidden">
         <div id="view-home">
             <div class="premium-card rounded-[2.5rem] p-6 text-white mb-8 shadow-xl">
@@ -280,8 +287,10 @@
                 <h2 class="text-2xl font-black">Stock လက်ကျန်</h2>
                 <button id="add-stock-btn" onclick="toggleStockAdd(true)" class="bg-indigo-600 text-white text-xs font-black px-5 py-3 rounded-xl uppercase owner-only shadow-md">Add New</button>
             </div>
-            <div id="stock-list" class="space-y-4"></div>
-            <div id="stock-form" class="hidden bg-white p-6 rounded-3xl border border-slate-100 shadow-sm space-y-4 mt-4">
+            
+            <!-- ပြင်ဆင်မှု: Stock Form ကို Stock List ရဲ့ အပေါ်ဆုံးမှာ ထားလိုက်ပါတယ် -->
+            <div id="stock-form" class="hidden bg-white p-6 rounded-3xl border border-slate-100 shadow-lg space-y-4 mb-6">
+                <h3 id="stock-form-title" class="text-sm font-black uppercase text-indigo-600">Stock အသစ်ထည့်ရန်</h3>
                 <input type="hidden" id="edit-stock-id">
                 <input type="text" id="stock-sku" placeholder="SKU (e.g. T001)" class="w-full p-4 input-field rounded-xl font-black uppercase">
                 <input type="text" id="stock-name" placeholder="ပစ္စည်းအမည်" class="w-full p-4 input-field rounded-xl font-bold">
@@ -295,6 +304,8 @@
                     <button onclick="saveStock()" class="flex-[2] py-4 bg-indigo-600 text-white rounded-xl text-xs font-black uppercase">Save Stock</button>
                 </div>
             </div>
+
+            <div id="stock-list" class="space-y-4"></div>
         </div>
 
         <div id="view-accounting" class="hidden">
@@ -369,26 +380,29 @@
                                 size: 80mm auto; 
                                 margin: 0; 
                             }
-                            body { 
+                            html, body { 
                                 font-family: 'Plus Jakarta Sans', 'Pyidaungsu', sans-serif; 
                                 margin: 0; padding: 0; background: #fff; color: #000;
+                                height: auto !important;
+                                min-height: 0 !important;
+                                overflow: visible !important;
                             }
                             #print-container {
                                 width: 80mm;
-                                margin-left: 15.2mm; 
-                                margin-top: -15mm; 
+                                margin: 0 !important;
+                                margin-left: 15.2mm !important; 
+                                margin-top: -15mm !important; 
                                 padding: 6mm 4mm;
-                                /* Increased padding-top for 0.1 inch additional down (Original 11.1mm + 2.5mm = 13.6mm) */
                                 padding-top: 13.6mm; 
                                 box-sizing: border-box;
                                 letter-spacing: 0.8px;
                             }
                             .inv-header { text-align: center; margin-bottom: 15px; border-bottom: 1.5px dashed #000; padding-bottom: 10px; }
-                            .inv-title { font-size: 29px; font-weight: 800; } /* -1px */
+                            .inv-title { font-size: 29px; font-weight: 800; }
                             .inv-table { width: 100%; border-collapse: collapse; margin: 12px 0; }
-                            .inv-table th { border-bottom: 1.5px solid #000; padding: 8px 0; text-align: left; font-size: 20px; font-weight: 800; } /* -1px */
-                            .inv-table td { padding: 10px 0; border-bottom: 1px dotted #ccc; font-size: 20px; font-weight: 700; vertical-align: top; } /* -1px */
-                            .inv-grand-total { border-top: 2px solid #000; margin-top: 10px; padding-top: 10px; font-weight: 900; font-size: 23px; } /* -1px */
+                            .inv-table th { border-bottom: 1.5px solid #000; padding: 8px 0; text-align: left; font-size: 20px; font-weight: 800; }
+                            .inv-table td { padding: 10px 0; border-bottom: 1px dotted #ccc; font-size: 20px; font-weight: 700; vertical-align: top; }
+                            .inv-grand-total { border-top: 2px solid #000; margin-top: 10px; padding-top: 10px; font-weight: 900; font-size: 23px; }
                             .flex { display: flex; }
                             .justify-between { justify-content: space-between; }
                             .text-right { text-align: right; }
@@ -399,8 +413,8 @@
                             .mt-8 { margin-top: 2rem; }
                             .pt-4 { padding-top: 1rem; }
                             .border-t { border-top: 1px solid #000; }
-                            .text-[19px] { font-size: 19px; } /* -1px */
-                            .tracking-wide { letter-spacing: 1.8px; } /* More character spacing */
+                            .text-[19px] { font-size: 19px; }
+                            .tracking-wide { letter-spacing: 1.8px; }
                         </style>
                     </head>
                     <body>
@@ -629,6 +643,7 @@
             if(id) await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'stock', id), data);
             else await addDoc(collection(db, 'artifacts', appId, 'public', 'data', 'stock'), data);
             toggleStockAdd(false);
+            window.scrollTo({ top: 0, behavior: 'smooth' });
         };
         window.editStock = (id) => {
             const s = stocks.find(x => x.id === id);
@@ -638,12 +653,20 @@
             document.getElementById('stock-cost').value = s.cost;
             document.getElementById('stock-sell').value = s.sell;
             document.getElementById('stock-qty').value = s.qty;
+            document.getElementById('stock-form-title').innerText = "Stock ပြင်ဆင်ရန်";
             toggleStockAdd(true);
+            window.scrollTo({ top: 0, behavior: 'smooth' });
         };
         window.deleteStock = async (id) => { if(confirm("ဖျက်မည်လား?")) await deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', 'stock', id)); };
         window.toggleStockAdd = (s) => {
-            document.getElementById('stock-form').classList.toggle('hidden', !s);
-            if(!s) ['edit-stock-id','stock-sku','stock-name','stock-cost','stock-sell','stock-qty'].forEach(i => document.getElementById(i).value = '');
+            const form = document.getElementById('stock-form');
+            form.classList.toggle('hidden', !s);
+            if(!s) {
+                ['edit-stock-id','stock-sku','stock-name','stock-cost','stock-sell','stock-qty'].forEach(i => document.getElementById(i).value = '');
+                document.getElementById('stock-form-title').innerText = "Stock အသစ်ထည့်ရန်";
+            } else {
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
         };
         function renderStock() {
             document.getElementById('stock-list').innerHTML = stocks.map(s => `
@@ -670,6 +693,7 @@
             document.getElementById(`view-${v}`)?.classList.remove('hidden');
             document.getElementById(`nav-${v}`)?.classList.add('active');
             if(v === 'home' || v === 'daily-summary') { updateDashboard(); renderDailySummary(); }
+            if(v !== 'stock') toggleStockAdd(false);
             window.scrollTo({ top: 0, behavior: 'smooth' });
         };
         document.getElementById('main-date').onchange = () => { updateDashboard(); renderDailySummary(); };
