@@ -57,16 +57,16 @@
         }
 
         .inv-header { text-align: center; margin-bottom: 15px; border-bottom: 1px dashed #000; padding-bottom: 10px; }
-        .inv-title { font-size: 31px; font-weight: 800; margin-bottom: 2px; } /* Increased 4px more */
+        .inv-title { font-size: 31px; font-weight: 800; margin-bottom: 2px; } 
         
         .inv-table { width: 100%; border-collapse: collapse; margin: 10px 0; }
-        .inv-table th { border-bottom: 1px solid #000; padding: 8px 2px; text-align: left; font-size: 22px; font-weight: 800; } /* Increased 4px more */
-        .inv-table td { padding: 8px 2px; border-bottom: 1px dotted #eee; font-size: 22px; vertical-align: top; } /* Increased 4px more */
+        .inv-table th { border-bottom: 1px solid #000; padding: 8px 2px; text-align: left; font-size: 22px; font-weight: 800; } 
+        .inv-table td { padding: 8px 2px; border-bottom: 1px dotted #eee; font-size: 22px; vertical-align: top; } 
         
         .inv-total-row { display: flex; justify-content: flex-end; margin-top: 10px; }
         .inv-total-box { width: 100%; }
-        .inv-total-item { display: flex; justify-content: space-between; padding: 4px 0; font-size: 23px; } /* Increased 4px more */
-        .inv-grand-total { border-top: 2px solid #000; margin-top: 5px; padding-top: 8px; font-weight: 900; font-size: 25px; } /* Increased 4px more */
+        .inv-total-item { display: flex; justify-content: space-between; padding: 4px 0; font-size: 23px; } 
+        .inv-grand-total { border-top: 2px solid #000; margin-top: 5px; padding-top: 8px; font-weight: 900; font-size: 25px; }
 
         /* General Print Fix */
         @media print {
@@ -78,9 +78,10 @@
             .no-print { display: none !important; }
             #invoice-paper {
                 width: 80mm !important;
-                margin-left: 7.6mm !important; /* 0.3 inch to the right exactly */
-                margin-top: -10mm !important; /* Move up more to hide browser link */
+                margin-left: 15.2mm !important; /* Total 0.6 inch to the right (added 0.3) */
+                margin-top: -15mm !important; /* Move up further to strictly hide browser footers/headers */
                 padding: 4mm !important; 
+                padding-top: 5.27mm !important; /* Added 0.05 inch (1.27mm) drop from top */
                 visibility: visible !important;
                 display: block !important;
             }
@@ -104,11 +105,11 @@
             <div id="invoice-paper">
                 <div class="inv-header">
                     <div class="inv-title">စန်းမော် ပရိဘောဂ</div>
-                    <div class="text-[21px] font-bold">ဝယ်ယူအားပေးမှုကို အထူးကျေးဇူးတင်ပါသည်။</div> <!-- Increased 4px -->
-                    <div class="mt-2 font-black uppercase tracking-tighter text-[19px] border border-black inline-block px-3 py-1">Cash Receipt / ပြေစာ</div> <!-- Increased 4px -->
+                    <div class="text-[21px] font-bold">ဝယ်ယူအားပေးမှုကို အထူးကျေးဇူးတင်ပါသည်။</div>
+                    <div class="mt-2 font-black uppercase tracking-tighter text-[19px] border border-black inline-block px-3 py-1">Cash Receipt / ပြေစာ</div>
                 </div>
 
-                <div class="space-y-2 mb-4 text-[21px]"> <!-- Increased 4px -->
+                <div class="space-y-2 mb-4 text-[21px]">
                     <div class="flex justify-between">
                         <span class="text-gray-500">နေ့စွဲ:</span>
                         <span id="inv-date" class="font-bold"></span>
@@ -121,7 +122,7 @@
                         <span class="text-gray-500">ဖုန်း:</span>
                         <span id="inv-phone" class="font-bold"></span>
                     </div>
-                    <div id="inv-address-row" class="text-right text-[20px] text-gray-600 italic"> <!-- Increased 4px -->
+                    <div id="inv-address-row" class="text-right text-[20px] text-gray-600 italic">
                         <span id="inv-address"></span>
                     </div>
                 </div>
@@ -148,7 +149,7 @@
                 </div>
 
                 <div class="text-center mt-8 pt-4 border-t border-dotted border-gray-400">
-                    <p class="text-[21px] font-bold">ကျေးဇူးတင်ပါသည်</p> <!-- Increased 4px -->
+                    <p class="text-[21px] font-bold">ကျေးဇူးတင်ပါသည်</p>
                 </div>
             </div>
 
@@ -371,9 +372,10 @@
                             }
                             #print-container {
                                 width: 80mm;
-                                margin-left: 7.6mm; /* 0.3 inch to the right exactly */
-                                margin-top: -10mm; /* Move up to hide browser headers */
+                                margin-left: 15.2mm; /* Added 0.3 inch (7.6mm) to previous 0.3 inch */
+                                margin-top: -15mm; /* Hide browser headers/links */
                                 padding: 6mm 4mm;
+                                padding-top: 5.27mm; /* 0.05 inch drop from top */
                                 box-sizing: border-box;
                             }
                             .inv-header { text-align: center; margin-bottom: 15px; border-bottom: 1.5px dashed #000; padding-bottom: 10px; }
