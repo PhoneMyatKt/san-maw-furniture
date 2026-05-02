@@ -38,17 +38,17 @@
         .cart-item { background: #f8fafc; border-radius: 1rem; padding: 1rem; margin-bottom: 0.5rem; border-left: 4px solid var(--primary); }
 
         /* Invoice Preview UI */
-    .invoice-box {
+          .invoice-box {
     background: white;
     width: 100%;
-    max-width: 440px; /* Added 5px as requested */
+    max-width: 440px;
     border-radius: 1.5rem;
     overflow: hidden;
     box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25);
 }
 
 #invoice-paper {
-    padding: 20px;
+    padding: 15px; /* Reduced padding to give text more room */
     color: #000;
     background: white;
     line-height: 1.2;
@@ -56,7 +56,6 @@
     max-width: 80mm;
     margin: 0 auto;
     box-sizing: border-box;
-    letter-spacing: 0.5px;
 }
 
 .inv-logo { 
@@ -84,22 +83,34 @@
     width: 100%; 
     border-collapse: collapse; 
     margin: 5px 0; 
-    table-layout: auto; /* Allow columns to adjust based on content */
+    table-layout: fixed; /* Fixed layout ensures columns use exactly the space we tell them */
 }
+
+/* Set specific widths for price and total to leave maximum room for Item Name */
+.inv-col-item { width: 55%; }
+.inv-col-qty { width: 15%; }
+.inv-col-total { width: 30%; }
 
 .inv-table th { 
     border-bottom: 1px solid #000; 
-    padding: 6px 2px; 
+    padding: 6px 0; 
     text-align: left; 
-    font-size: 15px; 
+    font-size: 14px; 
     font-weight: 800; 
 }
 
 .inv-table td { 
-    padding: 6px 2px; 
+    padding: 8px 0; 
     border-bottom: 1px dotted #eee; 
-    font-size: 15px; 
-    vertical-align: top; 
+    font-size: 14px; 
+    vertical-align: top;
+    word-break: keep-all; /* Prevents breaking words in the middle */
+}
+
+/* Align Qty and Total to the right */
+.inv-table th:nth-child(2), .inv-table td:nth-child(2),
+.inv-table th:nth-child(3), .inv-table td:nth-child(3) {
+    text-align: right;
 }
 
 .inv-total-row { 
@@ -115,8 +126,8 @@
 .inv-total-item { 
     display: flex; 
     justify-content: space-between; 
-    padding: 2px 0; 
-    font-size: 16px; 
+    padding: 4px 0; 
+    font-size: 15px; 
 }
 
 .inv-grand-total { 
@@ -127,7 +138,6 @@
     font-size: 18px; 
 }
 
-/* Print logic specifically for Safari/A4 and 80mm printers */
 @media print {
     @page {
         size: 80mm auto; 
@@ -137,37 +147,27 @@
     html, body { 
         margin: 0; 
         padding: 0; 
-        width: 100%;
-        background: #fff;
+        width: 80mm;
     }
 
     #invoice-paper {
         width: 80mm !important;
         max-width: 80mm !important;
-        margin: 0 !important; 
-        padding: 2mm !important; /* Minimal padding to use full width */
-        box-sizing: border-box !important;
-        letter-spacing: 0px !important; /* Remove letter spacing to save room */
+        padding: 4mm !important; /* Proper margin for thermal printers */
+        margin: 0 !important;
     }
 
-    /* Force the item name cell to NOT wrap and give it all available space */
+    /* Force Item Name to stay on one line and push other columns to the absolute right */
     .inv-table td:first-child {
         white-space: nowrap !important;
-        width: 60% !important; /* Force first column to be wider */
+        overflow: visible !important;
     }
 
-    /* Keep Price and Total columns narrow */
-    .inv-table th:nth-child(2), .inv-table td:nth-child(2),
-    .inv-table th:nth-child(3), .inv-table td:nth-child(3) {
-        width: 20% !important;
-        text-align: right !important;
+    .inv-table {
+        width: 100% !important;
     }
 
     .no-print { display: none !important; }
-    
-    .inv-table tr {
-        page-break-inside: avoid !important;
-    }
 }
 </style>
 </head>
