@@ -1,4 +1,4 @@
-
+```html
 <!DOCTYPE html>
 <html lang="my">
 <head>
@@ -57,6 +57,14 @@
             letter-spacing: 0.8px;
         }
 
+        .inv-logo { 
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-size: 32px; 
+            font-weight: 900; 
+            text-align: center; 
+            margin-bottom: 5px;
+            letter-spacing: 2px;
+        }
         .inv-header { text-align: center; margin-bottom: 15px; border-bottom: 1px dashed #000; padding-bottom: 10px; }
         .inv-title { font-size: 29px; font-weight: 800; margin-bottom: 2px; }
         
@@ -85,13 +93,13 @@
             #invoice-paper {
                 width: 80mm !important;
                 margin: 0 !important;
-                padding: 4mm !important; 
+                padding: 6mm !important; /* Increased Margin for better side spacing */
                 padding-top: 13.6mm !important; 
                 min-height: 0 !important;
                 overflow: visible !important;
                 display: block !important;
                 visibility: visible !important;
-                letter-spacing: 0.8px !important;
+                letter-spacing: 1px !important; /* Slightly more spacious text */
             }
         }
     </style>
@@ -111,12 +119,13 @@
     <div id="invoice-modal" class="modal-overlay hidden">
         <div class="invoice-box">
             <div id="invoice-paper">
+                <div class="inv-logo">SM</div>
                 <div class="inv-header">
                     <div class="inv-title">စန်းမော် ပရိဘောဂ</div>
                     <div class="mt-2 font-black uppercase tracking-tighter text-[17px] border border-black inline-block px-3 py-1">Cash Receipt / ပြေစာ</div>
                 </div>
 
-                <div class="space-y-2 mb-4 text-[19px] tracking-wide">
+                <div class="space-y-3 mb-4 text-[19px] tracking-wide">
                     <div class="flex justify-between">
                         <span class="text-gray-500">နေ့စွဲ:</span>
                         <span id="inv-date" class="font-bold"></span>
@@ -390,14 +399,16 @@
                             @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&family=Pyidaungsu:wght@400;700&display=swap');
                             @page { size: 80mm auto; margin: 0; }
                             html, body { font-family: 'Plus Jakarta Sans', 'Pyidaungsu', sans-serif; margin: 0; padding: 0; background: #fff; color: #000; height: auto !important; min-height: 0 !important; overflow: visible !important; }
-                            #print-container { width: 80mm; margin: 0 !important; margin-left: 15.2mm !important; margin-top: -15mm !important; padding: 6mm 4mm; padding-top: 13.6mm; box-sizing: border-box; letter-spacing: 0.8px; }
+                            #print-container { width: 80mm; margin: 0 !important; padding: 6mm 6mm; padding-top: 13.6mm; box-sizing: border-box; letter-spacing: 1px; }
+                            .inv-logo { font-family: 'Plus Jakarta Sans', sans-serif; font-size: 32px; font-weight: 900; text-align: center; margin-bottom: 5px; letter-spacing: 2px; }
                             .inv-header { text-align: center; margin-bottom: 15px; border-bottom: 1.5px dashed #000; padding-bottom: 10px; }
                             .inv-title { font-size: 29px; font-weight: 800; }
                             .inv-table { width: 100%; border-collapse: collapse; margin: 12px 0; }
                             .inv-table th { border-bottom: 1.5px solid #000; padding: 8px 0; text-align: left; font-size: 20px; font-weight: 800; }
                             .inv-table td { padding: 10px 0; border-bottom: 1px dotted #ccc; font-size: 20px; font-weight: 700; vertical-align: top; }
                             .inv-grand-total { border-top: 2px solid #000; margin-top: 10px; padding-top: 10px; font-weight: 900; font-size: 23px; }
-                            .flex { display: flex; } .justify-between { justify-content: space-between; } .text-right { text-align: right; } .text-center { text-align: center; } .font-bold { font-weight: 700; } .font-black { font-weight: 900; } .space-y-2 > * + * { margin-top: 0.5rem; } .mt-8 { margin-top: 2rem; } .pt-4 { padding-top: 1rem; } .border-t { border-top: 1px solid #000; } .text-[19px] { font-size: 19px; } .tracking-wide { letter-spacing: 1.8px; }
+                            .flex { display: flex; } .justify-between { justify-content: space-between; } .text-right { text-align: right; } .text-center { text-align: center; } .font-bold { font-weight: 700; } .font-black { font-weight: 900; } .space-y-3 > * + * { margin-top: 0.75rem; } .mt-8 { margin-top: 2rem; } .pt-4 { padding-top: 1rem; } .border-t { border-top: 1px solid #000; } .text-[19px] { font-size: 19px; } .tracking-wide { letter-spacing: 1.8px; }
+                            .border { border: 1px solid black; } .inline-block { display: inline-block; } .px-3 { padding-left: 0.75rem; padding-right: 0.75rem; } .py-1 { padding-top: 0.25rem; padding-bottom: 0.25rem; } .mt-2 { margin-top: 0.5rem; } .text-[17px] { font-size: 17px; } .uppercase { text-transform: uppercase; }
                         </style>
                     </head>
                     <body>
@@ -406,7 +417,6 @@
                             window.onload = function() { 
                                 setTimeout(function() { 
                                     window.print();
-                                    // Let the browser handle the print dialog, then cleanup
                                     setTimeout(function() {
                                         window.parent.document.getElementById('print-iframe').remove();
                                     }, 1000);
@@ -449,11 +459,11 @@
             onSnapshot(collection(db, 'artifacts', appId, 'public', 'data', 'records'), (s) => {
                 records = s.docs.map(d => ({ id: d.id, ...d.data() }));
                 updateDashboard(); renderRecords(); renderAccounting(); renderDailySummary();
-            });
+            }, (e) => console.error(e));
             onSnapshot(collection(db, 'artifacts', appId, 'public', 'data', 'stock'), (s) => {
                 stocks = s.docs.map(d => ({ id: d.id, ...d.data() }));
                 renderStock();
-            });
+            }, (e) => console.error(e));
         }
         function monitorConnection() {
             const statusEl = document.getElementById('db-status');
@@ -479,7 +489,6 @@
             cart = []; renderCart();
         };
 
-        // Stock Search - SKU ရိုက်တာနဲ့ တန်းပြပေးသည်
         document.getElementById('sku-search').oninput = (e) => {
             const val = e.target.value.trim().toUpperCase();
             const found = stocks.find(s => s.sku === val);
@@ -494,7 +503,6 @@
             }
         };
 
-        // Stock List Search - ရိုက်တာနဲ့ တန်းပြပေးသည်
         document.getElementById('stock-list-search').oninput = (e) => {
             renderStock(e.target.value.trim().toLowerCase());
         };
@@ -595,7 +603,6 @@
             document.getElementById('total-exp').innerText = today.filter(r => r.type === 'expense').reduce((s,i) => s + i.amt, 0).toLocaleString();
         }
 
-        // Daily Summary: Cashier vs Owner roles logic
         function renderDailySummary() {
             const d = document.getElementById('main-date').value;
             const today = records.filter(r => r.date === d);
@@ -608,7 +615,6 @@
 
             document.getElementById('summary-date-label').innerText = d;
 
-            // Stats Cards based on Role
             const statsContainer = document.getElementById('daily-stats-container');
             if (currentUser === 'Owner') {
                 statsContainer.innerHTML = `
@@ -628,7 +634,6 @@
                 `;
             }
 
-            // Combine Incomes and Expenses for the list
             const combinedList = [...today].sort((a,b) => b.createdAt?.seconds - a.createdAt?.seconds);
             document.getElementById('daily-summary-list').innerHTML = combinedList.map(r => `
                 <div class="record-card p-5 border-l-4 ${r.type === 'income' ? 'border-indigo-500' : 'border-rose-500'} flex justify-between items-center">
