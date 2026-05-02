@@ -1,3 +1,4 @@
+```html
 <!DOCTYPE html>
 <html lang="my">
 <head>
@@ -157,7 +158,6 @@
                         display: block !important;
                     }
                 
-                    /* Ensure text takes full width and never wraps to a new line */
                     .inv-table td, .inv-total-item, .inv-header div {
                         white-space: nowrap !important;
                         word-break: normal !important;
@@ -168,14 +168,12 @@
                         table-layout: fixed !important;
                     }
 
-                    /* Allocate maximum width to Item Name, minimal to others */
                     .inv-col-item { width: 70% !important; }
                     .inv-col-qty { width: 10% !important; }
                     .inv-col-total { width: 30% !important; }
 
-                    /* Text sizes for readability on 80mm roll */
                     .inv-table td, .inv-table th {
-                        font-size: 5px !important;
+                        font-size: 12px !important;
                     }
                 
                     .no-print { display: none !important; }
@@ -226,7 +224,7 @@
                         <tr>
                             <th>အမျိုးအမည်</th>
                             <th width="40" class="text-center">Qty</th>
-                            <th width="150" class="text-right">သင့်ငွေ</th>
+                            <th width="120" class="text-right">သင့်ငွေ</th>
                         </tr>
                     </thead>
                     <tbody id="inv-items-list">
@@ -474,21 +472,29 @@
                             #print-container { 
                                 width: 80mm; 
                                 margin: 0 !important; 
-                                padding: 6mm 6mm; 
-                                padding-left: 18.7mm !important; /* 0.5 inch (12.7mm) shift to right */
-                                padding-top: 13.6mm; 
+                                padding: 2mm 2mm; /* Further reduced padding to stay on 1 page */
+                                padding-left: 12.7mm !important; /* 0.5 inch shift to right for printer margin */
+                                padding-top: 5mm; 
                                 box-sizing: border-box; 
-                                letter-spacing: 1px; 
+                                letter-spacing: 0.5px; 
                             }
-                            .inv-logo { font-family: 'Plus Jakarta Sans', sans-serif; font-size: 32px; font-weight: 900; text-align: center; margin-bottom: 5px; letter-spacing: 2px; }
-                            .inv-header { text-align: center; margin-bottom: 15px; border-bottom: 1.5px dashed #000; padding-bottom: 10px; }
-                            .inv-title { font-size: 29px; font-weight: 800; }
-                            .inv-table { width: 100%; border-collapse: collapse; margin: 12px 0; }
-                            .inv-table th { border-bottom: 1.5px solid #000; padding: 8px 0; text-align: left; font-size: 20px; font-weight: 800; }
-                            .inv-table td { padding: 10px 0; border-bottom: 1px dotted #ccc; font-size: 20px; font-weight: 700; vertical-align: top; }
-                            .inv-grand-total { border-top: 2px solid #000; margin-top: 10px; padding-top: 10px; font-weight: 900; font-size: 23px; }
-                            .flex { display: flex; } .justify-between { justify-content: space-between; } .text-right { text-align: right; } .text-center { text-align: center; } .font-bold { font-weight: 700; } .font-black { font-weight: 900; } .space-y-3 > * + * { margin-top: 0.75rem; } .mt-8 { margin-top: 2rem; } .pt-4 { padding-top: 1rem; } .border-t { border-top: 1px solid #000; } .text-[19px] { font-size: 19px; } .tracking-wide { letter-spacing: 1.8px; }
-                            .border { border: 1px solid black; } .inline-block { display: inline-block; } .px-3 { padding-left: 0.75rem; padding-right: 0.75rem; } .py-1 { padding-top: 0.25rem; padding-bottom: 0.25rem; } .mt-2 { margin-top: 0.5rem; } .text-[17px] { font-size: 17px; } .uppercase { text-transform: uppercase; }
+                            .inv-logo { font-size: 24px; font-weight: 900; text-align: center; margin-bottom: 2px; }
+                            .inv-header { text-align: center; margin-bottom: 8px; border-bottom: 1px dashed #000; padding-bottom: 5px; }
+                            .inv-title { font-size: 22px; font-weight: 800; }
+                            .inv-table { width: 100%; border-collapse: collapse; margin: 5px 0; table-layout: auto; }
+                            .inv-table th { border-bottom: 1.5px solid #000; padding: 5px 0; text-align: left; font-size: 14px; font-weight: 800; }
+                            .inv-table td { 
+                                padding: 6px 0; 
+                                border-bottom: 1px dotted #ccc; 
+                                font-size: 14px; /* Reduced font size to fit long text */
+                                font-weight: 700; 
+                                vertical-align: top; 
+                                white-space: nowrap; /* Prevents wrapping, forces text wide */
+                                word-break: keep-all;
+                            }
+                            .inv-grand-total { border-top: 2px solid #000; margin-top: 8px; padding-top: 8px; font-weight: 900; font-size: 16px; }
+                            .flex { display: flex; } .justify-between { justify-content: space-between; } .text-right { text-align: right; } .text-center { text-align: center; } .font-bold { font-weight: 700; } .font-black { font-weight: 900; } .space-y-3 > * + * { margin-top: 0.4rem; } .mt-8 { margin-top: 1rem; } .pt-4 { padding-top: 0.5rem; } .border-t { border-top: 1px solid #000; } .text-[19px] { font-size: 14px; } .tracking-wide { letter-spacing: 1px; }
+                            .border { border: 1px solid black; } .inline-block { display: inline-block; } .px-3 { padding-left: 0.5rem; padding-right: 0.5rem; } .py-1 { padding-top: 0.15rem; padding-bottom: 0.15rem; } .mt-2 { margin-top: 0.3rem; } .text-[17px] { font-size: 13px; } .uppercase { text-transform: uppercase; }
                         </style>
                     </head>
                     <body>
@@ -668,7 +674,7 @@
             else { document.getElementById('inv-address-row').classList.add('hidden'); }
             
             document.getElementById('inv-items-list').innerHTML = r.items.map((i) => `
-                <tr><td class="font-bold"><div class="text-[20px] tracking-wider">${i.desc}</div></td><td class="text-center font-bold text-[20px]">${i.qty}</td><td class="text-right font-bold text-[20px]">${(i.qty * i.sell).toLocaleString()}</td></tr>
+                <tr><td class="font-bold"><div>${i.desc}</div></td><td class="text-center font-bold">${i.qty}</td><td class="text-right font-bold">${(i.qty * i.sell).toLocaleString()}</td></tr>
             `).join('');
             document.getElementById('inv-total').innerText = r.amt.toLocaleString() + " Ks";
             document.getElementById('invoice-modal').classList.remove('hidden');
