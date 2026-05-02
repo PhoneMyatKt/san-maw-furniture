@@ -1,3 +1,4 @@
+```html
 <!DOCTYPE html>
 <html lang="my">
 <head>
@@ -47,7 +48,7 @@
                 }
                 
                 #invoice-paper {
-                    padding: 15px; /* Reduced padding to give text more room */
+                    padding: 15px;
                     color: #000;
                     background: white;
                     line-height: 1.2;
@@ -145,38 +146,45 @@
                         margin: 0; 
                         padding: 0; 
                         width: 80mm;
+                        overflow: visible !important;
                     }
                 
                     #invoice-paper {
                         width: 80mm !important;
                         max-width: 80mm !important;
                         margin: 0 !important;
-                        padding: 2mm !important;
-                        padding-left: 0.2in !important;
+                        padding: 1mm !important;
+                        padding-left: 0.15in !important;
                         box-sizing: border-box !important;
                         display: block !important;
                     }
                 
-                    /* Ensure text takes full width and never wraps to a new line */
+                    /* Table and spacing adjustments to prevent two-page printing */
                     .inv-table td, .inv-total-item, .inv-header div {
                         white-space: nowrap !important;
-                        word-break: normal !important;
+                        overflow: visible !important;
+                        padding-top: 2px !important;
+                        padding-bottom: 2px !important;
                     }
 
                     .inv-table {
                         width: 100% !important;
-                        table-layout: fixed !important;
+                        table-layout: auto !important; /* Changed to auto to fit text better */
                     }
 
-                    /* Allocate maximum width to Item Name, minimal to others */
-                    .inv-col-item { width: 70% !important; }
-                    .inv-col-qty { width: 10% !important; }
-                    .inv-col-total { width: 30% !important; }
+                    /* Column sizing to give the item name the most room */
+                    .inv-col-item { width: auto !important; }
+                    .inv-col-qty { width: 30px !important; }
+                    .inv-col-total { width: 80px !important; }
 
-                    /* Text sizes for readability on 80mm roll */
+                    /* Font size reduced so long names stay on one line across the width */
                     .inv-table td, .inv-table th {
-                        font-size: 5px !important;
+                        font-size: 11px !important;
                     }
+
+                    .inv-logo { font-size: 18px !important; }
+                    .inv-title { font-size: 16px !important; }
+                    .inv-grand-total { font-size: 14px !important; }
                 
                     .no-print { display: none !important; }
                 }
