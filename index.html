@@ -38,7 +38,7 @@
         .cart-item { background: #f8fafc; border-radius: 1rem; padding: 1rem; margin-bottom: 0.5rem; border-left: 4px solid var(--primary); }
 
         /* Invoice Preview UI */
-       .invoice-box {
+    .invoice-box {
     background: white;
     width: 100%;
     max-width: 440px; /* Added 5px as requested */
@@ -84,6 +84,7 @@
     width: 100%; 
     border-collapse: collapse; 
     margin: 5px 0; 
+    table-layout: auto; /* Allow columns to adjust based on content */
 }
 
 .inv-table th { 
@@ -129,8 +130,8 @@
 /* Print logic specifically for Safari/A4 and 80mm printers */
 @media print {
     @page {
-        size: 80mm auto; /* Request thermal size */
-        margin: 0;       /* Remove browser headers/footers */
+        size: 80mm auto; 
+        margin: 0;
     }
 
     html, body { 
@@ -138,34 +139,32 @@
         padding: 0; 
         width: 100%;
         background: #fff;
-        display: flex;
-        justify-content: center; /* Centers content if paper is wider than 80mm */
     }
 
     #invoice-paper {
         width: 80mm !important;
         max-width: 80mm !important;
-        margin: 0 auto !important; /* Force center */
-        padding: 2mm 1mm !important; /* Reduced padding to give more space for text */
+        margin: 0 !important; 
+        padding: 2mm !important; /* Minimal padding to use full width */
         box-sizing: border-box !important;
-        position: relative;
-        left: 0;
-        right: 0;
-        
-        /* Typography fixes to keep words on one line */
-        letter-spacing: -0.1px !important; /* Tightened slightly for longer names */
-        line-height: 1.1 !important;
-        page-break-inside: avoid;
+        letter-spacing: 0px !important; /* Remove letter spacing to save room */
     }
 
-    .inv-table td, .inv-table th {
-        font-size: 14px !important; /* Slightly smaller to fit "YSL myself 10ml" on one line */
-        padding: 4px 1px !important;
+    /* Force the item name cell to NOT wrap and give it all available space */
+    .inv-table td:first-child {
+        white-space: nowrap !important;
+        width: 60% !important; /* Force first column to be wider */
+    }
+
+    /* Keep Price and Total columns narrow */
+    .inv-table th:nth-child(2), .inv-table td:nth-child(2),
+    .inv-table th:nth-child(3), .inv-table td:nth-child(3) {
+        width: 20% !important;
+        text-align: right !important;
     }
 
     .no-print { display: none !important; }
     
-    /* Stop table from splitting */
     .inv-table tr {
         page-break-inside: avoid !important;
     }
