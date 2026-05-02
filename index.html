@@ -154,21 +154,24 @@
                         max-width: 80mm !important;
                         margin: 0 !important;
                         padding: 1mm !important;
-                        padding-left: 0.2in !important; /* Move 0.2 inches to the right as requested */
+                        padding-left: 0.2in !important; /* Move 0.2 inches to the right */
                         box-sizing: border-box !important;
+                        display: block !important;
                     }
                 
-                    /* Save height by forcing single line and preventing wrapping */
-                    .inv-table td, .inv-total-item, .inv-header, .inv-logo {
+                    /* Keep text in one line to save height, but allow it to use full width */
+                    .inv-table td, .inv-total-item {
                         white-space: nowrap !important;
-                        overflow: hidden !important;
-                        text-overflow: clip !important;
                     }
 
                     .inv-table {
                         width: 100% !important;
-                        table-layout: fixed !important;
+                        table-layout: auto !important; /* Allow columns to breathe and use full 80mm width */
                     }
+
+                    .inv-col-item { width: auto !important; }
+                    .inv-col-qty { width: 40px !important; }
+                    .inv-col-total { width: 80px !important; }
                 
                     .no-print { display: none !important; }
                 }
