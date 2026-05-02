@@ -41,7 +41,7 @@
         .invoice-box {
             background: white;
             width: 100%;
-            max-width: 1000px; /* Added 5px as requested */
+            max-width: 440px; /* Added 5px as requested */
             border-radius: 1.5rem;
             overflow: hidden;
             box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25);
@@ -51,7 +51,7 @@
             padding: 20px;
             color: #000;
             background: white;
-            line-height: 1.4;
+            line-height: 1.1;
             width: 100%;
             box-sizing: border-box;
             letter-spacing: 0.8px;
@@ -80,7 +80,7 @@
         /* General Print Fix */
         @media print {
             @page {
-                size: 150mm auto;
+                size: 240mm auto;
                 margin: 0; 
             }
             html, body { 
@@ -91,7 +91,7 @@
             }
             .no-print { display: none !important; }
             #invoice-paper {
-                width: 150mm !important;
+                width: 240mm !important;
                 margin: 0 !important;
                 padding: 15mm !important;
                 padding-left: 19.7mm !important; /* 6mm base + 12.7mm (0.5 inch) shift to right */
@@ -132,7 +132,7 @@
                         <span id="inv-date" class="font-bold"></span>
                     </div>
                     <div class="flex justify-between">
-                        <span class="text-gray-500">ဝယ်သူ:</span>
+                        <span class="text-gray-500">အမည်:</span>
                         <span id="inv-customer" class="font-bold"></span>
                     </div>
                     <div class="flex justify-between">
@@ -148,7 +148,7 @@
                     <thead>
                         <tr>
                             <th>အမျိုးအမည်</th>
-                            <th width="40" class="text-center">ခု</th>
+                            <th width="40" class="text-center">Qty</th>
                             <th width="100" class="text-right">သင့်ငွေ</th>
                         </tr>
                     </thead>
