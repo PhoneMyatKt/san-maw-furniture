@@ -38,133 +38,138 @@
         .cart-item { background: #f8fafc; border-radius: 1rem; padding: 1rem; margin-bottom: 0.5rem; border-left: 4px solid var(--primary); }
 
         /* Invoice Preview UI */
-        .invoice-box {
-            background: white;
-            width: 100%;
-            max-width: 440px; /* Added 5px as requested */
-            border-radius: 1.5rem;
-            overflow: hidden;
-            box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25);
-        }
+       .invoice-box {
+    background: white;
+    width: 100%;
+    max-width: 440px; /* Added 5px as requested */
+    border-radius: 1.5rem;
+    overflow: hidden;
+    box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25);
+}
 
-        #invoice-paper {
-        padding: 20px;
-        color: #000;
-        background: white;
-        line-height: 1.2;
+#invoice-paper {
+    padding: 20px;
+    color: #000;
+    background: white;
+    line-height: 1.2;
+    width: 100%;
+    max-width: 80mm;
+    margin: 0 auto;
+    box-sizing: border-box;
+    letter-spacing: 0.5px;
+}
+
+.inv-logo { 
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 26px; 
+    font-weight: 900; 
+    text-align: center; 
+    margin-bottom: 5px;
+}
+
+.inv-header { 
+    text-align: center; 
+    margin-bottom: 12px; 
+    border-bottom: 1px dashed #000; 
+    padding-bottom: 8px; 
+}
+
+.inv-title { 
+    font-size: 22px; 
+    font-weight: 800; 
+    margin-bottom: 2px; 
+}
+
+.inv-table { 
+    width: 100%; 
+    border-collapse: collapse; 
+    margin: 5px 0; 
+}
+
+.inv-table th { 
+    border-bottom: 1px solid #000; 
+    padding: 6px 2px; 
+    text-align: left; 
+    font-size: 15px; 
+    font-weight: 800; 
+}
+
+.inv-table td { 
+    padding: 6px 2px; 
+    border-bottom: 1px dotted #eee; 
+    font-size: 15px; 
+    vertical-align: top; 
+}
+
+.inv-total-row { 
+    display: flex; 
+    justify-content: flex-end; 
+    margin-top: 10px; 
+}
+
+.inv-total-box { 
+    width: 100%; 
+}
+
+.inv-total-item { 
+    display: flex; 
+    justify-content: space-between; 
+    padding: 2px 0; 
+    font-size: 16px; 
+}
+
+.inv-grand-total { 
+    border-top: 2px solid #000; 
+    margin-top: 5px; 
+    padding-top: 5px; 
+    font-weight: 900; 
+    font-size: 18px; 
+}
+
+/* Print logic specifically for Safari/A4 and 80mm printers */
+@media print {
+    @page {
+        size: 80mm auto; /* Request thermal size */
+        margin: 0;       /* Remove browser headers/footers */
+    }
+
+    html, body { 
+        margin: 0; 
+        padding: 0; 
         width: 100%;
-        max-width: 80mm;
-        margin: 0 auto;
-        box-sizing: border-box;
-        letter-spacing: 0.5px;
+        background: #fff;
+        display: flex;
+        justify-content: center; /* Centers content if paper is wider than 80mm */
     }
 
-    .inv-logo { 
-        font-family: 'Plus Jakarta Sans', sans-serif;
-        font-size: 26px; 
-        font-weight: 900; 
-        text-align: center; 
-        margin-bottom: 5px;
-    }
-
-    .inv-header { 
-        text-align: center; 
-        margin-bottom: 12px; 
-        border-bottom: 1px dashed #000; 
-        padding-bottom: 8px; 
-    }
-
-    .inv-title { 
-        font-size: 22px; 
-        font-weight: 800; 
-        margin-bottom: 2px; 
-    }
-    
-    .inv-table { 
-        width: 100%; 
-        border-collapse: collapse; 
-        margin: 5px 0; 
-    }
-
-    .inv-table th { 
-        border-bottom: 1px solid #000; 
-        padding: 6px 2px; 
-        text-align: left; 
-        font-size: 15px; 
-        font-weight: 800; 
-    }
-
-    .inv-table td { 
-        padding: 6px 2px; 
-        border-bottom: 1px dotted #eee; 
-        font-size: 15px; 
-        vertical-align: top; 
-    }
-    
-    .inv-total-row { 
-        display: flex; 
-        justify-content: flex-end; 
-        margin-top: 10px; 
-    }
-
-    .inv-total-box { 
-        width: 100%; 
-    }
-
-    .inv-total-item { 
-        display: flex; 
-        justify-content: space-between; 
-        padding: 2px 0; 
-        font-size: 16px; 
-    }
-
-    .inv-grand-total { 
-        border-top: 2px solid #000; 
-        margin-top: 5px; 
-        padding-top: 5px; 
-        font-weight: 900; 
-        font-size: 18px; 
-    }
-
-    /* Print logic specifically for Safari/A4 and 80mm printers */
-    @media print {
-        @page {
-            size: 80mm auto; /* Request thermal size */
-            margin: 0;       /* Remove browser headers/footers */
-        }
-
-        html, body { 
-            margin: 0; 
-            padding: 0; 
-            width: 100%;
-            background: #fff;
-            display: flex;
-            justify-content: center; /* Centers content if paper is wider than 80mm */
-        }
-
-        #invoice-paper {
-            width: 80mm !important;
-            max-width: 80mm !important;
-            margin: 0 auto !important; /* Force center */
-            padding: 4mm !important;   /* Small uniform padding */
-            box-sizing: border-box !important;
-            position: relative;
-            left: 0;
-            right: 0;
-            
-            /* Typography fixes to keep it on one page */
-            letter-spacing: 0.2px !important; 
-            line-height: 1.1 !important;
-            page-break-inside: avoid;
-        }
-
-        .no-print { display: none !important; }
+    #invoice-paper {
+        width: 80mm !important;
+        max-width: 80mm !important;
+        margin: 0 auto !important; /* Force center */
+        padding: 2mm 1mm !important; /* Reduced padding to give more space for text */
+        box-sizing: border-box !important;
+        position: relative;
+        left: 0;
+        right: 0;
         
-        /* Stop table from splitting */
-        .inv-table tr {
-            page-break-inside: avoid !important;
-        }
+        /* Typography fixes to keep words on one line */
+        letter-spacing: -0.1px !important; /* Tightened slightly for longer names */
+        line-height: 1.1 !important;
+        page-break-inside: avoid;
     }
+
+    .inv-table td, .inv-table th {
+        font-size: 14px !important; /* Slightly smaller to fit "YSL myself 10ml" on one line */
+        padding: 4px 1px !important;
+    }
+
+    .no-print { display: none !important; }
+    
+    /* Stop table from splitting */
+    .inv-table tr {
+        page-break-inside: avoid !important;
+    }
+}
 </style>
 </head>
 <body class="min-h-screen">
