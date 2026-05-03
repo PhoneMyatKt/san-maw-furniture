@@ -1,4 +1,4 @@
-```html
+
 <!DOCTYPE html>
 <html lang="my">
 <head>
@@ -177,7 +177,7 @@
                     .inv-col-total { width: 40% !important; }
 
                     .inv-table td, .inv-table th {
-                        font-size: 20px !important; /* Increased by 2px (from 18px to 20px) */
+                        font-size: 20px !important; 
                         padding-left: 2px !important;
                         padding-right: 2px !important;
                     }
@@ -491,7 +491,7 @@
                             .inv-table td { 
                                 padding: 6px 0; 
                                 border-bottom: 1px dotted #ccc; 
-                                font-size: 18px; /* Increased from 15px to 17px (2px increment) */
+                                font-size: 18px; 
                                 font-weight: 700; 
                                 vertical-align: top; 
                                 word-break: keep-all;
@@ -503,9 +503,9 @@
                             .inv-table th:nth-child(2), .inv-table td:nth-child(2) { text-align: center !important; padding-right: 5px; }
                             .inv-table th:nth-child(3), .inv-table td:nth-child(3) { text-align: right !important; }
 
-                            .inv-grand-total { border-top: 2px solid #000; margin-top: 8px; padding-top: 8px; font-weight: 900; font-size: 18px; /* Adjusted font size for consistency */ }
-                            .flex { display: flex; } .justify-between { justify-content: space-between; } .text-right { text-align: right; } .text-center { text-align: center; } .font-bold { font-weight: 700; } .font-black { font-weight: 900; } .space-y-3 > * + * { margin-top: 0.4rem; } .mt-8 { margin-top: 1rem; } .pt-4 { padding-top: 0.5rem; } .border-t { border-top: 1px solid #000; } .text-[19px] { font-size: 16px; /* Increased from 14px */ } .tracking-wide { letter-spacing: 1px; }
-                            .border { border: 1px solid black; } .inline-block { display: inline-block; } .px-3 { padding-left: 0.5rem; padding-right: 0.5rem; } .py-1 { padding-top: 0.15rem; padding-bottom: 0.15rem; } .mt-2 { margin-top: 0.3rem; } .text-[17px] { font-size: 15px; /* Increased from 13px */ } .uppercase { text-transform: uppercase; }
+                            .inv-grand-total { border-top: 2px solid #000; margin-top: 8px; padding-top: 8px; font-weight: 900; font-size: 18px; }
+                            .flex { display: flex; } .justify-between { justify-content: space-between; } .text-right { text-align: right; } .text-center { text-align: center; } .font-bold { font-weight: 700; } .font-black { font-weight: 900; } .space-y-3 > * + * { margin-top: 0.4rem; } .mt-8 { margin-top: 1rem; } .pt-4 { padding-top: 0.5rem; } .border-t { border-top: 1px solid #000; } .text-[19px] { font-size: 16px; } .tracking-wide { letter-spacing: 1px; }
+                            .border { border: 1px solid black; } .inline-block { display: inline-block; } .px-3 { padding-left: 0.5rem; padding-right: 0.5rem; } .py-1 { padding-top: 0.15rem; padding-bottom: 0.15rem; } .mt-2 { margin-top: 0.3rem; } .text-[17px] { font-size: 15px; } .uppercase { text-transform: uppercase; }
                         </style>
                     </head>
                     <body>
@@ -774,8 +774,16 @@
 
         window.saveStock = async () => {
             const id = document.getElementById('edit-stock-id').value;
+            const skuInput = document.getElementById('stock-sku').value.trim().toUpperCase();
+            
+            // SKU Duplicate Check logic
+            const duplicate = stocks.find(s => s.sku === skuInput && s.id !== id);
+            if(duplicate) {
+                return showToast("ဤ SKU နံပါတ်မှာ ရှိပြီးသားဖြစ်နေပါသည်။");
+            }
+
             const data = {
-                sku: document.getElementById('stock-sku').value.trim().toUpperCase(),
+                sku: skuInput,
                 name: document.getElementById('stock-name').value,
                 cost: parseFloat(document.getElementById('stock-cost').value) || 0,
                 sell: parseFloat(document.getElementById('stock-sell').value) || 0,
