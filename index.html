@@ -875,16 +875,87 @@
             }
         };
 
+        // အကြံပြုချက်များ ထုတ်ပေးရန် Function (New Logic)
+        function getBusinessAdvice(inc, cost, exp, fullRecords) {
+            let advice = [];
+            
+            // ၁။ Supplier စရိတ် များနေသလား စစ်ဆေးခြင်း
+            const supplierExp = fullRecords.filter(r => r.type === 'expense' && (r.desc.toLowerCase().includes('supply') || r.desc.toLowerCase().includes('supplier'))).reduce((s, r) => s + r.amt, 0);
+            if(supplierExp > (inc * 0.4)) {
+                advice.push("⚠️ Supplier စရိတ်များနေပါသည်။ ပစ္စည်းအဝယ်လျှော့သင့်ပါတယ်။");
+            }
+            
+            // ၂။ အထွေထွေ အသုံးစရိတ်များနေသလား စစ်ဆေးခြင်း
+            const otherExp = exp - supplierExp;
+            if(otherExp > (inc * 0.2)) {
+                advice.push("💡 အထွေထွေအသုံးစရိတ် များနေပါသည်။ အပိုသုံးစရိတ်များကို လျှော့သုံးစေလိုပါတယ်။");
+            }
+
+            // ၃။ ရောင်းအားကျနေသလား စစ်ဆေးခြင်း
+            if(inc < (cost * 1.1)) {
+                advice.push("📈 ရောင်းအားကျနေပါသည်။ အရောင်းမြှင့်တင်ရေး (Promotion) များ လုပ်ဆောင်သင့်ပါတယ်။");
+            }
+
+            if(advice.length === 0) advice.push("✅ လုပ်ငန်းလည်ပတ်မှု ကောင်းမွန်နေပါသည်။ ဤအတိုင်း ဆက်လက်ထိန်းသိမ်းပါ။");
+            
+            return advice.join('<br>');
+        }
+
         function renderAccounting() {
             const periods = {};
             records.forEach(r => {
                 const date = new Date(r.date); if(isNaN(date)) return;
                 const pKey = `${date.getFullYear()}-${date.getMonth()+1}-${date.getDate() <= 15 ? 'P1' : 'P2'}`;
-                if(!periods[pKey]) periods[pKey] = { label: `${date.toLocaleString('default', { month: 'short' })} ${date.getDate() <= 15 ? '1-15' : '16-End'}`, inc: 0, cost: 0, exp: 0 };
-                if(r.type === 'income') { periods[pKey].inc += r.amt; periods[pKey].cost += r.cost || 0; } else periods[pKey].exp += r.amt;
+                if(!periods[pKey]) {
+                    periods[pKey] = { 
+                        label: `${date.toLocaleString('default', { month: 'short' })} ${date.getDate() <= 15 ? '1-15' : '16-End'}`, 
+                        inc: 0, 
+                        cost: 0, 
+                        exp: 0,
+                        rawRecords: []
+                    };
+                }
+                if(r.type === 'income') { 
+                    periods[pKey].inc += r.amt; 
+                    periods[pKey].cost += r.cost || 0; 
+                } else {
+                    periods[pKey].exp += r.amt;
+                }
+                periods[pKey].rawRecords.push(r);
             });
             
-            document.getElementById('accounting-list').innerHTML = Object.values(periods).map(p => `<div class="bg-white p-6 rounded-3xl shadow-md border-t-4 border-indigo-600 mb-4"><p class="text-sm font-black text-indigo-600 mb-4">${p.label}</p><div class="grid grid-cols-2 gap-3"><div class="bg-slate-50 p-4 rounded-2xl"><p class="text-[10px] font-bold text-slate-400">Sales</p><p class="text-sm font-black">${p.inc.toLocaleString()}</p></div><div class="bg-indigo-50 p-4 rounded-2xl"><p class="text-[10px] font-bold text-indigo-400">Cost (ရင်းစျေး)</p><p class="text-sm font-black">${p.cost.toLocaleString()}</p></div><div class="bg-rose-50 p-4 rounded-2xl"><p class="text-[10px] font-bold text-rose-400">Exp</p><p class="text-sm font-black">${p.exp.toLocaleString()}</p></div><div class="bg-emerald-50 p-4 rounded-2xl"><p class="text-[10px] font-bold text-emerald-400">Profit (Sales - Exp)</p><p class="text-sm font-black">${(p.inc - p.exp).toLocaleString()}</p></div></div></div>`).join('');
+            document.getElementById('accounting-list').innerHTML = Object.values(periods).map(p => {
+                // Profit Margin Calculation: (Sale - Cost) / Sale
+                const profitMargin = p.inc > 0 ? (((p.inc - p.cost) / p.inc) * 100).toFixed(1) : 0;
+                const adviceHtml = getBusinessAdvice(p.inc, p.cost, p.exp, p.rawRecords);
+
+                return `
+                <div class="bg-white p-6 rounded-3xl shadow-md border-t-4 border-indigo-600 mb-6">
+                    <p class="text-sm font-black text-indigo-600 mb-4">${p.label}</p>
+                    <div class="grid grid-cols-2 gap-3 mb-4">
+                        <div class="bg-slate-50 p-4 rounded-2xl"><p class="text-[10px] font-bold text-slate-400">Sales</p><p class="text-sm font-black">${p.inc.toLocaleString()}</p></div>
+                        <div class="bg-indigo-50 p-4 rounded-2xl"><p class="text-[10px] font-bold text-indigo-400">Cost (ရင်းစျေး)</p><p class="text-sm font-black">${p.cost.toLocaleString()}</p></div>
+                        <div class="bg-rose-50 p-4 rounded-2xl"><p class="text-[10px] font-bold text-rose-400">Exp</p><p class="text-sm font-black">${p.exp.toLocaleString()}</p></div>
+                        <div class="bg-emerald-50 p-4 rounded-2xl"><p class="text-[10px] font-bold text-emerald-400">Profit (Sales - Exp)</p><p class="text-sm font-black">${(p.inc - p.exp).toLocaleString()}</p></div>
+                    </div>
+                    
+                    <div class="bg-amber-50 p-4 rounded-2xl border border-amber-100 mb-4">
+                        <div class="flex justify-between items-center">
+                            <p class="text-[10px] font-black text-amber-600 uppercase">Profit Margin (%)</p>
+                            <p class="text-lg font-black text-amber-700">${profitMargin}%</p>
+                        </div>
+                        <p class="text-[9px] text-amber-500 mt-1">* ပုံသေနည်း: (Sales - Cost) / Sales</p>
+                    </div>
+
+                    <div class="bg-indigo-900 p-5 rounded-2xl text-white">
+                        <div class="flex items-center gap-2 mb-2">
+                            <i class="fas fa-robot text-indigo-300"></i>
+                            <p class="text-[10px] font-black uppercase tracking-widest text-indigo-200">အကြံပြုရန်</p>
+                        </div>
+                        <p class="text-xs leading-relaxed font-bold">${adviceHtml}</p>
+                    </div>
+                </div>`;
+            }).join('');
         }
 
         window.saveStock = async () => {
@@ -964,6 +1035,7 @@
             document.getElementById(`nav-${v}`)?.classList.add('active');
             if(v === 'home' || v === 'daily-summary') { updateDashboard(); renderDailySummary(); }
             if(v === 'records') renderRecords();
+            if(v === 'accounting') renderAccounting();
             if(v !== 'stock') toggleStockAdd(false);
             window.scrollTo({ top: 0, behavior: 'smooth' });
         };
