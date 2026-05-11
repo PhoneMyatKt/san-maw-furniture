@@ -38,153 +38,153 @@
         .cart-item { background: #f8fafc; border-radius: 1rem; padding: 1rem; margin-bottom: 0.5rem; border-left: 4px solid var(--primary); }
 
         /* Invoice Preview UI */
-                .invoice-box {
-                    background: white;
-                    width: 100%;
-                    max-width: 440px;
-                    border-radius: 1.5rem;
-                    overflow: hidden;
-                    box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25);
-                }
-                
-                #invoice-paper {
-                    padding: 15px;
-                    color: #000;
-                    background: white;
-                    line-height: 1.2;
-                    width: 100%;
-                    max-width: 100mm;
-                    margin: 4px auto;
-                    box-sizing: border-box;
-                }
-                
-                .inv-logo { 
-                    font-family: 'Plus Jakarta Sans', sans-serif;
-                    font-size: 26px; 
-                    font-weight: 900; 
-                    text-align: center; 
-                    margin-bottom: 5px;
-                }
-                
-                .inv-header { 
-                    text-align: center; 
-                    margin-bottom: 12px; 
-                    border-bottom: 1px dashed #000; 
-                    padding-bottom: 8px; 
-                }
-                
-                .inv-title { 
-                    font-size: 24px; 
-                    font-weight: 800; 
-                    margin-bottom: 2px; 
-                }
-                
-                .inv-table { 
-                    width: 100%; 
-                    border-collapse: collapse; 
-                    margin: 5px 0; 
-                    table-layout: fixed; 
-                }
-                
-                .inv-col-item { width: 45%; }
-                .inv-col-qty { width: 20%; }
-                .inv-col-total { width: 35%; }
-                
-                .inv-table th { 
-                    border-bottom: 1px solid #000; 
-                    padding: 6px 0; 
-                    text-align: left; 
-                    font-size: 16px; 
-                    font-weight: 800; 
-                }
-                
-                .inv-table td { 
-                    padding: 8px 0; 
-                    border-bottom: 1px dotted #eee; 
-                    font-size: 16px; 
-                    vertical-align: top;
-                    word-break: keep-all; 
-                }
-                
-                .inv-table th:nth-child(2), .inv-table td:nth-child(2) {
-                    text-align: center;
-                    padding-right: 5px;
-                }
-                
-                .inv-table th:nth-child(3), .inv-table td:nth-child(3) {
-                    text-align: right;
-                }
-                
-                .inv-total-row { 
-                    display: flex; 
-                    justify-content: flex-end; 
-                    margin-top: 10px; 
-                }
-                
-                .inv-total-box { 
-                    width: 100%; 
-                }
-                
-                .inv-total-item { 
-                    display: flex; 
-                    justify-content: space-between; 
-                    padding: 4px 0; 
-                    font-size: 15px; 
-                }
-                
-                .inv-grand-total { 
-                    border-top: 2px solid #000; 
-                    margin-top: 5px; 
-                    padding-top: 5px; 
-                    font-weight: 900; 
-                    font-size: 18px; 
-                }
-                
-                @media print {
-                    @page {
-                        size: 120mm auto; 
-                        margin: 0;
-                    }
-                
-                    html, body { 
-                        margin: 0; 
-                        padding: 0; 
-                        width: 100mm;
-                    }
-                
-                    #invoice-paper {
-                        width: 120mm !important;
-                        max-width: 120mm !important;
-                        margin: 0 !important;
-                        padding: 1mm !important;
-                        box-sizing: border-box !important;
-                        display: block !important;
-                    }
-                
-                    .inv-table td, .inv-total-item, .inv-header div {
-                        white-space: nowrap !important;
-                        word-break: normal !important;
-                    }
+        .invoice-box {
+            background: white;
+            width: 100%;
+            max-width: 440px;
+            border-radius: 1.5rem;
+            overflow: hidden;
+            box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25);
+        }
+        
+        #invoice-paper {
+            padding: 15px;
+            color: #000;
+            background: white;
+            line-height: 1.2;
+            width: 100%;
+            max-width: 100mm;
+            margin: 4px auto;
+            box-sizing: border-box;
+        }
+        
+        .inv-logo { 
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-size: 26px; 
+            font-weight: 900; 
+            text-align: center; 
+            margin-bottom: 5px;
+        }
+        
+        .inv-header { 
+            text-align: center; 
+            margin-bottom: 12px; 
+            border-bottom: 1px dashed #000; 
+            padding-bottom: 8px; 
+        }
+        
+        .inv-title { 
+            font-size: 24px; 
+            font-weight: 800; 
+            margin-bottom: 2px; 
+        }
+        
+        .inv-table { 
+            width: 100%; 
+            border-collapse: collapse; 
+            margin: 5px 0; 
+            table-layout: fixed; 
+        }
+        
+        .inv-col-item { width: 45%; }
+        .inv-col-qty { width: 20%; }
+        .inv-col-total { width: 35%; }
+        
+        .inv-table th { 
+            border-bottom: 1px solid #000; 
+            padding: 6px 0; 
+            text-align: left; 
+            font-size: 16px; 
+            font-weight: 800; 
+        }
+        
+        .inv-table td { 
+            padding: 8px 0; 
+            border-bottom: 1px dotted #eee; 
+            font-size: 16px; 
+            vertical-align: top;
+            word-break: keep-all; 
+        }
+        
+        .inv-table th:nth-child(2), .inv-table td:nth-child(2) {
+            text-align: center;
+            padding-right: 5px;
+        }
+        
+        .inv-table th:nth-child(3), .inv-table td:nth-child(3) {
+            text-align: right;
+        }
+        
+        .inv-total-row { 
+            display: flex; 
+            justify-content: flex-end; 
+            margin-top: 10px; 
+        }
+        
+        .inv-total-box { 
+            width: 100%; 
+        }
+        
+        .inv-total-item { 
+            display: flex; 
+            justify-content: space-between; 
+            padding: 4px 0; 
+            font-size: 15px; 
+        }
+        
+        .inv-grand-total { 
+            border-top: 2px solid #000; 
+            margin-top: 5px; 
+            padding-top: 5px; 
+            font-weight: 900; 
+            font-size: 18px; 
+        }
+        
+        @media print {
+            @page {
+                size: 120mm auto; 
+                margin: 0;
+            }
+        
+            html, body { 
+                margin: 0; 
+                padding: 0; 
+                width: 100mm;
+            }
+        
+            #invoice-paper {
+                width: 120mm !important;
+                max-width: 120mm !important;
+                margin: 0 !important;
+                padding: 1mm !important;
+                box-sizing: border-box !important;
+                display: block !important;
+            }
+        
+            .inv-table td, .inv-total-item, .inv-header div {
+                white-space: nowrap !important;
+                word-break: normal !important;
+            }
 
-                    .inv-table {
-                        width: 100% !important;
-                        table-layout: fixed !important;
-                        border-collapse: collapse !important;
-                    }
+            .inv-table {
+                width: 100% !important;
+                table-layout: fixed !important;
+                border-collapse: collapse !important;
+            }
 
-                    .inv-col-item { width: 40% !important; }
-                    .inv-col-qty { width: 20% !important; }
-                    .inv-col-total { width: 40% !important; }
+            .inv-col-item { width: 40% !important; }
+            .inv-col-qty { width: 20% !important; }
+            .inv-col-total { width: 40% !important; }
 
-                    .inv-table td, .inv-table th {
-                        font-size: 20px !important; 
-                        padding-left: 2px !important;
-                        padding-right: 2px !important;
-                    }
-                
-                    .no-print { display: none !important; }
-                }
-</style>
+            .inv-table td, .inv-table th {
+                font-size: 20px !important; 
+                padding-left: 2px !important;
+                padding-right: 2px !important;
+            }
+        
+            .no-print { display: none !important; }
+        }
+    </style>
 </head>
 <body class="min-h-screen">
 
@@ -371,7 +371,14 @@
             </div>
 
             <div id="expense-fields" class="space-y-4 hidden">
-                <input type="text" id="ex-desc" placeholder="အကြောင်းအရာ..." class="w-full p-5 input-field rounded-2xl font-bold">
+                <div class="bg-white p-6 rounded-3xl border border-slate-100 shadow-sm mb-4">
+                    <p class="text-xs font-black text-rose-600 uppercase tracking-widest mb-4">စာရင်းအမျိုးအစား</p>
+                    <div class="flex gap-2 p-1 bg-slate-100 rounded-2xl">
+                        <button onclick="setExpCategory('general')" id="exp-cat-general" class="flex-1 py-3 text-[10px] font-black uppercase rounded-xl bg-white shadow-sm transition-all">General Expense</button>
+                        <button onclick="setExpCategory('cost')" id="exp-cat-cost" class="flex-1 py-3 text-[10px] font-black uppercase text-slate-500 transition-all">Cost (ပစ္စည်းဝယ်/ရင်းစျေး)</button>
+                    </div>
+                </div>
+                <input type="text" id="ex-desc" placeholder="Supplier အမည် သို့မဟုတ် အကြောင်းအရာ..." class="w-full p-5 input-field rounded-2xl font-bold">
                 <input type="number" id="ex-amt" placeholder="ပမာဏ" class="w-full p-5 input-field rounded-2xl font-black">
                 <button onclick="saveExpense()" class="w-full bg-rose-600 text-white font-black py-5 rounded-3xl mt-8 shadow-lg text-lg">သုံးစရိတ်သိမ်းမည်</button>
             </div>
@@ -428,7 +435,7 @@
 
         <div id="view-accounting" class="hidden">
             <h2 class="text-2xl font-black mb-1">၁၅ ရက်စာ စာရင်းများ</h2>
-            <div id="accounting-list" class="space-y-5"></div>
+            <div id="accounting-list" class="space-y-5 pb-10"></div>
         </div>
 
         <div class="fixed bottom-6 left-1/2 -translate-x-1/2 w-[94%] max-w-[440px] z-[5000] no-print">
@@ -467,6 +474,7 @@
         let cart = [];
         let currentType = 'income';
         let currentRecordTab = 'all';
+        let currentExpCategory = 'general';
 
         window.showToast = (msg, isError = true) => {
             const t = document.getElementById('toast');
@@ -611,6 +619,14 @@
             cart = []; renderCart();
         };
 
+        window.setExpCategory = (cat) => {
+            currentExpCategory = cat;
+            const isCost = cat === 'cost';
+            document.getElementById('exp-cat-general').className = isCost ? 'flex-1 py-3 text-[10px] font-black uppercase text-slate-500 transition-all' : 'flex-1 py-3 text-[10px] font-black uppercase rounded-xl bg-white shadow-sm transition-all';
+            document.getElementById('exp-cat-cost').className = isCost ? 'flex-1 py-3 text-[10px] font-black uppercase rounded-xl bg-white shadow-sm transition-all' : 'flex-1 py-3 text-[10px] font-black uppercase text-slate-500 transition-all';
+            document.getElementById('ex-desc').placeholder = isCost ? "Supplier အမည်..." : "အကြောင်းအရာ...";
+        };
+
         document.getElementById('sku-search').oninput = (e) => {
             const val = e.target.value.trim().toUpperCase();
             const found = stocks.find(s => s.sku === val);
@@ -682,8 +698,8 @@
                 phone: document.getElementById('cust-phone').value,
                 address: document.getElementById('cust-address').value,
                 items: cart, 
-                amt: isDeposit ? depositInput : totalAmt, // Recording what was actually paid
-                fullAmt: totalAmt, // Actual total value of the items
+                amt: isDeposit ? depositInput : totalAmt,
+                fullAmt: totalAmt,
                 cost: totalCost,
                 desc: cart.length > 1 ? `${cart[0].desc} နှင့် အခြား...` : cart[0].desc,
                 createdAt: serverTimestamp()
@@ -691,7 +707,6 @@
 
             const dr = await addDoc(collection(db, 'artifacts', appId, 'public', 'data', 'records'), docData);
             
-            // Stock Reduction (Immediate)
             for(let item of cart) {
                 await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'stock', item.stockDocId), { 
                     qty: increment(-item.qty) 
@@ -701,7 +716,6 @@
             showToast("အောင်မြင်စွာသိမ်းဆည်းပြီးပါပြီ", false);
             viewInvoice(dr.id);
             
-            // Reset fields
             document.getElementById('cust-name').value = '';
             document.getElementById('cust-phone').value = '';
             document.getElementById('cust-address').value = '';
@@ -715,10 +729,9 @@
             const r = records.find(x => x.id === id);
             if(!r) return;
 
-            // Update to paid
             await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'records', id), {
                 status: 'paid',
-                amt: r.fullAmt // Set the received amount to the full amount
+                amt: r.fullAmt
             });
 
             showToast("ငွေအပြည့်ချေပြီးပါပြီ။", false);
@@ -728,11 +741,18 @@
             const d = document.getElementById('ex-desc').value;
             const a = parseFloat(document.getElementById('ex-amt').value) || 0;
             if(!d || a <= 0) return showToast("အချက်အလက် ထည့်ပါ");
+            
             await addDoc(collection(db, 'artifacts', appId, 'public', 'data', 'records'), {
-                type: 'expense', date: document.getElementById('main-date').value,
-                user: currentUser, desc: d, amt: a, createdAt: serverTimestamp()
+                type: 'expense', 
+                date: document.getElementById('main-date').value,
+                user: currentUser, 
+                desc: d, 
+                amt: a, 
+                expCategory: currentExpCategory, // 'general' or 'cost'
+                createdAt: serverTimestamp()
             });
-            document.getElementById('ex-desc').value = ''; document.getElementById('ex-amt').value = '';
+            document.getElementById('ex-desc').value = ''; 
+            document.getElementById('ex-amt').value = '';
             showToast("သိမ်းပြီးပါပြီ", false);
         };
 
@@ -750,7 +770,6 @@
                 <tr><td class="font-bold"><div>${i.desc}</div></td><td class="text-center font-bold">${i.qty}</td><td class="text-right font-bold">${(i.qty * i.sell).toLocaleString()}</td></tr>
             `).join('');
 
-            // Deposit Display Logic
             if (r.status === 'deposit') {
                 document.getElementById('inv-deposit-info').classList.remove('hidden');
                 document.getElementById('inv-subtotal').innerText = r.fullAmt.toLocaleString() + " Ks";
@@ -782,39 +801,42 @@
             const incs = today.filter(r => r.type === 'income');
             const exps = today.filter(r => r.type === 'expense');
             const totalSales = incs.reduce((s, i) => s + i.amt, 0);
-            const totalCost = incs.reduce((s, i) => s + (i.cost || 0), 0);
-            const totalExp = exps.reduce((s, i) => s + i.amt, 0);
             
-            const totalProfit = totalSales - totalExp;
+            // Actual Cost: Only things categorized as 'cost' in expenses
+            const actualCostTotal = exps.filter(r => r.expCategory === 'cost').reduce((s, i) => s + i.amt, 0);
+            // General Expense:
+            const genExpTotal = exps.filter(r => r.expCategory !== 'cost').reduce((s, i) => s + i.amt, 0);
+            
+            const netProfit = totalSales - actualCostTotal - genExpTotal;
 
             document.getElementById('summary-date-label').innerText = d;
             const statsContainer = document.getElementById('daily-stats-container');
             if (currentUser === 'Owner') {
                 statsContainer.innerHTML = `
                     <div class="grid grid-cols-2 gap-3">
-                        <div class="bg-indigo-600 p-4 rounded-2xl text-white"><p class="text-[9px] font-black uppercase opacity-70">Sales</p><p class="text-lg font-black">${totalSales.toLocaleString()}</p></div>
-                        <div class="bg-slate-800 p-4 rounded-2xl text-white"><p class="text-[9px] font-black uppercase opacity-70">Cost (ရင်းနှီးစရိတ်)</p><p class="text-lg font-black">${totalCost.toLocaleString()}</p></div>
-                        <div class="bg-rose-600 p-4 rounded-2xl text-white"><p class="text-[9px] font-black uppercase opacity-70">Exp</p><p class="text-lg font-black">${totalExp.toLocaleString()}</p></div>
-                        <div class="bg-emerald-600 p-4 rounded-2xl text-white"><p class="text-[9px] font-black uppercase opacity-70">Profit (Sales - Exp)</p><p class="text-lg font-black">${totalProfit.toLocaleString()}</p></div>
+                        <div class="bg-indigo-600 p-4 rounded-2xl text-white shadow-sm"><p class="text-[9px] font-black uppercase opacity-70">Sales</p><p class="text-lg font-black">${totalSales.toLocaleString()}</p></div>
+                        <div class="bg-slate-800 p-4 rounded-2xl text-white shadow-sm"><p class="text-[9px] font-black uppercase opacity-70">Actual Cost (ပစ္စည်းဝယ်)</p><p class="text-lg font-black">${actualCostTotal.toLocaleString()}</p></div>
+                        <div class="bg-rose-600 p-4 rounded-2xl text-white shadow-sm"><p class="text-[9px] font-black uppercase opacity-70">General Exp</p><p class="text-lg font-black">${genExpTotal.toLocaleString()}</p></div>
+                        <div class="bg-emerald-600 p-4 rounded-2xl text-white shadow-sm"><p class="text-[9px] font-black uppercase opacity-70">Profit (Sale-Cost-Exp)</p><p class="text-lg font-black">${netProfit.toLocaleString()}</p></div>
                     </div>
                 `;
             } else {
                 statsContainer.innerHTML = `
                     <div class="grid grid-cols-2 gap-3">
                         <div class="bg-indigo-600 p-4 rounded-2xl text-white"><p class="text-[9px] font-black uppercase opacity-70">အရောင်းစုစုပေါင်း</p><p class="text-lg font-black">${totalSales.toLocaleString()}</p></div>
-                        <div class="bg-rose-600 p-4 rounded-2xl text-white"><p class="text-[9px] font-black uppercase opacity-70">အထွက်စုစုပေါင်း</p><p class="text-lg font-black">${totalExp.toLocaleString()}</p></div>
+                        <div class="bg-rose-600 p-4 rounded-2xl text-white"><p class="text-[9px] font-black uppercase opacity-70">အထွက်စုစုပေါင်း</p><p class="text-lg font-black">${(genExpTotal + actualCostTotal).toLocaleString()}</p></div>
                     </div>
                 `;
             }
 
             const combinedList = [...today].sort((a,b) => (b.createdAt?.seconds || 0) - (a.createdAt?.seconds || 0));
             document.getElementById('daily-summary-list').innerHTML = combinedList.map(r => `
-                <div class="record-card p-5 border-l-4 ${r.type === 'income' ? 'border-indigo-500' : 'border-rose-500'} flex justify-between items-center">
+                <div class="record-card p-5 border-l-4 ${r.type === 'income' ? 'border-indigo-500' : (r.expCategory === 'cost' ? 'border-slate-800' : 'border-rose-500')} flex justify-between items-center">
                     <div>
                         <p class="text-sm font-black">${r.type === 'income' ? r.customer : r.desc} ${r.status === 'deposit' ? '<span class="text-[9px] bg-amber-100 text-amber-600 px-2 py-0.5 rounded ml-1 uppercase">စရံ</span>' : ''}</p>
-                        <p class="text-xs font-bold text-slate-400">${r.type === 'income' ? r.desc : 'အထွက်စာရင်း'}</p>
+                        <p class="text-[10px] font-bold text-slate-400">${r.type === 'income' ? r.desc : (r.expCategory === 'cost' ? 'ပစ္စည်းဝယ်ယူမှု' : 'အထွေထွေအသုံးစရိတ်')}</p>
                     </div>
-                    <p class="text-sm font-black ${r.type === 'income' ? 'text-indigo-600' : 'text-rose-600'}">${r.type === 'income' ? '+' : '-'}${r.amt.toLocaleString()}</p>
+                    <p class="text-sm font-black ${r.type === 'income' ? 'text-indigo-600' : (r.expCategory === 'cost' ? 'text-slate-800' : 'text-rose-600')}">${r.type === 'income' ? '+' : '-'}${r.amt.toLocaleString()}</p>
                 </div>
             `).join('');
         }
@@ -835,11 +857,11 @@
             const sorted = filtered.sort((a,b) => new Date(b.date) - new Date(a.date) || (b.createdAt?.seconds || 0) - (a.createdAt?.seconds || 0));
             
             document.getElementById('history-list').innerHTML = sorted.map(r => `
-                <div class="record-card p-5 mb-3 border-l-4 ${r.status === 'deposit' ? 'border-amber-400' : (r.type === 'income' ? 'border-indigo-500' : 'border-rose-500')}">
+                <div class="record-card p-5 mb-3 border-l-4 ${r.status === 'deposit' ? 'border-amber-400' : (r.type === 'income' ? 'border-indigo-500' : (r.expCategory === 'cost' ? 'border-slate-800' : 'border-rose-500'))}">
                     <div class="flex justify-between">
                         <div>
-                            <p class="text-[10px] font-black uppercase ${r.type === 'income' ? 'text-indigo-500' : 'text-rose-500'}">
-                                ${r.type} ${r.status === 'deposit' ? '- စရံစာရင်း' : ''}
+                            <p class="text-[10px] font-black uppercase ${r.type === 'income' ? 'text-indigo-500' : (r.expCategory === 'cost' ? 'text-slate-800' : 'text-rose-500')}">
+                                ${r.type === 'expense' ? (r.expCategory === 'cost' ? 'ရင်းနှီးစရိတ်' : 'အသုံးစရိတ်') : 'အရောင်း'} ${r.status === 'deposit' ? '- စရံစာရင်း' : ''}
                             </p>
                             <p class="text-sm font-black">${r.type === 'income' ? r.customer + ' (' + r.desc + ')' : r.desc}</p>
                             <p class="text-[10px] text-slate-400 font-bold mt-1">${r.date}</p>
@@ -863,7 +885,6 @@
         window.deleteRecord = async (id) => { 
             if(confirm("ဤစာရင်းကို ဖျက်မည်လား?")) {
                 const rec = records.find(x => x.id === id);
-                // Return stock on delete
                 if(rec && rec.type === 'income' && rec.items) {
                     for(let item of rec.items) {
                         let stockId = item.stockDocId || (stocks.find(s => s.sku === item.sku)?.id);
@@ -875,32 +896,6 @@
             }
         };
 
-        // အကြံပြုချက်များ ထုတ်ပေးရန် Function (New Logic)
-        function getBusinessAdvice(inc, cost, exp, fullRecords) {
-            let advice = [];
-            
-            // ၁။ Supplier စရိတ် များနေသလား စစ်ဆေးခြင်း
-            const supplierExp = fullRecords.filter(r => r.type === 'expense' && (r.desc.toLowerCase().includes('supply') || r.desc.toLowerCase().includes('supplier'))).reduce((s, r) => s + r.amt, 0);
-            if(supplierExp > (inc * 0.4)) {
-                advice.push("⚠️ Supplier စရိတ်များနေပါသည်။ ပစ္စည်းအဝယ်လျှော့သင့်ပါတယ်။");
-            }
-            
-            // ၂။ အထွေထွေ အသုံးစရိတ်များနေသလား စစ်ဆေးခြင်း
-            const otherExp = exp - supplierExp;
-            if(otherExp > (inc * 0.2)) {
-                advice.push("💡 အထွေထွေအသုံးစရိတ် များနေပါသည်။ အပိုသုံးစရိတ်များကို လျှော့သုံးစေလိုပါတယ်။");
-            }
-
-            // ၃။ ရောင်းအားကျနေသလား စစ်ဆေးခြင်း
-            if(inc < (cost * 1.1)) {
-                advice.push("📈 ရောင်းအားကျနေပါသည်။ အရောင်းမြှင့်တင်ရေး (Promotion) များ လုပ်ဆောင်သင့်ပါတယ်။");
-            }
-
-            if(advice.length === 0) advice.push("✅ လုပ်ငန်းလည်ပတ်မှု ကောင်းမွန်နေပါသည်။ ဤအတိုင်း ဆက်လက်ထိန်းသိမ်းပါ။");
-            
-            return advice.join('<br>');
-        }
-
         function renderAccounting() {
             const periods = {};
             records.forEach(r => {
@@ -909,50 +904,60 @@
                 if(!periods[pKey]) {
                     periods[pKey] = { 
                         label: `${date.toLocaleString('default', { month: 'short' })} ${date.getDate() <= 15 ? '1-15' : '16-End'}`, 
-                        inc: 0, 
-                        cost: 0, 
-                        exp: 0,
-                        rawRecords: []
+                        sale: 0, 
+                        repurchaseCost: 0, // 'cost' value from stock when sold
+                        actualCost: 0,     // 'cost' items from expenses
+                        generalExp: 0
                     };
                 }
                 if(r.type === 'income') { 
-                    periods[pKey].inc += r.amt; 
-                    periods[pKey].cost += r.cost || 0; 
+                    periods[pKey].sale += r.amt; 
+                    periods[pKey].repurchaseCost += r.cost || 0; 
                 } else {
-                    periods[pKey].exp += r.amt;
+                    if(r.expCategory === 'cost') periods[pKey].actualCost += r.amt;
+                    else periods[pKey].generalExp += r.amt;
                 }
-                periods[pKey].rawRecords.push(r);
             });
             
             document.getElementById('accounting-list').innerHTML = Object.values(periods).map(p => {
-                // Profit Margin Calculation: (Sale - Cost) / Sale
-                const profitMargin = p.inc > 0 ? (((p.inc - p.cost) / p.inc) * 100).toFixed(1) : 0;
-                const adviceHtml = getBusinessAdvice(p.inc, p.cost, p.exp, p.rawRecords);
+                const totalProfit = p.sale - p.actualCost - p.generalExp;
 
                 return `
-                <div class="bg-white p-6 rounded-3xl shadow-md border-t-4 border-indigo-600 mb-6">
-                    <p class="text-sm font-black text-indigo-600 mb-4">${p.label}</p>
-                    <div class="grid grid-cols-2 gap-3 mb-4">
-                        <div class="bg-slate-50 p-4 rounded-2xl"><p class="text-[10px] font-bold text-slate-400">Sales</p><p class="text-sm font-black">${p.inc.toLocaleString()}</p></div>
-                        <div class="bg-indigo-50 p-4 rounded-2xl"><p class="text-[10px] font-bold text-indigo-400">Cost (ရင်းစျေး)</p><p class="text-sm font-black">${p.cost.toLocaleString()}</p></div>
-                        <div class="bg-rose-50 p-4 rounded-2xl"><p class="text-[10px] font-bold text-rose-400">Exp</p><p class="text-sm font-black">${p.exp.toLocaleString()}</p></div>
-                        <div class="bg-emerald-50 p-4 rounded-2xl"><p class="text-[10px] font-bold text-emerald-400">Profit (Sales - Exp)</p><p class="text-sm font-black">${(p.inc - p.exp).toLocaleString()}</p></div>
+                <div class="bg-white p-6 rounded-[2rem] shadow-lg border border-slate-100 mb-6">
+                    <div class="flex justify-between items-center mb-6">
+                        <p class="text-sm font-black text-indigo-600 bg-indigo-50 px-4 py-2 rounded-xl">${p.label}</p>
                     </div>
                     
-                    <div class="bg-amber-50 p-4 rounded-2xl border border-amber-100 mb-4">
-                        <div class="flex justify-between items-center">
-                            <p class="text-[10px] font-black text-amber-600 uppercase">Profit Margin (%)</p>
-                            <p class="text-lg font-black text-amber-700">${profitMargin}%</p>
+                    <div class="space-y-3 mb-6">
+                        <div class="flex justify-between items-center p-4 bg-slate-50 rounded-2xl">
+                            <p class="text-xs font-bold text-slate-500 uppercase">Sales (အရောင်း)</p>
+                            <p class="text-sm font-black">${p.sale.toLocaleString()}</p>
                         </div>
-                        <p class="text-[9px] text-amber-500 mt-1">* ပုံသေနည်း: (Sales - Cost) / Sales</p>
+                        <div class="flex justify-between items-center p-4 bg-slate-50 rounded-2xl border-l-4 border-slate-800">
+                            <p class="text-xs font-bold text-slate-500 uppercase">Actual Cost (ပစ္စည်းဝယ်ရင်း)</p>
+                            <p class="text-sm font-black text-slate-800">${p.actualCost.toLocaleString()}</p>
+                        </div>
+                        <div class="flex justify-between items-center p-4 bg-slate-50 rounded-2xl border-l-4 border-rose-500">
+                            <p class="text-xs font-bold text-slate-500 uppercase">General Expense (အသုံးစရိတ်)</p>
+                            <p class="text-sm font-black text-rose-500">${p.generalExp.toLocaleString()}</p>
+                        </div>
+                        <div class="flex justify-between items-center p-4 bg-indigo-50 rounded-2xl border-l-4 border-indigo-400">
+                            <div>
+                                <p class="text-xs font-bold text-indigo-400 uppercase">Repurchase Cost</p>
+                                <p class="text-[9px] text-indigo-300 font-bold italic">ပြန်ဝယ်သင့်သော ရင်းစျေး (Reference)</p>
+                            </div>
+                            <p class="text-sm font-black text-indigo-600">${p.repurchaseCost.toLocaleString()}</p>
+                        </div>
                     </div>
-
-                    <div class="bg-indigo-900 p-5 rounded-2xl text-white">
-                        <div class="flex items-center gap-2 mb-2">
-                            <i class="fas fa-robot text-indigo-300"></i>
-                            <p class="text-[10px] font-black uppercase tracking-widest text-indigo-200">အကြံပြုရန်</p>
+                    
+                    <div class="bg-slate-900 p-6 rounded-3xl text-white shadow-xl">
+                        <div class="flex justify-between items-center">
+                            <div>
+                                <p class="text-[10px] font-black text-emerald-400 uppercase tracking-widest mb-1">Net Profit</p>
+                                <p class="text-[9px] text-slate-400 font-bold">(Sale - Actual Cost - Exp)</p>
+                            </div>
+                            <p class="text-2xl font-black text-emerald-400">${totalProfit.toLocaleString()} Ks</p>
                         </div>
-                        <p class="text-xs leading-relaxed font-bold">${adviceHtml}</p>
                     </div>
                 </div>`;
             }).join('');
@@ -963,9 +968,7 @@
             const skuInput = document.getElementById('stock-sku').value.trim().toUpperCase();
             
             const duplicate = stocks.find(s => s.sku === skuInput && s.id !== id);
-            if(duplicate) {
-                return showToast("ဤ SKU နံပါတ်မှာ ရှိပြီးသားဖြစ်နေပါသည်။");
-            }
+            if(duplicate) return showToast("ဤ SKU နံပါတ်မှာ ရှိပြီးသားဖြစ်နေပါသည်။");
 
             const data = {
                 sku: skuInput,
