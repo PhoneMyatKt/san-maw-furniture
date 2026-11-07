@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>စန်းမော် ပရိဘောဂ - Stock & Preorder Tracker (v2.0)</title>
+    <title>စန်းမော် ပရိဘောဂ - Stock & Preorder Tracker (v2.1.2)</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Google Font: Inter -->
@@ -27,7 +27,7 @@
     <div class="text-center space-y-4 animate-pulse px-4">
         <i class="fa-solid fa-couch text-5xl text-amber-300"></i>
         <h1 class="text-2xl font-bold tracking-wide">စန်းမော် ပရိဘောဂ</h1>
-        <p class="text-xs text-amber-200">Stock, Sales & Worker Tracker (v2.1.1)</p>
+        <p class="text-xs text-amber-200">Stock, Sales & Worker Tracker (v2.1.2)</p>
         <div class="w-8 h-8 border-4 border-amber-300 border-t-transparent rounded-full animate-spin mx-auto mt-4"></div>
     </div>
     <div class="absolute bottom-6 text-[11px] text-amber-200/80 font-medium">
@@ -130,6 +130,9 @@
 
             <!-- Admin Quick Access Bar (Outside 3-dot menu) -->
             <div class="hidden admin-only flex items-center space-x-1.5 pl-3 border-l border-slate-200">
+                <button onclick="switchTab('purchases')" id="quickTab-purchases" class="px-2.5 py-1 bg-amber-50 hover:bg-amber-100 text-amber-900 rounded-lg text-xs font-bold flex items-center space-x-1 transition border border-amber-200">
+                    <i class="fa-solid fa-bag-shopping text-amber-700"></i> <span class="hidden sm:inline">ကုန်ဝယ်စာရင်း</span>
+                </button>
                 <button onclick="switchTab('workers')" id="quickTab-workers" class="px-2.5 py-1 bg-amber-50 hover:bg-amber-100 text-amber-900 rounded-lg text-xs font-bold flex items-center space-x-1 transition border border-amber-200">
                     <i class="fa-solid fa-users-gear text-amber-700"></i> <span class="hidden sm:inline">Workers</span>
                 </button>
@@ -169,6 +172,9 @@
                 </button>
 
                 <div class="border-t border-slate-100 my-1 pt-1 admin-only hidden"></div>
+                <button onclick="switchTab('purchases'); closeMenuDropdown();" id="tab-purchases" class="tab-btn w-full text-left px-4 py-2 text-xs font-medium text-slate-700 hover:bg-slate-50 flex items-center space-x-2 admin-only hidden transition">
+                    <i class="fa-solid fa-bag-shopping w-5 text-amber-700"></i> <span>ကုန်ဝယ် စာရင်း (Purchases)</span>
+                </button>
                 <button onclick="switchTab('backup'); closeMenuDropdown();" id="tab-backup" class="tab-btn w-full text-left px-4 py-2 text-xs font-medium text-slate-700 hover:bg-slate-50 flex items-center space-x-2 admin-only hidden transition">
                     <i class="fa-solid fa-download w-5 text-amber-700"></i> <span>Download & Backup</span>
                 </button>
@@ -300,6 +306,35 @@
         </div>
     </section>
 
+    <!-- PURCHASES TAB (Admin Only) -->
+    <section id="section-purchases" class="space-y-4 hidden admin-only">
+        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center bg-white p-4 rounded-2xl shadow-sm border border-slate-200 gap-2">
+            <div>
+                <h2 class="text-base font-bold text-slate-900"><i class="fa-solid fa-bag-shopping mr-2 text-amber-700"></i>ကုန်ဝယ် စာရင်း (Purchases / Material Costs)</h2>
+                <p class="text-xs text-slate-500">သစ်၊ ကုန်ကြမ်းနှင့် ပစ္စည်းများ ဝယ်ယူစရိတ်များကို Admin သီးသန့် မှတ်တမ်းတင်ရန်</p>
+            </div>
+            <button onclick="openPurchaseModal()" class="bg-amber-800 hover:bg-amber-900 text-white px-4 py-2.5 rounded-xl text-xs font-semibold shadow transition flex items-center space-x-1.5">
+                <i class="fa-solid fa-plus"></i> <span>ကုန်ဝယ်စရိတ် အသစ်ထည့်ရန်</span>
+            </button>
+        </div>
+
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+            <div class="overflow-x-auto">
+                <table class="w-full text-left border-collapse text-xs md:text-sm">
+                    <thead>
+                    <tr class="bg-slate-50 text-slate-600 border-b border-slate-200 font-semibold">
+                        <th class="p-3">ရက်စွဲ / ကုန်ပစ္စည်းအမည်</th>
+                        <th class="p-3">Supplier / တည်နေရာ</th>
+                        <th class="p-3 text-right">ဝယ်ယူပမာဏ (Ks)</th>
+                        <th class="p-3 text-center">Action</th>
+                    </tr>
+                    </thead>
+                    <tbody id="purchasesTableBody" class="divide-y divide-slate-100"></tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+
     <!-- PREORDER TAB -->
     <section id="section-preorder" class="space-y-4 hidden">
         <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center bg-white p-4 rounded-2xl shadow-sm border border-slate-200 gap-2">
@@ -395,7 +430,7 @@
         <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center bg-white p-4 rounded-2xl shadow-sm border border-slate-200 gap-2">
             <div>
                 <h2 class="text-base font-bold text-slate-900"><i class="fa-solid fa-chart-line mr-2 text-amber-700"></i>Report & Dashboard</h2>
-                <p class="text-xs text-slate-500">Revenue, Gross Profit, Expenses, Net Income များကို သီးသန့် Tab ခွဲ၍ ကြည့်ရှုရန်</p>
+                <p class="text-xs text-slate-500">Revenue, Gross Profit, ကုန်ဝယ်စာရင်း, ဆိုင်သုံးစရိတ်, Net Income များကို ကြည့်ရှုရန်</p>
             </div>
             <div class="flex items-center space-x-2">
                 <select id="reportPeriodFilter" onchange="renderReportDashboard()" class="border border-slate-200 rounded-xl px-3 py-2 text-xs font-bold outline-none focus:ring-2 focus:ring-amber-600 bg-slate-50">
@@ -409,7 +444,7 @@
             </div>
         </div>
 
-        <div class="grid grid-cols-2 sm:grid-cols-4 gap-2">
+        <div class="grid grid-cols-2 sm:grid-cols-5 gap-2">
             <button onclick="switchReportSubTab('revenue')" id="subtab-revenue" class="report-subtab-btn p-3 rounded-xl border border-amber-300 bg-amber-50 text-amber-900 font-bold text-xs shadow-sm flex flex-col items-center justify-center transition">
                 <span class="text-[10px] text-slate-500 font-medium">စုစုပေါင်း ဝင်ငွေ</span>
                 <span id="subtabRevVal" class="text-sm font-bold text-slate-900 mt-0.5">0 Ks</span>
@@ -418,11 +453,15 @@
                 <span class="text-[10px] text-slate-500 font-medium">စုစုပေါင်း အမြတ်</span>
                 <span id="subtabProfVal" class="text-sm font-bold text-emerald-600 mt-0.5">0 Ks</span>
             </button>
+            <button onclick="switchReportSubTab('purchases')" id="subtab-purchases" class="report-subtab-btn p-3 rounded-xl border border-slate-200 bg-white text-slate-700 font-bold text-xs shadow-sm flex flex-col items-center justify-center transition">
+                <span class="text-[10px] text-slate-500 font-medium">ကုန်ဝယ်စာရင်း</span>
+                <span id="subtabPurchVal" class="text-sm font-bold text-amber-700 mt-0.5">0 Ks</span>
+            </button>
             <button onclick="switchReportSubTab('expenses')" id="subtab-expenses" class="report-subtab-btn p-3 rounded-xl border border-slate-200 bg-white text-slate-700 font-bold text-xs shadow-sm flex flex-col items-center justify-center transition">
                 <span class="text-[10px] text-slate-500 font-medium">ဆိုင်သုံးစရိတ်</span>
                 <span id="subtabExpVal" class="text-sm font-bold text-rose-600 mt-0.5">0 Ks</span>
             </button>
-            <button onclick="switchReportSubTab('net')" id="subtab-net" class="report-subtab-btn p-3 rounded-xl border border-slate-200 bg-white text-slate-700 font-bold text-xs shadow-sm flex flex-col items-center justify-center transition">
+            <button onclick="switchReportSubTab('net')" id="subtab-net" class="report-subtab-btn p-3 rounded-xl border border-slate-200 bg-white text-slate-700 font-bold text-xs shadow-sm flex flex-col items-center justify-center transition col-span-2 sm:col-span-1">
                 <span class="text-[10px] text-slate-500 font-medium">အသားတင်အမြတ်</span>
                 <span id="subtabNetVal" class="text-sm font-bold text-indigo-700 mt-0.5">0 Ks</span>
             </button>
@@ -610,6 +649,41 @@
             <div class="flex space-x-2 pt-2 border-t">
                 <button onclick="closeModal('expenseModal')" class="flex-1 bg-slate-100 py-2.5 rounded-xl text-xs font-semibold">မလုပ်ပါ</button>
                 <button onclick="saveExpense()" class="flex-1 bg-amber-800 text-white py-2.5 rounded-xl text-xs font-semibold shadow">သိမ်းဆည်းမည်</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL: Purchase Modal (Admin Only) -->
+<div id="purchaseModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm hidden z-50 overflow-y-auto">
+    <div class="min-h-full flex items-center justify-center p-4 text-center">
+        <div class="bg-white rounded-2xl w-full max-w-sm p-5 space-y-4 shadow-xl text-left my-auto">
+            <div class="flex justify-between items-center border-b pb-2">
+                <h3 class="text-base font-bold text-slate-900" id="purchaseModalTitle">ကုန်ဝယ်စရိတ် အသစ်ထည့်ရန်</h3>
+                <button onclick="closeModal('purchaseModal')" class="text-slate-400 font-bold text-xl">&times;</button>
+            </div>
+            <div class="space-y-3 text-xs">
+                <input type="hidden" id="editPurchaseIndex">
+                <div>
+                    <label class="block font-semibold text-slate-600 mb-1">ကုန်ပစ္စည်းအမည် (Item Name / Desc)</label>
+                    <input type="text" id="purchTitle" placeholder="ဥပမာ: ကျွန်းသစ် တန်ချိန် ၂၀" class="w-full border rounded-xl p-2.5 outline-none focus:ring-2 focus:ring-amber-600">
+                </div>
+                <div>
+                    <label class="block font-semibold text-slate-600 mb-1">Supplier / ဆိုင်အမည်</label>
+                    <input type="text" id="purchSupplier" placeholder="ဥပမာ: ဦးမောင်မောင် သစ်ဆိုင်" class="w-full border rounded-xl p-2.5 outline-none focus:ring-2 focus:ring-amber-600">
+                </div>
+                <div>
+                    <label class="block font-semibold text-slate-600 mb-1">ဝယ်ယူပမာဏ (Ks)</label>
+                    <input type="number" id="purchAmount" min="0" placeholder="0" class="w-full border rounded-xl p-2.5 outline-none focus:ring-2 focus:ring-amber-600">
+                </div>
+                <div>
+                    <label class="block font-semibold text-slate-600 mb-1">ရက်စွဲ</label>
+                    <input type="date" id="purchDate" class="w-full border rounded-xl p-2.5 outline-none focus:ring-2 focus:ring-amber-600">
+                </div>
+            </div>
+            <div class="flex space-x-2 pt-2 border-t">
+                <button onclick="closeModal('purchaseModal')" class="flex-1 bg-slate-100 py-2.5 rounded-xl text-xs font-semibold">မလုပ်ပါ</button>
+                <button onclick="savePurchase()" class="flex-1 bg-amber-800 text-white py-2.5 rounded-xl text-xs font-semibold shadow">သိမ်းဆည်းမည်</button>
             </div>
         </div>
     </div>
@@ -929,6 +1003,7 @@
         preorders: JSON.parse(localStorage.getItem('sm_preorders')) || [],
         installments: JSON.parse(localStorage.getItem('sm_installments')) || [],
         expenses: JSON.parse(localStorage.getItem('sm_expenses')) || [],
+        purchases: JSON.parse(localStorage.getItem('sm_purchases')) || [],
         suppliers: JSON.parse(localStorage.getItem('sm_suppliers')) || [],
         workers: JSON.parse(localStorage.getItem('sm_workers')) || [],
         advances: JSON.parse(localStorage.getItem('sm_advances')) || [],
@@ -1027,6 +1102,7 @@
                     db.preorders = cloudData.preorders || db.preorders;
                     db.installments = cloudData.installments || db.installments;
                     db.expenses = cloudData.expenses || db.expenses;
+                    db.purchases = cloudData.purchases || db.purchases;
                     db.suppliers = cloudData.suppliers || db.suppliers;
                     db.workers = cloudData.workers || db.workers;
                     db.approvals = cloudData.approvals || db.approvals;
@@ -1058,6 +1134,7 @@
                     localStorage.setItem('sm_preorders', JSON.stringify(db.preorders));
                     localStorage.setItem('sm_installments', JSON.stringify(db.installments));
                     localStorage.setItem('sm_expenses', JSON.stringify(db.expenses));
+                    localStorage.setItem('sm_purchases', JSON.stringify(db.purchases));
                     localStorage.setItem('sm_suppliers', JSON.stringify(db.suppliers));
                     localStorage.setItem('sm_workers', JSON.stringify(db.workers));
                     localStorage.setItem('sm_approvals', JSON.stringify(db.approvals));
@@ -1083,6 +1160,7 @@
                     db.preorders = cloudData.preorders || db.preorders;
                     db.installments = cloudData.installments || db.installments;
                     db.expenses = cloudData.expenses || db.expenses;
+                    db.purchases = cloudData.purchases || db.purchases;
                     db.suppliers = cloudData.suppliers || db.suppliers;
                     db.workers = cloudData.workers || db.workers;
                     db.advances = cloudData.advances || db.advances;
@@ -1111,6 +1189,7 @@
                     localStorage.setItem('sm_preorders', JSON.stringify(db.preorders));
                     localStorage.setItem('sm_installments', JSON.stringify(db.installments));
                     localStorage.setItem('sm_expenses', JSON.stringify(db.expenses));
+                    localStorage.setItem('sm_purchases', JSON.stringify(db.purchases));
                     localStorage.setItem('sm_suppliers', JSON.stringify(db.suppliers));
                     localStorage.setItem('sm_workers', JSON.stringify(db.workers));
                     localStorage.setItem('sm_advances', JSON.stringify(db.advances));
@@ -1152,6 +1231,7 @@
         localStorage.setItem('sm_preorders', JSON.stringify(db.preorders));
         localStorage.setItem('sm_installments', JSON.stringify(db.installments));
         localStorage.setItem('sm_expenses', JSON.stringify(db.expenses));
+        localStorage.setItem('sm_purchases', JSON.stringify(db.purchases));
         localStorage.setItem('sm_suppliers', JSON.stringify(db.suppliers));
         localStorage.setItem('sm_workers', JSON.stringify(db.workers));
         localStorage.setItem('sm_advances', JSON.stringify(db.advances));
@@ -1250,6 +1330,7 @@
             db.preorders = [];
             db.installments = [];
             db.expenses = [];
+            db.purchases = [];
             db.suppliers = [];
             db.workers = [];
             db.advances = [];
@@ -1277,7 +1358,7 @@
             roleBtn.className = "bg-amber-950/60 hover:bg-amber-950 text-amber-100 px-3 py-1.5 rounded-xl text-xs font-medium border border-amber-700/50 transition flex items-center space-x-1";
             adminOnlyElements.forEach(el => el.classList.add('hidden'));
 
-            if (activeTab === 'backup' || activeTab === 'approval' || activeTab === 'workers' || activeTab === 'report') {
+            if (activeTab === 'backup' || activeTab === 'approval' || activeTab === 'workers' || activeTab === 'report' || activeTab === 'purchases') {
                 activeTab = 'stock';
             }
         }
@@ -1287,7 +1368,7 @@
     }
 
     function switchTab(tabId) {
-        if ((tabId === 'backup' || tabId === 'approval' || tabId === 'workers' || tabId === 'report') && currentRole !== 'Admin') {
+        if ((tabId === 'backup' || tabId === 'approval' || tabId === 'workers' || tabId === 'report' || tabId === 'purchases') && currentRole !== 'Admin') {
             showToast("ဒီ Tab သည် Admin သီးသန့်ဖြစ်ပါသည်။", "error");
             return;
         }
@@ -1303,6 +1384,7 @@
             'stock': 'Stock List',
             'sales': 'Sales & Revenue',
             'expenses': 'ဆိုင်သုံးစရိတ် (Expenses)',
+            'purchases': 'ကုန်ဝယ် စာရင်း (Purchases)',
             'preorder': 'Preorder',
             'installment': 'အရစ်ကျ (Installment)',
             'suppliers': 'Supplier Contact',
@@ -1324,7 +1406,7 @@
         }
 
         // Highlight quick tab buttons if active
-        ['workers', 'approval', 'report'].forEach(qTab => {
+        ['purchases', 'workers', 'approval', 'report'].forEach(qTab => {
             const qBtn = document.getElementById(`quickTab-${qTab}`);
             if (qBtn) {
                 if (tabId === qTab) {
@@ -1347,6 +1429,8 @@
             renderReportDashboard();
         } else if (tabId === 'suppliers') {
             renderSuppliers();
+        } else if (tabId === 'purchases') {
+            renderPurchases();
         }
     }
 
@@ -1383,6 +1467,7 @@
         renderPreorders();
         renderInstallments();
         renderExpenses();
+        renderPurchases();
         renderSuppliers();
         renderWorkers();
         renderApprovals();
@@ -1397,6 +1482,7 @@
         const buttons = {
             'revenue': document.getElementById('subtab-revenue'),
             'profit': document.getElementById('subtab-profit'),
+            'purchases': document.getElementById('subtab-purchases'),
             'expenses': document.getElementById('subtab-expenses'),
             'net': document.getElementById('subtab-net')
         };
@@ -1449,6 +1535,7 @@
 
         let filteredSales = [...db.sales];
         let filteredExpenses = [...db.expenses];
+        let filteredPurchases = [...db.purchases];
 
         let targetDateStr = dateTargetInput ? dateTargetInput.value : '';
         let targetMonthStr = monthTargetInput ? monthTargetInput.value : '';
@@ -1456,6 +1543,7 @@
         if (periodFilter === 'daily' && targetDateStr) {
             filteredSales = filteredSales.filter(s => s.date === targetDateStr);
             filteredExpenses = filteredExpenses.filter(ex => ex.date === targetDateStr);
+            filteredPurchases = filteredPurchases.filter(p => p.date === targetDateStr);
         } else if (periodFilter === 'weekly' && targetDateStr) {
             let targetDate = new Date(targetDateStr);
             let startOfWeek = new Date(targetDate);
@@ -1473,9 +1561,15 @@
                 let d = new Date(ex.date);
                 return d >= startOfWeek && d <= endOfWeek;
             });
+            filteredPurchases = filteredPurchases.filter(p => {
+                if (!p.date) return false;
+                let d = new Date(p.date);
+                return d >= startOfWeek && d <= endOfWeek;
+            });
         } else if (periodFilter === 'monthly' && targetMonthStr) {
             filteredSales = filteredSales.filter(s => s.date && s.date.startsWith(targetMonthStr));
             filteredExpenses = filteredExpenses.filter(ex => ex.date && ex.date.startsWith(targetMonthStr));
+            filteredPurchases = filteredPurchases.filter(p => p.date && p.date.startsWith(targetMonthStr));
         }
 
         let totalRev = 0;
@@ -1496,10 +1590,17 @@
         filteredExpenses.forEach(ex => {
             totalExp += (parseFloat(ex.amount) || 0);
         });
-        let netIncome = grossProfit - totalExp;
+
+        let totalPurch = 0;
+        filteredPurchases.forEach(p => {
+            totalPurch += (parseFloat(p.amount) || 0);
+        });
+
+        let netIncome = grossProfit - totalExp - totalPurch;
 
         if (document.getElementById('subtabRevVal')) document.getElementById('subtabRevVal').innerText = Number(totalRev).toLocaleString() + ' Ks';
         if (document.getElementById('subtabProfVal')) document.getElementById('subtabProfVal').innerText = Number(grossProfit).toLocaleString() + ' Ks';
+        if (document.getElementById('subtabPurchVal')) document.getElementById('subtabPurchVal').innerText = Number(totalPurch).toLocaleString() + ' Ks';
         if (document.getElementById('subtabExpVal')) document.getElementById('subtabExpVal').innerText = Number(totalExp).toLocaleString() + ' Ks';
         if (document.getElementById('subtabNetVal')) document.getElementById('subtabNetVal').innerText = Number(netIncome).toLocaleString() + ' Ks';
 
@@ -1560,6 +1661,28 @@
                 `;
                 tbody.appendChild(tr);
             });
+        } else if (currentReportSubTab === 'purchases') {
+            if (subTabTitle) subTabTitle.innerHTML = `<i class="fa-solid fa-bag-shopping mr-1.5 text-amber-700"></i> Purchases (ကုန်ဝယ်စာရင်း အသေးစိတ်) - ${Number(totalPurch).toLocaleString()} Ks`;
+            if (theader) theader.innerHTML = `<th class="p-3">ရက်စွဲ</th><th class="p-3">ကုန်ပစ္စည်းအမည် / Supplier</th><th class="p-3 text-right">ကုန်ဝယ်စရိတ် (Ks)</th>`;
+
+            if (filteredPurchases.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="3" class="text-center py-6 text-slate-400 text-xs">ကုန်ဝယ် စာရင်း မရှိပါ။</td></tr>`;
+                return;
+            }
+
+            filteredPurchases.forEach(p => {
+                let tr = document.createElement('tr');
+                tr.className = "hover:bg-slate-50 transition-colors";
+                tr.innerHTML = `
+                    <td class="p-3 text-xs text-slate-500 font-mono">${p.date || '-'}</td>
+                    <td class="p-3">
+                        <div class="font-bold text-slate-900">${p.title}</div>
+                        <div class="text-[10px] text-slate-500">Supplier: ${p.supplier || '-'}</div>
+                    </td>
+                    <td class="p-3 text-right font-bold text-amber-700">-${Number(p.amount).toLocaleString()} Ks</td>
+                `;
+                tbody.appendChild(tr);
+            });
         } else if (currentReportSubTab === 'expenses') {
             if (subTabTitle) subTabTitle.innerHTML = `<i class="fa-solid fa-receipt mr-1.5 text-rose-600"></i> Expenses (ဆိုင်သုံးစရိတ် အသေးစိတ်) - ${Number(totalExp).toLocaleString()} Ks`;
             if (theader) theader.innerHTML = `<th class="p-3">ရက်စွဲ</th><th class="p-3">စရိတ်ခေါင်းစဉ် / အမျိုးအစား</th><th class="p-3 text-right">ကုန်ကျစရိတ် (Ks)</th>`;
@@ -1590,6 +1713,7 @@
                 <tr class="hover:bg-slate-50"><td class="p-3 font-semibold text-slate-700">စုစုပေါင်း အရောင်းရငွေ (Total Revenue)</td><td class="p-3 text-right font-bold text-slate-900">+${Number(totalRev).toLocaleString()} Ks</td></tr>
                 <tr class="hover:bg-slate-50"><td class="p-3 font-semibold text-slate-700">စုစုပေါင်း ကုန်ကျစရိတ် (Total COGS)</td><td class="p-3 text-right font-bold text-rose-500">-${Number(totalCogs).toLocaleString()} Ks</td></tr>
                 <tr class="hover:bg-slate-50"><td class="p-3 font-semibold text-emerald-700">စုစုပေါင်း အမြတ် (Gross Profit)</td><td class="p-3 text-right font-bold text-emerald-600">+${Number(grossProfit).toLocaleString()} Ks</td></tr>
+                <tr class="hover:bg-slate-50"><td class="p-3 font-semibold text-amber-800">စုစုပေါင်း ကုန်ဝယ်စာရင်း (Total Purchases)</td><td class="p-3 text-right font-bold text-amber-700">-${Number(totalPurch).toLocaleString()} Ks</td></tr>
                 <tr class="hover:bg-slate-50"><td class="p-3 font-semibold text-rose-700">စုစုပေါင်း ဆိုင်သုံးစရိတ် (Total Expenses)</td><td class="p-3 text-right font-bold text-rose-600">-${Number(totalExp).toLocaleString()} Ks</td></tr>
                 <tr class="bg-amber-50/70 border-t-2 border-amber-200"><td class="p-3 font-bold text-indigo-900">အသားတင် အမြတ်အစွန်း (Net Income)</td><td class="p-3 text-right font-bold text-indigo-700 text-base">${Number(netIncome).toLocaleString()} Ks</td></tr>
             `;
@@ -2090,6 +2214,97 @@
             renderExpenses();
             showToast("Admin ထံသို့ စရိတ်ဖျက်ရန် Approval တောင်းဆိုချက် ပို့လိုက်ပါပြီ။", "success");
         }
+    }
+
+    function renderPurchases() {
+        const tbody = document.getElementById('purchasesTableBody');
+        if (!tbody) return;
+        tbody.innerHTML = '';
+
+        if (!db.purchases) db.purchases = [];
+
+        if (db.purchases.length === 0) {
+            tbody.innerHTML = `<tr><td colspan="4" class="text-center py-6 text-slate-400 text-xs">ကုန်ဝယ် စာရင်း မရှိသေးပါ။</td></tr>`;
+            return;
+        }
+
+        db.purchases.forEach((p, idx) => {
+            let tr = document.createElement('tr');
+            tr.className = "hover:bg-slate-50 transition-colors";
+            tr.innerHTML = `
+                <td class="p-3">
+                    <div class="font-bold text-slate-900">${p.title}</div>
+                    <div class="text-[10px] text-slate-400 font-mono">${p.date || '-'}</div>
+                </td>
+                <td class="p-3 font-semibold text-slate-700">${p.supplier || '-'}</td>
+                <td class="p-3 text-right font-bold text-amber-700">-${Number(p.amount).toLocaleString()} Ks</td>
+                <td class="p-3 text-center">
+                    <div class="flex items-center justify-center space-x-1">
+                        <button onclick="editPurchase(${idx})" class="px-2 py-1 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg text-xs font-medium">ပြင်</button>
+                        <button onclick="deletePurchase(${idx})" class="px-2 py-1 bg-red-50 hover:bg-red-100 text-red-600 rounded-lg text-xs font-medium">ဖျက်</button>
+                    </div>
+                </td>
+            `;
+            tbody.appendChild(tr);
+        });
+    }
+
+    function openPurchaseModal() {
+        if (currentRole !== 'Admin') return;
+        document.getElementById('editPurchaseIndex').value = '';
+        document.getElementById('purchTitle').value = '';
+        document.getElementById('purchSupplier').value = '';
+        document.getElementById('purchAmount').value = '';
+        document.getElementById('purchDate').value = new Date().toISOString().split('T')[0];
+        document.getElementById('purchaseModalTitle').innerText = 'ကုန်ဝယ်စရိတ် အသစ်ထည့်ရန်';
+        document.getElementById('purchaseModal').classList.remove('hidden');
+    }
+
+    function editPurchase(idx) {
+        if (currentRole !== 'Admin') return;
+        let p = db.purchases[idx];
+        document.getElementById('editPurchaseIndex').value = idx;
+        document.getElementById('purchTitle').value = p.title || '';
+        document.getElementById('purchSupplier').value = p.supplier || '';
+        document.getElementById('purchAmount').value = p.amount || 0;
+        document.getElementById('purchDate').value = p.date || new Date().toISOString().split('T')[0];
+        document.getElementById('purchaseModalTitle').innerText = 'ကုန်ဝယ်စရိတ် ပြင်ဆင်ရန်';
+        document.getElementById('purchaseModal').classList.remove('hidden');
+    }
+
+    function savePurchase() {
+        if (currentRole !== 'Admin') return;
+        let index = document.getElementById('editPurchaseIndex').value;
+        let title = document.getElementById('purchTitle').value.trim();
+        let supplier = document.getElementById('purchSupplier').value.trim();
+        let amount = parseFloat(document.getElementById('purchAmount').value) || 0;
+        let date = document.getElementById('purchDate').value;
+
+        if (!title || amount <= 0) {
+            showToast("ကုန်ပစ္စည်းအမည်နှင့် ပမာဏ မှန်ကန်စွာ ထည့်ပါ။", "error");
+            return;
+        }
+
+        if (!db.purchases) db.purchases = [];
+
+        if (index === '') {
+            db.purchases.push({ id: Date.now(), title, supplier, amount, date });
+            showToast("ကုန်ဝယ်စရိတ် အသစ် သိမ်းဆည်းပြီးပါပြီ။", "success");
+        } else {
+            db.purchases[index] = { ...db.purchases[index], title, supplier, amount, date };
+            showToast("ကုန်ဝယ်စရိတ် အောင်မြင်စွာ ပြင်ဆင်ပြီးပါပြီ။", "success");
+        }
+        saveData();
+        closeModal('purchaseModal');
+        renderPurchases();
+    }
+
+    function deletePurchase(idx) {
+        if (currentRole !== 'Admin') return;
+        db.purchases.splice(idx, 1);
+        saveData();
+        renderPurchases();
+        showToast("ကုန်ဝယ်စာရင်းမှ ဖယ်ရှားပြီးပါပြီ။", "success");
     }
 
     function renderSuppliers() {
@@ -2638,6 +2853,15 @@
         });
         csvContent += "\n";
 
+        csvContent += "--- PURCHASES (ကုန်ဝယ်စာရင်း) ---\n";
+        csvContent += "Title,Supplier,Amount (Ks),Date\n";
+        if (db.purchases) {
+            db.purchases.forEach(p => {
+                csvContent += `"${p.title || ''}","${p.supplier || ''}",${p.amount || 0},"${p.date || ''}"\n`;
+            });
+        }
+        csvContent += "\n";
+
         csvContent += "--- SALES RECORDS (အရောင်းစာရင်း) ---\n";
         csvContent += "Customer Name,Item Name,Qty,Unit Price (Ks),Total Price (Ks),Estimated Profit (Ks),Date\n";
         db.sales.forEach(s => {
@@ -2743,6 +2967,7 @@
             let importedStocks = [];
             let importedSales = [];
             let importedExpenses = [];
+            let importedPurchases = [];
             let importedPreorders = [];
             let importedInstallments = [];
 
@@ -2751,12 +2976,13 @@
                 if (!line) continue;
 
                 if (line.includes("--- STOCKS LIST")) { currentSection = 'stocks'; continue; }
+                else if (line.includes("--- PURCHASES")) { currentSection = 'purchases'; continue; }
                 else if (line.includes("--- SALES RECORDS")) { currentSection = 'sales'; continue; }
                 else if (line.includes("--- EXPENSES RECORDS")) { currentSection = 'expenses'; continue; }
                 else if (line.includes("--- CUSTOMER PREORDERS")) { currentSection = 'preorders'; continue; }
                 else if (line.includes("--- INSTALLMENT DEBTS")) { currentSection = 'installments'; continue; }
 
-                if (line.startsWith("SKU,Category") || line.startsWith("Customer Name,Item Name") || line.startsWith("Title,Category") || line.startsWith("Customer Name,Item Description") || line.startsWith("Customer Name,Total Debt") || line.startsWith("စန်းမော်") || line.startsWith("Generated Date")) {
+                if (line.startsWith("SKU,Category") || line.startsWith("Title,Supplier") || line.startsWith("Customer Name,Item Name") || line.startsWith("Title,Category") || line.startsWith("Customer Name,Item Description") || line.startsWith("Customer Name,Total Debt") || line.startsWith("စန်းမော်") || line.startsWith("Generated Date")) {
                     continue;
                 }
 
@@ -2770,6 +2996,14 @@
                         qty: parseInt(cols[3]) || 0,
                         salePrice: parseFloat(cols[4]) || 0,
                         cogs: parseFloat(cols[5]) || 0
+                    });
+                } else if (currentSection === 'purchases' && cols.length >= 4) {
+                    importedPurchases.push({
+                        id: Date.now() + Math.random(),
+                        title: cols[0].replace(/"/g, ''),
+                        supplier: cols[1].replace(/"/g, ''),
+                        amount: parseFloat(cols[2]) || 0,
+                        date: cols[3].replace(/"/g, '')
                     });
                 } else if (currentSection === 'sales' && cols.length >= 4) {
                     importedSales.push({
@@ -2813,6 +3047,7 @@
             }
 
             if (importedStocks.length > 0) db.stocks = importedStocks;
+            if (importedPurchases.length > 0) db.purchases = importedPurchases;
             if (importedSales.length > 0) db.sales = importedSales;
             if (importedExpenses.length > 0) db.expenses = importedExpenses;
             if (importedPreorders.length > 0) db.preorders = importedPreorders;
