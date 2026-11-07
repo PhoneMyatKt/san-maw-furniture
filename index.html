@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>စန်းမော် ပရိဘောဂ - Stock & Preorder Tracker (v2.1.2)</title>
+    <title>စန်းမော် ပရိဘောဂ - Stock & Preorder Tracker (v2.3)</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Google Font: Inter -->
@@ -79,7 +79,7 @@
 
 <!-- Startup Admin PIN Modal -->
 <div id="startupAdminPinModal" class="fixed inset-0 bg-slate-900/80 backdrop-blur-md hidden z-[70] flex items-center justify-center p-4">
-    <div class="bg-white rounded-3xl w-full max-w-sm p-6 space-y-4 shadow-2xl text-center">
+    <div class="bg-white rounded-3xl w-full max-w-sm p-6 space-y-4 shadow-xl text-center">
         <div class="w-12 h-12 bg-amber-100 rounded-2xl flex items-center justify-center mx-auto text-amber-800">
             <i class="fa-solid fa-key text-xl"></i>
         </div>
@@ -172,9 +172,6 @@
                 </button>
 
                 <div class="border-t border-slate-100 my-1 pt-1 admin-only hidden"></div>
-                <button onclick="switchTab('purchases'); closeMenuDropdown();" id="tab-purchases" class="tab-btn w-full text-left px-4 py-2 text-xs font-medium text-slate-700 hover:bg-slate-50 flex items-center space-x-2 admin-only hidden transition">
-                    <i class="fa-solid fa-bag-shopping w-5 text-amber-700"></i> <span>ကုန်ဝယ် စာရင်း (Purchases)</span>
-                </button>
                 <button onclick="switchTab('backup'); closeMenuDropdown();" id="tab-backup" class="tab-btn w-full text-left px-4 py-2 text-xs font-medium text-slate-700 hover:bg-slate-50 flex items-center space-x-2 admin-only hidden transition">
                     <i class="fa-solid fa-download w-5 text-amber-700"></i> <span>Download & Backup</span>
                 </button>
@@ -462,7 +459,7 @@
                 <span id="subtabExpVal" class="text-sm font-bold text-rose-600 mt-0.5">0 Ks</span>
             </button>
             <button onclick="switchReportSubTab('net')" id="subtab-net" class="report-subtab-btn p-3 rounded-xl border border-slate-200 bg-white text-slate-700 font-bold text-xs shadow-sm flex flex-col items-center justify-center transition col-span-2 sm:col-span-1">
-                <span class="text-[10px] text-slate-500 font-medium">အသားတင်အမြတ်</span>
+                <span class="text-[10px] text-slate-500 font-medium">Net Cash Flow (လက်ကျန် ငွေသား)</span>
                 <span id="subtabNetVal" class="text-sm font-bold text-indigo-700 mt-0.5">0 Ks</span>
             </button>
         </div>
@@ -1434,20 +1431,8 @@
     }
 
     function updateApprovalBadge() {
-        const badge = document.getElementById('approvalTabBadge');
         const navBadge = document.getElementById('navApprovalBadge');
-
         const count = db.approvals ? db.approvals.length : 0;
-
-        if (badge) {
-            if (count > 0) {
-                badge.classList.remove('hidden');
-                badge.innerText = count;
-            } else {
-                badge.classList.add('hidden');
-                badge.innerText = '0';
-            }
-        }
 
         if (navBadge) {
             if (count > 0) {
@@ -1595,13 +1580,14 @@
             totalPurch += (parseFloat(p.amount) || 0);
         });
 
-        let netIncome = grossProfit - totalExp - totalPurch;
+        // Formula: netCashFlow = totalRevenue - totalPurchases - totalExpenses
+        let netCashFlow = totalRev - totalPurch - totalExp;
 
         if (document.getElementById('subtabRevVal')) document.getElementById('subtabRevVal').innerText = Number(totalRev).toLocaleString() + ' Ks';
         if (document.getElementById('subtabProfVal')) document.getElementById('subtabProfVal').innerText = Number(grossProfit).toLocaleString() + ' Ks';
         if (document.getElementById('subtabPurchVal')) document.getElementById('subtabPurchVal').innerText = Number(totalPurch).toLocaleString() + ' Ks';
         if (document.getElementById('subtabExpVal')) document.getElementById('subtabExpVal').innerText = Number(totalExp).toLocaleString() + ' Ks';
-        if (document.getElementById('subtabNetVal')) document.getElementById('subtabNetVal').innerText = Number(netIncome).toLocaleString() + ' Ks';
+        if (document.getElementById('subtabNetVal')) document.getElementById('subtabNetVal').innerText = Number(netCashFlow).toLocaleString() + ' Ks';
 
         tbody.innerHTML = '';
 
@@ -1705,16 +1691,15 @@
                 tbody.appendChild(tr);
             });
         } else if (currentReportSubTab === 'net') {
-            if (subTabTitle) subTabTitle.innerHTML = `<i class="fa-solid fa-wallet mr-1.5 text-indigo-700"></i> Net Income (အသားတင်အမြတ်အစွန်း) - ${Number(netIncome).toLocaleString()} Ks`;
+            if (subTabTitle) subTabTitle.innerHTML = `<i class="fa-solid fa-wallet mr-1.5 text-indigo-700"></i> Net Cash Flow (လက်ကျန် ငွေသား) - ${Number(netCashFlow).toLocaleString()} Ks`;
             if (theader) theader.innerHTML = `<th class="p-3">ဖော်ပြချက် (Summary Description)</th><th class="p-3 text-right">ပမာဏ (Ks)</th>`;
 
             tbody.innerHTML = `
                 <tr class="hover:bg-slate-50"><td class="p-3 font-semibold text-slate-700">စုစုပေါင်း အရောင်းရငွေ (Total Revenue)</td><td class="p-3 text-right font-bold text-slate-900">+${Number(totalRev).toLocaleString()} Ks</td></tr>
-                <tr class="hover:bg-slate-50"><td class="p-3 font-semibold text-slate-700">စုစုပေါင်း ကုန်ကျစရိတ် (Total COGS)</td><td class="p-3 text-right font-bold text-rose-500">-${Number(totalCogs).toLocaleString()} Ks</td></tr>
-                <tr class="hover:bg-slate-50"><td class="p-3 font-semibold text-emerald-700">စုစုပေါင်း အမြတ် (Gross Profit)</td><td class="p-3 text-right font-bold text-emerald-600">+${Number(grossProfit).toLocaleString()} Ks</td></tr>
                 <tr class="hover:bg-slate-50"><td class="p-3 font-semibold text-amber-800">စုစုပေါင်း ကုန်ဝယ်စာရင်း (Total Purchases)</td><td class="p-3 text-right font-bold text-amber-700">-${Number(totalPurch).toLocaleString()} Ks</td></tr>
                 <tr class="hover:bg-slate-50"><td class="p-3 font-semibold text-rose-700">စုစုပေါင်း ဆိုင်သုံးစရိတ် (Total Expenses)</td><td class="p-3 text-right font-bold text-rose-600">-${Number(totalExp).toLocaleString()} Ks</td></tr>
-                <tr class="bg-amber-50/70 border-t-2 border-amber-200"><td class="p-3 font-bold text-indigo-900">အသားတင် အမြတ်အစွန်း (Net Income)</td><td class="p-3 text-right font-bold text-indigo-700 text-base">${Number(netIncome).toLocaleString()} Ks</td></tr>
+                <tr class="hover:bg-slate-50"><td class="p-3 font-semibold text-emerald-700">စုစုပေါင်း အမြတ် (Gross Profit - Reference)</td><td class="p-3 text-right font-bold text-emerald-600">+${Number(grossProfit).toLocaleString()} Ks</td></tr>
+                <tr class="bg-amber-50/70 border-t-2 border-amber-200"><td class="p-3 font-bold text-indigo-900">Net Cash Flow (လက်ကျန် ငွေသား)</td><td class="p-3 text-right font-bold text-indigo-700 text-base">${Number(netCashFlow).toLocaleString()} Ks</td></tr>
             `;
         }
     }
