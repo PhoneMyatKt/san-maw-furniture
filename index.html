@@ -1158,73 +1158,44 @@
     let rtdb = null;
     let isCloudSynced = false;
 
+    // 100% Pure Cloud State (No localStorage fallback)
     let db = {
-        stocks: JSON.parse(localStorage.getItem('sm_stocks')) || [],
-        sales: JSON.parse(localStorage.getItem('sm_sales')) || [],
-        preorders: JSON.parse(localStorage.getItem('sm_preorders')) || [],
-        installments: JSON.parse(localStorage.getItem('sm_installments')) || [],
-        expenses: JSON.parse(localStorage.getItem('sm_expenses')) || [],
-        purchases: JSON.parse(localStorage.getItem('sm_purchases')) || [],
-        suppliers: JSON.parse(localStorage.getItem('sm_suppliers')) || [],
-        workers: JSON.parse(localStorage.getItem('sm_workers')) || [],
-        advances: JSON.parse(localStorage.getItem('sm_advances')) || [],
-        approvals: JSON.parse(localStorage.getItem('sm_approvals')) || [],
-        settings: JSON.parse(localStorage.getItem('sm_settings')) || {
-            adminPin: localStorage.getItem('sm_admin_pin') || '1965',
-            staffPin: localStorage.getItem('sm_staff_pin') || '0000',
+        stocks: [],
+        sales: [],
+        preorders: [],
+        installments: [],
+        expenses: [],
+        purchases: [],
+        suppliers: [],
+        workers: [],
+        advances: [],
+        approvals: [],
+        settings: {
+            adminPin: '0000',
+            staffPin: '0000',
             mainCapital: 3000000,
             pettyCashTarget: 200000,
             lastRefillCheck: new Date().toISOString()
         }
     };
 
-    if (!db.settings) db.settings = {};
-    if (db.settings.mainCapital === undefined || db.settings.mainCapital === null) {
-        db.settings.mainCapital = 3000000;
-    }
-    if (db.settings.pettyCashTarget === undefined || db.settings.pettyCashTarget === null) {
-        db.settings.pettyCashTarget = 200000;
-    }
-    if (db.settings.adminPin === undefined || db.settings.adminPin === null || String(db.settings.adminPin).trim() === '') {
-        db.settings.adminPin = localStorage.getItem('sm_admin_pin') || '1965';
-    }
-    if (db.settings.staffPin === undefined || db.settings.staffPin === null || String(db.settings.staffPin).trim() === '') {
-        db.settings.staffPin = localStorage.getItem('sm_staff_pin') || '0000';
-    }
-
     function getAdminPin() {
-        if (db.settings && db.settings.adminPin !== undefined && db.settings.adminPin !== null && String(db.settings.adminPin).trim() !== '') {
-            return String(db.settings.adminPin).trim();
-        }
-        const localPin = localStorage.getItem('sm_admin_pin');
-        if (localPin && String(localPin).trim() !== '') {
-            return String(localPin).trim();
-        }
         return String(db.settings?.adminPin || '1965').trim();
     }
 
     function getStaffPin() {
-        if (db.settings && db.settings.staffPin !== undefined && db.settings.staffPin !== null && String(db.settings.staffPin).trim() !== '') {
-            return String(db.settings.staffPin).trim();
-        }
-        const localPin = localStorage.getItem('sm_staff_pin');
-        if (localPin && String(localPin).trim() !== '') {
-            return String(localPin).trim();
-        }
         return String(db.settings?.staffPin || '0000').trim();
     }
 
     function setAdminPin(newPin) {
         if (!db.settings) db.settings = {};
         db.settings.adminPin = String(newPin).trim();
-        localStorage.setItem('sm_admin_pin', String(newPin).trim());
         saveData();
     }
 
     function setStaffPin(newPin) {
         if (!db.settings) db.settings = {};
         db.settings.staffPin = String(newPin).trim();
-        localStorage.setItem('sm_staff_pin', String(newPin).trim());
         saveData();
     }
 
@@ -1267,51 +1238,24 @@
             rtdb.ref('sanmaw_furniture_db').once('value').then((snapshot) => {
                 const cloudData = snapshot.val();
                 if (cloudData && typeof cloudData === 'object') {
-                    db.stocks = cloudData.stocks || db.stocks;
-                    db.sales = cloudData.sales || db.sales;
-                    db.preorders = cloudData.preorders || db.preorders;
-                    db.installments = cloudData.installments || db.installments;
-                    db.expenses = cloudData.expenses || db.expenses;
-                    db.purchases = cloudData.purchases || db.purchases;
-                    db.suppliers = cloudData.suppliers || db.suppliers;
-                    db.workers = cloudData.workers || db.workers;
-                    db.approvals = cloudData.approvals || db.approvals;
+                    db.stocks = cloudData.stocks || [];
+                    db.sales = cloudData.sales || [];
+                    db.preorders = cloudData.preorders || [];
+                    db.installments = cloudData.installments || [];
+                    db.expenses = cloudData.expenses || [];
+                    db.purchases = cloudData.purchases || [];
+                    db.suppliers = cloudData.suppliers || [];
+                    db.workers = cloudData.workers || [];
+                    db.advances = cloudData.advances || [];
+                    db.approvals = cloudData.approvals || [];
 
                     if (cloudData.settings) {
-                        db.settings = typeof cloudData.settings === 'object' ? cloudData.settings : { adminPin: cloudData.settings, mainCapital: 3000000, pettyCashTarget: 200000 };
+                        db.settings = cloudData.settings;
                     }
-                    if (cloudData.adminPin !== undefined && cloudData.adminPin !== null) {
-                        if (!db.settings) db.settings = {};
-                        db.settings.adminPin = cloudData.adminPin;
-                    }
-                    if (cloudData.staffPin !== undefined && cloudData.staffPin !== null) {
-                        if (!db.settings) db.settings = {};
-                        db.settings.staffPin = cloudData.staffPin;
-                    }
-
-                    if (!db.settings.staffPin) {
-                        db.settings.staffPin = localStorage.getItem('sm_staff_pin') || '0000';
-                    }
-                    if (!db.settings.adminPin) {
-                        db.settings.adminPin = localStorage.getItem('sm_admin_pin') || '1965';
-                    }
-
-                    localStorage.setItem('sm_admin_pin', String(db.settings.adminPin).trim());
-                    localStorage.setItem('sm_staff_pin', String(db.settings.staffPin).trim());
-
-                    localStorage.setItem('sm_stocks', JSON.stringify(db.stocks));
-                    localStorage.setItem('sm_sales', JSON.stringify(db.sales));
-                    localStorage.setItem('sm_preorders', JSON.stringify(db.preorders));
-                    localStorage.setItem('sm_installments', JSON.stringify(db.installments));
-                    localStorage.setItem('sm_expenses', JSON.stringify(db.expenses));
-                    localStorage.setItem('sm_purchases', JSON.stringify(db.purchases));
-                    localStorage.setItem('sm_suppliers', JSON.stringify(db.suppliers));
-                    localStorage.setItem('sm_workers', JSON.stringify(db.workers));
-                    localStorage.setItem('sm_approvals', JSON.stringify(db.approvals));
-                    localStorage.setItem('sm_settings', JSON.stringify(db.settings));
+                    if (!db.settings.adminPin) db.settings.adminPin = '1965';
+                    if (!db.settings.staffPin) db.settings.staffPin = '0000';
                 } else {
-                    if (!db.settings.staffPin) db.settings.staffPin = localStorage.getItem('sm_staff_pin') || '0000';
-                    if (!db.settings.adminPin) db.settings.adminPin = localStorage.getItem('sm_admin_pin') || '1965';
+                    // Initialize cloud with default data and PINs if empty
                     rtdb.ref('sanmaw_furniture_db').set(db);
                 }
                 isCloudSynced = true;
@@ -1325,46 +1269,22 @@
             rtdb.ref('sanmaw_furniture_db').on('value', (snapshot) => {
                 const cloudData = snapshot.val();
                 if (cloudData) {
-                    db.stocks = cloudData.stocks || db.stocks;
-                    db.sales = cloudData.sales || db.sales;
-                    db.preorders = cloudData.preorders || db.preorders;
-                    db.installments = cloudData.installments || db.installments;
-                    db.expenses = cloudData.expenses || db.expenses;
-                    db.purchases = cloudData.purchases || db.purchases;
-                    db.suppliers = cloudData.suppliers || db.suppliers;
-                    db.workers = cloudData.workers || db.workers;
-                    db.advances = cloudData.advances || db.advances;
-                    db.approvals = cloudData.approvals || db.approvals;
+                    db.stocks = cloudData.stocks || [];
+                    db.sales = cloudData.sales || [];
+                    db.preorders = cloudData.preorders || [];
+                    db.installments = cloudData.installments || [];
+                    db.expenses = cloudData.expenses || [];
+                    db.purchases = cloudData.purchases || [];
+                    db.suppliers = cloudData.suppliers || [];
+                    db.workers = cloudData.workers || [];
+                    db.advances = cloudData.advances || [];
+                    db.approvals = cloudData.approvals || [];
 
                     if (cloudData.settings) {
-                        db.settings = typeof cloudData.settings === 'object' ? cloudData.settings : { adminPin: cloudData.settings, mainCapital: 3000000, pettyCashTarget: 200000 };
+                        db.settings = cloudData.settings;
                     }
-                    if (cloudData.adminPin !== undefined && cloudData.adminPin !== null) {
-                        if (!db.settings) db.settings = {};
-                        db.settings.adminPin = cloudData.adminPin;
-                    }
-                    if (cloudData.staffPin !== undefined && cloudData.staffPin !== null) {
-                        if (!db.settings) db.settings = {};
-                        db.settings.staffPin = cloudData.staffPin;
-                    }
-
-                    if (!db.settings.staffPin) db.settings.staffPin = localStorage.getItem('sm_staff_pin') || '0000';
-                    if (!db.settings.adminPin) db.settings.adminPin = localStorage.getItem('sm_admin_pin') || '1965';
-
-                    localStorage.setItem('sm_admin_pin', String(db.settings.adminPin).trim());
-                    localStorage.setItem('sm_staff_pin', String(db.settings.staffPin).trim());
-
-                    localStorage.setItem('sm_stocks', JSON.stringify(db.stocks));
-                    localStorage.setItem('sm_sales', JSON.stringify(db.sales));
-                    localStorage.setItem('sm_preorders', JSON.stringify(db.preorders));
-                    localStorage.setItem('sm_installments', JSON.stringify(db.installments));
-                    localStorage.setItem('sm_expenses', JSON.stringify(db.expenses));
-                    localStorage.setItem('sm_purchases', JSON.stringify(db.purchases));
-                    localStorage.setItem('sm_suppliers', JSON.stringify(db.suppliers));
-                    localStorage.setItem('sm_workers', JSON.stringify(db.workers));
-                    localStorage.setItem('sm_advances', JSON.stringify(db.advances));
-                    localStorage.setItem('sm_approvals', JSON.stringify(db.approvals));
-                    localStorage.setItem('sm_settings', JSON.stringify(db.settings));
+                    if (!db.settings.adminPin) db.settings.adminPin = '1965';
+                    if (!db.settings.staffPin) db.settings.staffPin = '0000';
 
                     isCloudSynced = true;
                     updateSyncIndicator(true);
@@ -1390,26 +1310,17 @@
                 indicator.title = "Firebase Cloud Real-time Synced";
             } else {
                 indicator.className = "inline-block w-2 h-2 rounded-full bg-amber-400";
-                indicator.title = "Offline Mode (localStorage)";
+                indicator.title = "Connecting to Cloud...";
             }
         }
     }
 
     function saveData() {
-        localStorage.setItem('sm_stocks', JSON.stringify(db.stocks));
-        localStorage.setItem('sm_sales', JSON.stringify(db.sales));
-        localStorage.setItem('sm_preorders', JSON.stringify(db.preorders));
-        localStorage.setItem('sm_installments', JSON.stringify(db.installments));
-        localStorage.setItem('sm_expenses', JSON.stringify(db.expenses));
-        localStorage.setItem('sm_purchases', JSON.stringify(db.purchases));
-        localStorage.setItem('sm_suppliers', JSON.stringify(db.suppliers));
-        localStorage.setItem('sm_workers', JSON.stringify(db.workers));
-        localStorage.setItem('sm_advances', JSON.stringify(db.advances));
-        localStorage.setItem('sm_approvals', JSON.stringify(db.approvals));
-        localStorage.setItem('sm_settings', JSON.stringify(db.settings));
-
+        // Pure Cloud Save (No localStorage)
         if (rtdb) {
-            rtdb.ref('sanmaw_furniture_db').set(db).catch(err => {
+            rtdb.ref('sanmaw_furniture_db').set(db).then(() => {
+                updateSyncIndicator(true);
+            }).catch(err => {
                 console.warn("Cloud write error:", err);
                 updateSyncIndicator(false);
             });
