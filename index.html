@@ -11,9 +11,31 @@
     <meta name="theme-color" content="#92400e">
     <meta name="application-name" content="စန်းမော် POS">
 
-    <!-- manifest.json ဖိုင် သီးသန့်မလိုဘဲ Single HTML ထဲမှာတင် Data URI ဖြင့် PWA သတ်မှတ်ခြင်း -->
-    <link rel="manifest" href='data:application/manifest+json,{"name":"စန်းမော် ပရိဘောဂ POS","short_name":"SanMaw POS","start_url":"./","display":"standalone","background_color":"#92400e","theme_color":"#92400e","icons":[{"src":"https://cdn-icons-png.flaticon.com/512/2603/2603741.png","sizes":"192x192","type":"image/png"}]}'>
-    <!-- Tailwind CSS CDN -->
+    <!-- Auto PWA Dynamic Manifest Injector (Full-Screen Fix) -->
+    <script>
+      (function() {
+        const manifest = {
+          "name": "စန်းမော် ပရိဘောဂ POS",
+          "short_name": "SanMaw POS",
+          "start_url": window.location.href,
+          "display": "standalone",
+          "background_color": "#92400e",
+          "theme_color": "#92400e",
+          "icons": [{
+            "src": "https://cdn-icons-png.flaticon.com/512/2603/2603741.png",
+            "sizes": "192x192",
+            "type": "image/png"
+          }]
+        };
+        const blob = new Blob([JSON.stringify(manifest)], {type: 'application/json'});
+        const manifestURL = URL.createObjectURL(blob);
+        const link = document.createElement('link');
+        link.rel = 'manifest';
+        link.href = manifestURL;
+        document.head.appendChild(link);
+      })();
+    </script>
+    
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Google Font: Inter -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
