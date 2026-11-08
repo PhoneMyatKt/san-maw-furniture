@@ -163,7 +163,7 @@
                     <i class="fa-solid fa-boxes-stacked w-5 text-amber-700"></i> <span>Stock List</span>
                 </button>
                 <button onclick="switchTab('sales'); closeMenuDropdown();" id="tab-sales" class="tab-btn w-full text-left px-4 py-2 text-xs font-medium text-slate-700 hover:bg-slate-50 flex items-center space-x-2 transition">
-                    <i class="fa-solid fa-cart-shopping w-5 text-amber-700"></i> <span>Sales & Revenue</span>
+                    <i class="fa-solid fa-cart-shopping w-5 text-amber-700"></i> <span>Sales List</span>
                 </button>
                 <button onclick="switchTab('expenses'); closeMenuDropdown();" id="tab-expenses" class="tab-btn w-full text-left px-4 py-2 text-xs font-medium text-slate-700 hover:bg-slate-50 flex items-center space-x-2 transition">
                     <i class="fa-solid fa-receipt w-5 text-amber-700"></i> <span>ဆိုင်သုံးစရိတ် (Expenses)</span>
@@ -416,7 +416,7 @@
                     <option value="">📁 လအလိုက် အားလုံး</option>
                 </select>
                 <button onclick="openPurchaseModal()" class="bg-amber-800 hover:bg-amber-900 text-white px-4 py-2.5 rounded-xl text-xs font-semibold shadow transition flex items-center space-x-1.5 whitespace-nowrap">
-                    <i class="fa-solid fa-plus"></i> <span>ကုန်ဝယ်စရိတ် အသစ်ထည့်ရန်</span>
+                    <i class="fa-solid fa-plus"></i> <span>စာရင်း အသစ်ထည့်ရန်</span>
                 </button>
             </div>
         </div>
@@ -521,7 +521,7 @@
                 <input type="date" id="attendanceDateFilter" onchange="renderWorkers()" class="border border-slate-200 rounded-xl px-3 py-2 text-xs font-bold outline-none focus:ring-2 focus:ring-amber-600 bg-slate-50">
                 <input type="month" id="workerMonthFilter" onchange="renderWorkers()" class="border border-slate-200 rounded-xl px-3 py-2 text-xs font-bold outline-none focus:ring-2 focus:ring-amber-600 bg-slate-50">
                 <button onclick="openWorkerModal()" class="bg-amber-800 hover:bg-amber-900 text-white px-4 py-2.5 rounded-xl text-xs font-semibold shadow transition flex items-center space-x-1.5 whitespace-nowrap">
-                    <i class="fa-solid fa-plus"></i> <span>ဝန်ထမ်းအသစ်</span>
+                    <i class="fa-solid fa-plus"></i> <span>new-person</span>
                 </button>
             </div>
         </div>
@@ -1496,13 +1496,13 @@
 
         const tabNames = {
             'stock': 'Stock List',
-            'sales': 'Sales & Revenue',
-            'expenses': 'ဆိုင်သုံးစရိတ် (Expenses)',
-            'purchases': 'ကုန်ဝယ် စာရင်း (Purchases)',
+            'sales': 'Sales List',
+            'expenses': 'ဆိုင်သုံးစရိတ်',
+            'purchases': 'ကုန်ဝယ် စာရင်း',
             'preorder': 'Preorder',
-            'installment': 'အရစ်ကျ (Installment)',
+            'installment': 'အရစ်ကျ',
             'suppliers': 'Supplier Contact',
-            'workers': 'ဝန်ထမ်း & လက်သမား (Workers)',
+            'workers': 'ဝန်ထမ်း (KPI)',
             'report': 'Report & Dashboard',
             'approval': 'Admin Approvals',
             'backup': 'Download & Backup'
