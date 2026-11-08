@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>စန်းမော် ပရိဘောဂ - Stock & Preorder Tracker (v2.4)</title>
+    <title>စန်းမော် ပရိဘောဂ - Stock & Preorder Tracker (v2.7.3)</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Google Font: Inter -->
@@ -18,6 +18,13 @@
         ::-webkit-scrollbar { width: 4px; height: 4px; }
         ::-webkit-scrollbar-track { background: #f1f5f9; }
         ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 9999px; }
+        input:-webkit-autofill,
+        input:-webkit-autofill:hover,
+        input:-webkit-autofill:focus,
+        input:-webkit-autofill:active {
+            -webkit-box-shadow: 0 0 0 30px white inset !important;
+            -webkit-text-fill-color: #1e293b !important;
+        }
     </style>
 </head>
 <body class="bg-slate-100 text-slate-800 h-full flex flex-col antialiased pb-20 select-none">
@@ -27,7 +34,7 @@
     <div class="text-center space-y-4 animate-pulse px-4">
         <i class="fa-solid fa-couch text-5xl text-amber-300"></i>
         <h1 class="text-2xl font-bold tracking-wide">စန်းမော် ပရိဘောဂ</h1>
-        <p class="text-xs text-amber-200">Stock, Sales & Daily Capital Tracker (v2.4)</p>
+        <p class="text-xs text-amber-200">Stock, Sales & Daily Capital Tracker (v2.7.3)</p>
         <div class="w-8 h-8 border-4 border-amber-300 border-t-transparent rounded-full animate-spin mx-auto mt-4"></div>
     </div>
     <div class="absolute bottom-6 text-[11px] text-amber-200/80 font-medium">
@@ -316,7 +323,7 @@
                     <span id="advanceStatusBadge" class="text-[9px] text-rose-700 font-medium">နေ့စဉ် Petty Cash ပိုသုံးစရိတ် စုစုပေါင်း</span>
                 </div>
             </div>
-            
+
             <div class="bg-slate-50 p-2.5 rounded-xl text-[11px] text-slate-600 flex items-center justify-between border border-slate-200/80">
                 <span><i class="fa-solid fa-rotate text-amber-700 mr-1"></i> Auto-Refill Priority Engine:</span>
                 <span class="font-medium text-slate-700">COGS ဝင်ပါက (၁) Main Capital Advance ပြန်ဆပ် ➔ (၂) Petty Cash ဖြည့် ➔ (၃) Stock ဝယ်ရန်လက်ကျန် သို့ စီးဆင်း</span>
@@ -640,137 +647,166 @@
 </main>
 
 <!-- MODAL: Petty Cash Target Edit Modal (Admin Only) -->
-<div id="pettyCashTargetModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm hidden z-50 overflow-y-auto">
-    <div class="min-h-full flex items-center justify-center p-4 text-center">
-        <div class="bg-white rounded-2xl w-full max-w-sm p-5 space-y-4 shadow-xl text-left my-auto">
-            <div class="flex justify-between items-center border-b pb-2">
-                <h3 class="text-base font-bold text-slate-900">Petty Cash Target Limit ပြင်ရန်</h3>
-                <button onclick="closeModal('pettyCashTargetModal')" class="text-slate-400 font-bold text-xl">&times;</button>
+<div id="pettyCashTargetModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm hidden z-50 flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl w-full max-w-sm p-5 space-y-4 shadow-xl text-left">
+        <div class="flex justify-between items-center border-b pb-2">
+            <h3 class="text-base font-bold text-slate-900">Petty Cash Target Limit ပြင်ရန်</h3>
+            <button onclick="closeModal('pettyCashTargetModal')" class="text-slate-400 font-bold text-xl">&times;</button>
+        </div>
+        <div class="space-y-3 text-xs">
+            <div>
+                <label class="block font-semibold text-slate-600 mb-1">Petty Cash Target Limit (Ks)</label>
+                <input type="number" id="inputPettyTarget" min="0" placeholder="200000" class="w-full border rounded-xl p-2.5 outline-none focus:ring-2 focus:ring-amber-600 font-bold text-sm">
+                <p class="text-[10px] text-slate-400 mt-1">မူလ သတ်မှတ်ချက်: 200,000 Ks (၂ သိန်း)</p>
             </div>
-            <div class="space-y-3 text-xs">
-                <div>
-                    <label class="block font-semibold text-slate-600 mb-1">Petty Cash Target Limit (Ks)</label>
-                    <input type="number" id="inputPettyTarget" min="0" placeholder="200000" class="w-full border rounded-xl p-2.5 outline-none focus:ring-2 focus:ring-amber-600 font-bold text-sm">
-                    <p class="text-[10px] text-slate-400 mt-1">မူလ သတ်မှတ်ချက်: 200,000 Ks (၂ သိန်း)</p>
-                </div>
-            </div>
-            <div class="flex space-x-2 pt-2 border-t">
-                <button onclick="closeModal('pettyCashTargetModal')" class="flex-1 bg-slate-100 py-2.5 rounded-xl text-xs font-semibold">မလုပ်ပါ</button>
-                <button onclick="savePettyCashTarget()" class="flex-1 bg-amber-800 text-white py-2.5 rounded-xl text-xs font-semibold shadow">သိမ်းဆည်းမည်</button>
-            </div>
+        </div>
+        <div class="flex space-x-2 pt-2 border-t">
+            <button onclick="closeModal('pettyCashTargetModal')" class="flex-1 bg-slate-100 py-2.5 rounded-xl text-xs font-semibold">မလုပ်ပါ</button>
+            <button onclick="savePettyCashTarget()" class="flex-1 bg-amber-800 text-white py-2.5 rounded-xl text-xs font-semibold shadow">သိမ်းဆည်းမည်</button>
         </div>
     </div>
 </div>
 
 <!-- MODAL: Main Capital Edit Modal -->
-<div id="mainCapitalModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm hidden z-50 overflow-y-auto">
-    <div class="min-h-full flex items-center justify-center p-4 text-center">
-        <div class="bg-white rounded-2xl w-full max-w-sm p-5 space-y-4 shadow-xl text-left my-auto">
-            <div class="flex justify-between items-center border-b pb-2">
-                <h3 class="text-base font-bold text-slate-900">Main Capital (ပင်မ မတည်ငွေ) ပြင်ရန်</h3>
-                <button onclick="closeModal('mainCapitalModal')" class="text-slate-400 font-bold text-xl">&times;</button>
+<div id="mainCapitalModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm hidden z-50 flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl w-full max-w-sm p-5 space-y-4 shadow-xl text-left">
+        <div class="flex justify-between items-center border-b pb-2">
+            <h3 class="text-base font-bold text-slate-900">Main Capital (ပင်မ မတည်ငွေ) ပြင်ရန်</h3>
+            <button onclick="closeModal('mainCapitalModal')" class="text-slate-400 font-bold text-xl">&times;</button>
+        </div>
+        <div class="space-y-3 text-xs">
+            <div>
+                <label class="block font-semibold text-slate-600 mb-1">ပင်မ မတည်ငွေ ပမာဏ (Ks)</label>
+                <input type="number" id="inputMainCapital" min="0" placeholder="3000000" class="w-full border rounded-xl p-2.5 outline-none focus:ring-2 focus:ring-amber-600 font-bold text-sm">
+                <p class="text-[10px] text-slate-400 mt-1">မူလ သတ်မှတ်ချက်: 3,000,000 Ks (သိန်း ၃၀)</p>
             </div>
-            <div class="space-y-3 text-xs">
-                <div>
-                    <label class="block font-semibold text-slate-600 mb-1">ပင်မ မတည်ငွေ ပမာဏ (Ks)</label>
-                    <input type="number" id="inputMainCapital" min="0" placeholder="3000000" class="w-full border rounded-xl p-2.5 outline-none focus:ring-2 focus:ring-amber-600 font-bold text-sm">
-                    <p class="text-[10px] text-slate-400 mt-1">မူလ သတ်မှတ်ချက်: 3,000,000 Ks (သိန်း ၃၀)</p>
-                </div>
-            </div>
-            <div class="flex space-x-2 pt-2 border-t">
-                <button onclick="closeModal('mainCapitalModal')" class="flex-1 bg-slate-100 py-2.5 rounded-xl text-xs font-semibold">မလုပ်ပါ</button>
-                <button onclick="saveMainCapital()" class="flex-1 bg-amber-800 text-white py-2.5 rounded-xl text-xs font-semibold shadow">သိမ်းဆည်းမည်</button>
-            </div>
+        </div>
+        <div class="flex space-x-2 pt-2 border-t">
+            <button onclick="closeModal('mainCapitalModal')" class="flex-1 bg-slate-100 py-2.5 rounded-xl text-xs font-semibold">မလုပ်ပါ</button>
+            <button onclick="saveMainCapital()" class="flex-1 bg-amber-800 text-white py-2.5 rounded-xl text-xs font-semibold shadow">သိမ်းဆည်းမည်</button>
         </div>
     </div>
 </div>
 
-<!-- MODAL: Sale Modal -->
-<div id="saleModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm hidden z-50 overflow-y-auto">
-    <div class="min-h-full flex items-center justify-center p-4 text-center">
-        <div class="bg-white rounded-2xl w-full max-w-md p-5 md:p-6 space-y-4 shadow-xl text-left my-auto max-h-[90vh] flex flex-col">
-            <div class="flex justify-between items-center border-b border-slate-100 pb-2 flex-shrink-0">
-                <h3 class="text-base md:text-lg font-bold text-slate-900" id="saleModalTitle">အရောင်းအသစ် သွင်းရန်</h3>
-                <button onclick="closeModal('saleModal')" class="text-slate-400 hover:text-slate-600 font-bold text-xl px-1">&times;</button>
+<!-- MODAL: Sale Modal (Properly Formatted Scrollable Card Layout) -->
+<div id="saleModal" class="fixed inset-0 bg-slate-900/75 backdrop-blur-sm hidden z-50 overflow-y-auto">
+    <div class="min-h-full flex items-center justify-center p-3 md:p-6">
+        <div class="bg-white rounded-3xl w-full max-w-lg shadow-2xl border border-slate-100 flex flex-col my-auto overflow-hidden">
+            <!-- Header -->
+            <div class="bg-amber-900 text-white px-6 py-4 flex justify-between items-center">
+                <div class="flex items-center space-x-2">
+                    <i class="fa-solid fa-cart-shopping text-amber-300 text-lg"></i>
+                    <h3 class="text-base font-bold" id="saleModalTitle">အရောင်းအသစ် သွင်းရန်</h3>
+                </div>
+                <button onclick="closeModal('saleModal')" class="w-8 h-8 rounded-full bg-amber-950/40 hover:bg-amber-950 flex items-center justify-center text-amber-200 transition text-lg">&times;</button>
             </div>
-            <div class="space-y-3 text-sm overflow-y-auto flex-1 pr-1">
+
+            <!-- Body Content -->
+            <div class="p-5 md:p-6 space-y-4 text-xs md:text-sm">
                 <input type="hidden" id="editSaleIndex">
-                <div>
-                    <label class="block text-xs font-semibold text-slate-600 mb-1">စတော့ထဲမှ ပစ္စည်းရွေးပါ</label>
-                    <select id="saleStockSelect" onchange="onSaleStockSelected()" class="w-full border border-slate-200 rounded-xl p-2.5 outline-none focus:ring-2 focus:ring-amber-600 text-xs md:text-sm">
-                        <option value="">-- စတော့ပစ္စည်း ရွေးပါ --</option>
+
+                <!-- Section 1: Stock Item Selection -->
+                <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200/80 space-y-2">
+                    <label class="block font-bold text-slate-800 flex items-center">
+                        <i class="fa-solid fa-boxes-stacked mr-1.5 text-amber-700"></i> ၁။ စတော့ထဲမှ ပစ္စည်းရွေးချယ်ရန်
+                    </label>
+                    <select id="saleStockSelect" onchange="onSaleStockSelected()" class="w-full border border-slate-200 rounded-xl p-3 outline-none focus:ring-2 focus:ring-amber-600 bg-white font-medium text-slate-800">
+                        <option value="">-- စတော့ပစ္စည်း ရွေးပါ (သို့မဟုတ် အောက်တွင် ကိုယ်တိုင်ရိုက်ထည့်ပါ) --</option>
                     </select>
                 </div>
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                    <div>
-                        <label class="block text-xs font-semibold text-slate-600 mb-1">Customer Name (ဝယ်ယူသူ နာမည်)</label>
-                        <input type="text" id="saleCustName" placeholder="ဝယ်ယူသူ နာမည်" class="w-full border border-slate-200 rounded-xl p-2.5 outline-none focus:ring-2 focus:ring-amber-600 text-xs md:text-sm">
+
+                <!-- Section 2: Customer Details -->
+                <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200/80 space-y-3">
+                    <label class="block font-bold text-slate-800 flex items-center">
+                        <i class="fa-solid fa-user-tag mr-1.5 text-amber-700"></i> ၂။ ဝယ်ယူသူ အချက်အလက်
+                    </label>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        <div>
+                            <span class="block text-[11px] font-semibold text-slate-600 mb-1">Customer Name</span>
+                            <input type="text" id="saleCustName" placeholder="ဝယ်ယူသူ နာမည်" class="w-full border border-slate-200 rounded-xl p-2.5 outline-none focus:ring-2 focus:ring-amber-600 bg-white">
+                        </div>
+                        <div>
+                            <span class="block text-[11px] font-semibold text-slate-600 mb-1">Phone Number</span>
+                            <input type="text" id="saleCustPhone" placeholder="09-xxxxxxxxx" class="w-full border border-slate-200 rounded-xl p-2.5 outline-none focus:ring-2 focus:ring-amber-600 bg-white">
+                        </div>
                     </div>
                     <div>
-                        <label class="block text-xs font-semibold text-slate-600 mb-1">Phone Number (ဖုန်းနံပါတ်)</label>
-                        <input type="text" id="saleCustPhone" placeholder="09-xxxxxxxxx" class="w-full border border-slate-200 rounded-xl p-2.5 outline-none focus:ring-2 focus:ring-amber-600 text-xs md:text-sm">
-                    </div>
-                </div>
-                <div>
-                    <label class="block text-xs font-semibold text-slate-600 mb-1">Delivery Address (လိပ်စာ)</label>
-                    <input type="text" id="saleCustAddress" placeholder="အိမ်အမှတ်၊ လမ်း၊ မြို့နယ်" class="w-full border border-slate-200 rounded-xl p-2.5 outline-none focus:ring-2 focus:ring-amber-600 text-xs md:text-sm">
-                </div>
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                    <div>
-                        <label class="block text-xs font-semibold text-slate-600 mb-1">Payment Type (ငွေချေစနစ်)</label>
-                        <select id="salePaymentType" class="w-full border border-slate-200 rounded-xl p-2.5 outline-none focus:ring-2 focus:ring-amber-600 text-xs md:text-sm">
-                            <option value="Cash">Cash (လက်ငင်းငွေသား)</option>
-                            <option value="K Pay">K Pay</option>
-                            <option value="UAB Pay">UAB Pay</option>
-                            <option value="Mobile Banking">Banking (Kpay/CB/AYA/KBZ)</option>
-                            <option value="Half Cash / Half Banking">Half Cash with Half Banking</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label class="block text-xs font-semibold text-slate-600 mb-1">Service Option</label>
-                        <select id="saleDeliveryType" onchange="onSaleDeliveryTypeChanged()" class="w-full border border-slate-200 rounded-xl p-2.5 outline-none focus:ring-2 focus:ring-amber-600 text-xs md:text-sm font-semibold">
-                            <option value="Full Paid">Full Paid</option>
-                            <option value="Door to Door">Door to Door</option>
-                            <option value="Deposit + COD">Deposit + COD</option>
-                            <option value="Self Pick-up">Self Pick-up</option>
-                        </select>
-                    </div>
-                </div>
-                <div>
-                    <label class="block text-xs font-semibold text-slate-600 mb-1">ပစ္စည်းအမည် (Item Description)</label>
-                    <input type="text" id="saleItemName" placeholder="ဥပမာ: ကျွန်းကုလားထိုင်" class="w-full border border-slate-200 rounded-xl p-2.5 outline-none focus:ring-2 focus:ring-amber-600 text-xs md:text-sm">
-                </div>
-                <div class="grid grid-cols-2 gap-3">
-                    <div>
-                        <label class="block text-xs font-semibold text-slate-600 mb-1">အရေအတွက် (Qty)</label>
-                        <input type="number" id="saleQty" min="1" value="1" oninput="calculateSaleRemaining()" class="w-full border border-slate-200 rounded-xl p-2.5 outline-none focus:ring-2 focus:ring-amber-600 text-xs md:text-sm">
-                    </div>
-                    <div>
-                        <label class="block text-xs font-semibold text-slate-600 mb-1">ရောင်းဈေး (Unit Price Ks)</label>
-                        <input type="number" id="saleUnitPrice" min="0" placeholder="0" oninput="calculateSaleRemaining()" class="w-full border border-slate-200 rounded-xl p-2.5 outline-none focus:ring-2 focus:ring-amber-600 text-xs md:text-sm">
+                        <span class="block text-[11px] font-semibold text-slate-600 mb-1">Delivery Address (လိပ်စာ)</span>
+                        <input type="text" id="saleCustAddress" placeholder="အိမ်အမှတ်၊ လမ်း၊ မြို့နယ်" class="w-full border border-slate-200 rounded-xl p-2.5 outline-none focus:ring-2 focus:ring-amber-600 bg-white">
                     </div>
                 </div>
 
-                <!-- Dynamic Deposit Input Container (Shows when Deposit + COD is selected) -->
-                <div id="saleDepositContainer" class="hidden bg-amber-50 p-3 rounded-xl border border-amber-200 space-y-2">
+                <!-- Section 3: Item & Financial Details -->
+                <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200/80 space-y-3">
+                    <label class="block font-bold text-slate-800 flex items-center">
+                        <i class="fa-solid fa-tag mr-1.5 text-amber-700"></i> ၃။ ပစ္စည်းနှင့် ဈေးနှုန်း အသေးစိတ်
+                    </label>
                     <div>
-                        <label class="block text-xs font-bold text-amber-900 mb-1">ပေးငွေ / စရန်ငွေ (Deposit Amount Ks)</label>
-                        <input type="number" id="saleDeposit" min="0" placeholder="0" oninput="calculateSaleRemaining()" class="w-full border border-amber-300 bg-white rounded-xl p-2.5 outline-none focus:ring-2 focus:ring-amber-600 text-xs md:text-sm font-bold">
+                        <span class="block text-[11px] font-semibold text-slate-600 mb-1">ပစ္စည်းအမည် (Item Description)</span>
+                        <input type="text" id="saleItemName" placeholder="ဥပမာ: ကျွန်းကုလားထိုင်" class="w-full border border-slate-200 rounded-xl p-2.5 outline-none focus:ring-2 focus:ring-amber-600 bg-white font-semibold">
                     </div>
-                    <div class="bg-amber-100/70 p-2.5 rounded-lg flex justify-between items-center text-xs">
-                        <span class="text-amber-900 font-semibold">ကျန်ငွေ (Remaining Amount):</span>
-                        <span id="saleRemainingDisplay" class="font-bold text-rose-600">0 Ks</span>
+                    <div class="grid grid-cols-2 gap-3">
+                        <div>
+                            <span class="block text-[11px] font-semibold text-slate-600 mb-1">အရေအတွက် (Qty)</span>
+                            <input type="number" id="saleQty" min="1" value="1" oninput="calculateSaleRemaining()" class="w-full border border-slate-200 rounded-xl p-2.5 outline-none focus:ring-2 focus:ring-amber-600 bg-white font-bold text-amber-900">
+                        </div>
+                        <div>
+                            <span class="block text-[11px] font-semibold text-slate-600 mb-1">ရောင်းဈေး (Unit Price Ks)</span>
+                            <input type="number" id="saleUnitPrice" min="0" placeholder="0" oninput="calculateSaleRemaining()" class="w-full border border-slate-200 rounded-xl p-2.5 outline-none focus:ring-2 focus:ring-amber-600 bg-white font-bold text-slate-900">
+                        </div>
                     </div>
                 </div>
 
-                <div>
-                    <label class="block text-xs font-semibold text-slate-600 mb-1">ရောင်းချသည့် ရက်စွဲ</label>
-                    <input type="date" id="saleDate" class="w-full min-w-0 box-border border border-slate-200 rounded-xl p-2.5 outline-none focus:ring-2 focus:ring-amber-600 text-xs md:text-sm bg-white">
+                <!-- Section 4: Payment & Service Option -->
+                <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200/80 space-y-3">
+                    <label class="block font-bold text-slate-800 flex items-center">
+                        <i class="fa-solid fa-credit-card mr-1.5 text-amber-700"></i> ၄။ ငွေပေးချေမှုနှင့် ဝန်ဆောင်မှု စနစ်
+                    </label>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        <div>
+                            <span class="block text-[11px] font-semibold text-slate-600 mb-1">Payment Type</span>
+                            <select id="salePaymentType" class="w-full border border-slate-200 rounded-xl p-2.5 outline-none focus:ring-2 focus:ring-amber-600 bg-white">
+                                <option value="Cash">Cash (လက်ငင်းငွေသား)</option>
+                                <option value="K Pay">K Pay</option>
+                                <option value="UAB Pay">UAB Pay</option>
+                                <option value="Mobile Banking">Banking (Kpay/CB/AYA/KBZ)</option>
+                                <option value="Half Cash / Half Banking">Half Cash with Half Banking</option>
+                            </select>
+                        </div>
+                        <div>
+                            <span class="block text-[11px] font-semibold text-slate-600 mb-1">Service Option</span>
+                            <select id="saleDeliveryType" onchange="onSaleDeliveryTypeChanged()" class="w-full border border-slate-200 rounded-xl p-2.5 outline-none focus:ring-2 focus:ring-amber-600 bg-white font-semibold">
+                                <option value="Full Paid">Full Paid</option>
+                                <option value="Door to Door">Door to Door</option>
+                                <option value="Deposit + COD">Deposit + COD</option>
+                                <option value="Self Pick-up">Self Pick-up</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Dynamic Deposit Input Container -->
+                    <div id="saleDepositContainer" class="hidden bg-amber-100/70 p-3.5 rounded-xl border border-amber-300 space-y-2 mt-2">
+                        <div>
+                            <span class="block text-[11px] font-bold text-amber-900 mb-1">ပေးငွေ / စရန်ငွေ (Deposit Amount Ks)</span>
+                            <input type="number" id="saleDeposit" min="0" placeholder="0" oninput="calculateSaleRemaining()" class="w-full border border-amber-300 bg-white rounded-xl p-2.5 outline-none focus:ring-2 focus:ring-amber-600 font-bold text-sm">
+                        </div>
+                        <div class="flex justify-between items-center text-xs pt-1 border-t border-amber-200">
+                            <span class="text-amber-900 font-semibold">ကျန်ငွေ (Remaining Amount):</span>
+                            <span id="saleRemainingDisplay" class="font-extrabold text-rose-600 text-sm">0 Ks</span>
+                        </div>
+                    </div>
+
+                    <div>
+                        <span class="block text-[11px] font-semibold text-slate-600 mb-1 mt-2">ရောင်းချသည့် ရက်စွဲ</span>
+                        <input type="date" id="saleDate" class="w-full border border-slate-200 rounded-xl p-2.5 outline-none focus:ring-2 focus:ring-amber-600 bg-white">
+                    </div>
                 </div>
             </div>
-            <div class="flex space-x-2 pt-2 border-t border-slate-100 flex-shrink-0">
-                <button onclick="closeModal('saleModal')" class="flex-1 bg-slate-100 hover:bg-slate-200 text-slate-700 py-2.5 rounded-xl text-xs font-semibold">မလုပ်ပါ</button>
-                <button onclick="saveSale()" class="flex-1 bg-amber-800 hover:bg-amber-900 text-white py-2.5 rounded-xl text-xs font-semibold shadow">အရောင်းသိမ်းမည်</button>
+
+            <!-- Footer Buttons -->
+            <div class="bg-slate-50 px-6 py-4 border-t border-slate-200 flex space-x-3">
+                <button onclick="closeModal('saleModal')" class="flex-1 bg-slate-200 hover:bg-slate-300 text-slate-700 py-3 rounded-2xl text-xs font-bold transition">မလုပ်ပါ</button>
+                <button onclick="saveSale()" class="flex-1 bg-amber-800 hover:bg-amber-900 text-white py-3 rounded-2xl text-xs font-bold shadow-lg transition">အရောင်းသိမ်းမည်</button>
             </div>
         </div>
     </div>
@@ -788,11 +824,11 @@
                 <input type="hidden" id="editExpenseIndex">
                 <div>
                     <label class="block font-semibold text-slate-600 mb-1">ခေါင်းစဉ် / အကြောင်းအရာ</label>
-                    <input type="text" id="expTitle" placeholder="ဥပမာ: ကားခ သို့မဟုတ် ဝင်ဆောင်ခ" class="w-full border rounded-xl p-2.5 outline-none focus:ring-2 focus:ring-amber-600">
+                    <input type="text" id="expTitle" placeholder="ဥပမာ: ကားခ သို့မဟုတ် ဝင်ဆောင်ခ" class="w-full border rounded-xl p-2.5 outline-none focus:ring-2 focus:ring-amber-600 bg-white">
                 </div>
                 <div>
                     <label class="block font-semibold text-slate-600 mb-1">အမျိုးအစား (Category)</label>
-                    <select id="expCategory" class="w-full border rounded-xl p-2.5 outline-none focus:ring-2 focus:ring-amber-600">
+                    <select id="expCategory" class="w-full border rounded-xl p-2.5 outline-none focus:ring-2 focus:ring-amber-600 bg-white">
                         <option value="ကားခ">ကားခ (Transportation)</option>
                         <option value="ဝင်ဆောင်ခ">ဝင်ဆောင်ခ (Service Fee)</option>
                         <option value="အထွေထွေ">အထွေထွေ (General)</option>
@@ -801,11 +837,11 @@
                 </div>
                 <div>
                     <label class="block font-semibold text-slate-600 mb-1">ပမာဏ (Ks)</label>
-                    <input type="number" id="expAmount" min="0" placeholder="0" class="w-full border rounded-xl p-2.5 outline-none focus:ring-2 focus:ring-amber-600">
+                    <input type="number" id="expAmount" min="0" placeholder="0" class="w-full border rounded-xl p-2.5 outline-none focus:ring-2 focus:ring-amber-600 bg-white">
                 </div>
                 <div>
                     <label class="block font-semibold text-slate-600 mb-1">ရက်စွဲ</label>
-                    <input type="date" id="expDate" class="w-full border rounded-xl p-2.5 outline-none focus:ring-2 focus:ring-amber-600">
+                    <input type="date" id="expDate" class="w-full border rounded-xl p-2.5 outline-none focus:ring-2 focus:ring-amber-600 bg-white">
                 </div>
             </div>
             <div class="flex space-x-2 pt-2 border-t">
@@ -828,19 +864,19 @@
                 <input type="hidden" id="editPurchaseIndex">
                 <div>
                     <label class="block font-semibold text-slate-600 mb-1">ကုန်ပစ္စည်းအမည် (Item Name / Desc)</label>
-                    <input type="text" id="purchTitle" placeholder="ဥပမာ: ကျွန်းသစ် တန်ချိန် ၂၀" class="w-full border rounded-xl p-2.5 outline-none focus:ring-2 focus:ring-amber-600">
+                    <input type="text" id="purchTitle" placeholder="ဥပမာ: ကျွန်းသစ် တန်ချိန် ၂၀" class="w-full border rounded-xl p-2.5 outline-none focus:ring-2 focus:ring-amber-600 bg-white">
                 </div>
                 <div>
                     <label class="block font-semibold text-slate-600 mb-1">Supplier / ဆိုင်အမည်</label>
-                    <input type="text" id="purchSupplier" placeholder="ဥပမာ: ဦးမောင်မောင် သစ်ဆိုင်" class="w-full border rounded-xl p-2.5 outline-none focus:ring-2 focus:ring-amber-600">
+                    <input type="text" id="purchSupplier" placeholder="ဥပမာ: ဦးမောင်မောင် သစ်ဆိုင်" class="w-full border rounded-xl p-2.5 outline-none focus:ring-2 focus:ring-amber-600 bg-white">
                 </div>
                 <div>
                     <label class="block font-semibold text-slate-600 mb-1">ဝယ်ယူပမာဏ (Ks)</label>
-                    <input type="number" id="purchAmount" min="0" placeholder="0" class="w-full border rounded-xl p-2.5 outline-none focus:ring-2 focus:ring-amber-600">
+                    <input type="number" id="purchAmount" min="0" placeholder="0" class="w-full border rounded-xl p-2.5 outline-none focus:ring-2 focus:ring-amber-600 bg-white">
                 </div>
                 <div>
                     <label class="block font-semibold text-slate-600 mb-1">ရက်စွဲ</label>
-                    <input type="date" id="purchDate" class="w-full border rounded-xl p-2.5 outline-none focus:ring-2 focus:ring-amber-600">
+                    <input type="date" id="purchDate" class="w-full border rounded-xl p-2.5 outline-none focus:ring-2 focus:ring-amber-600 bg-white">
                 </div>
             </div>
             <div class="flex space-x-2 pt-2 border-t">
@@ -863,11 +899,11 @@
                 <input type="hidden" id="editSupplierIndex">
                 <div>
                     <label class="block font-semibold text-slate-600 mb-1">Supplier နာမည် (Supplier Name)</label>
-                    <input type="text" id="suppName" placeholder="ဥပမာ: ဦးမောင်မောင် သစ်ဆိုင်" class="w-full border rounded-xl p-2.5 outline-none focus:ring-2 focus:ring-amber-600">
+                    <input type="text" id="suppName" placeholder="ဥပမာ: ဦးမောင်မောင် သစ်ဆိုင်" class="w-full border rounded-xl p-2.5 outline-none focus:ring-2 focus:ring-amber-600 bg-white">
                 </div>
                 <div>
                     <label class="block font-semibold text-slate-600 mb-1">ဖုန်းနံပါတ် (Phone Number)</label>
-                    <input type="text" id="suppPhone" placeholder="ဥပမာ: 09-987654321" class="w-full border rounded-xl p-2.5 outline-none focus:ring-2 focus:ring-amber-600">
+                    <input type="text" id="suppPhone" placeholder="ဥပမာ: 09-987654321" class="w-full border rounded-xl p-2.5 outline-none focus:ring-2 focus:ring-amber-600 bg-white">
                 </div>
             </div>
             <div class="flex space-x-2 pt-2 border-t">
@@ -889,11 +925,11 @@
             <div class="space-y-3 text-xs">
                 <div>
                     <label class="block font-semibold text-slate-600 mb-1">အမည် (Worker Name)</label>
-                    <input type="text" id="workerName" placeholder="ဥပမာ: ဦးဘစိန်" class="w-full border rounded-xl p-2.5 outline-none focus:ring-2 focus:ring-amber-600">
+                    <input type="text" id="workerName" placeholder="ဥပမာ: ဦးဘစိန်" class="w-full border rounded-xl p-2.5 outline-none focus:ring-2 focus:ring-amber-600 bg-white">
                 </div>
                 <div>
                     <label class="block font-semibold text-slate-600 mb-1">ရာထူး / ကျွမ်းကျင်မှု (Role)</label>
-                    <input type="text" id="workerRole" placeholder="ဥပမာ: လက်သမားကြီး" class="w-full border rounded-xl p-2.5 outline-none focus:ring-2 focus:ring-amber-600">
+                    <input type="text" id="workerRole" placeholder="ဥပမာ: လက်သမားကြီး" class="w-full border rounded-xl p-2.5 outline-none focus:ring-2 focus:ring-amber-600 bg-white">
                 </div>
             </div>
             <div class="flex space-x-2 pt-2 border-t">
@@ -910,7 +946,7 @@
         <div class="bg-white rounded-2xl w-full max-w-sm p-6 space-y-4 shadow-xl">
             <h3 class="text-base font-bold text-slate-900 text-center">Admin Mode သို့ ဝင်ရန် PIN ထည့်ပါ</h3>
             <p class="text-xs text-slate-500 text-center">Cloud သို့မဟုတ် Local တွင် သတ်မှတ်ထားသော Admin PIN ကို ထည့်သွင်းပါ။</p>
-            <input type="password" id="adminPinInput" maxlength="6" placeholder="PIN နံပါတ်ထည့်ရန်" class="w-full text-center px-4 py-3 border border-slate-200 rounded-xl tracking-widest text-lg font-bold focus:outline-none focus:ring-2 focus:ring-amber-600">
+            <input type="password" id="adminPinInput" maxlength="6" placeholder="PIN နံပါတ်ထည့်ရန်" class="w-full text-center px-4 py-3 border border-slate-200 rounded-xl tracking-widest text-lg font-bold focus:outline-none focus:ring-2 focus:ring-amber-600 bg-white">
 
             <div class="flex justify-between items-center text-xs">
                 <button onclick="openForgotPinModal()" class="text-amber-800 hover:underline font-semibold text-[11px]">PIN မေ့သွားပါသလား?</button>
@@ -951,11 +987,11 @@
             <div class="space-y-3">
                 <div class="border-b pb-3">
                     <label class="block text-xs font-bold text-amber-900 mb-1">Admin PIN အသစ် (4-6 ဂဏန်း)</label>
-                    <input type="password" id="newAdminPin" maxlength="6" placeholder="Admin PIN အသစ်" class="w-full text-center px-3 py-2 border border-slate-200 rounded-xl font-bold text-sm focus:ring-2 focus:ring-amber-600 outline-none">
+                    <input type="password" id="newAdminPin" maxlength="6" placeholder="Admin PIN အသစ်" class="w-full text-center px-3 py-2 border border-slate-200 rounded-xl font-bold text-sm focus:ring-2 focus:ring-amber-600 outline-none bg-white">
                 </div>
                 <div>
                     <label class="block text-xs font-bold text-slate-700 mb-1">Staff PIN အသစ် (4-6 ဂဏန်း)</label>
-                    <input type="password" id="newStaffPin" maxlength="6" placeholder="Staff PIN အသစ်" class="w-full text-center px-3 py-2 border border-slate-200 rounded-xl font-bold text-sm focus:ring-2 focus:ring-amber-600 outline-none">
+                    <input type="password" id="newStaffPin" maxlength="6" placeholder="Staff PIN အသစ်" class="w-full text-center px-3 py-2 border border-slate-200 rounded-xl font-bold text-sm focus:ring-2 focus:ring-amber-600 outline-none bg-white">
                 </div>
             </div>
             <div class="flex space-x-2 pt-2">
@@ -992,7 +1028,7 @@
         <div class="bg-white rounded-2xl w-full max-w-sm p-6 space-y-4 shadow-xl">
             <h3 class="text-base font-bold text-rose-600 text-center">ဒေတာ အားလုံး ဖျက်ရန် Admin PIN ထည့်ပါ</h3>
             <p class="text-xs text-slate-500 text-center">ဤလုပ်ဆောင်ချက်သည် ဒေတာအားလုံးကို အပြီးတိုင် ဖျက်ဆီးမည် ဖြစ်ပါသည်။</p>
-            <input type="password" id="clearDataPinInput" maxlength="6" placeholder="Admin PIN ထည့်ရန်" class="w-full text-center px-4 py-3 border border-slate-200 rounded-xl tracking-widest text-lg font-bold focus:outline-none focus:ring-2 focus:ring-rose-600">
+            <input type="password" id="clearDataPinInput" maxlength="6" placeholder="Admin PIN ထည့်ရန်" class="w-full text-center px-4 py-3 border border-slate-200 rounded-xl tracking-widest text-lg font-bold focus:outline-none focus:ring-2 focus:ring-rose-600 bg-white">
             <div class="flex space-x-2 pt-2">
                 <button onclick="closeModal('clearDataModal')" class="flex-1 bg-slate-100 hover:bg-slate-200 text-slate-700 py-2.5 rounded-xl text-xs font-semibold">မလုပ်ပါ</button>
                 <button onclick="verifyAndClearAllData()" class="flex-1 bg-rose-600 hover:bg-rose-700 text-white py-2.5 rounded-xl text-xs font-semibold shadow">အတည်ပြု ဖျက်မည်</button>
@@ -1013,11 +1049,11 @@
                 <input type="hidden" id="editStockIndex">
                 <div>
                     <label class="block text-xs font-semibold text-slate-600 mb-1">SKU Code</label>
-                    <input type="text" id="stockSKU" placeholder="ဥပမာ: SKU-101" class="w-full border border-slate-200 rounded-xl p-2.5 focus:ring-2 focus:ring-amber-600 outline-none text-xs md:text-sm">
+                    <input type="text" id="stockSKU" placeholder="ဥပမာ: SKU-101" class="w-full border border-slate-200 rounded-xl p-2.5 focus:ring-2 focus:ring-amber-600 outline-none text-xs md:text-sm bg-white">
                 </div>
                 <div>
                     <label class="block text-xs font-semibold text-slate-600 mb-1">Category (အမျိုးအစား)</label>
-                    <select id="stockCategory" class="w-full border border-slate-200 rounded-xl p-2.5 outline-none focus:ring-2 focus:ring-amber-600 text-xs md:text-sm">
+                    <select id="stockCategory" class="w-full border border-slate-200 rounded-xl p-2.5 outline-none focus:ring-2 focus:ring-amber-600 text-xs md:text-sm bg-white">
                         <option value="ကျွန်း">ကျွန်း (Teak)</option>
                         <option value="Blockboard">Blockboard</option>
                         <option value="Particle board">Particle board</option>
@@ -1027,16 +1063,16 @@
                 </div>
                 <div>
                     <label class="block text-xs font-semibold text-slate-600 mb-1">Item Name (ပစ္စည်းအမည်)</label>
-                    <input type="text" id="stockName" placeholder="ဥပမာ: ကျွန်းကုလားထိုင်" class="w-full border border-slate-200 rounded-xl p-2.5 focus:ring-2 focus:ring-amber-600 outline-none text-xs md:text-sm">
+                    <input type="text" id="stockName" placeholder="ဥပမာ: ကျွန်းကုလားထိုင်" class="w-full border border-slate-200 rounded-xl p-2.5 focus:ring-2 focus:ring-amber-600 outline-none text-xs md:text-sm bg-white">
                 </div>
                 <div class="grid grid-cols-2 gap-3">
                     <div>
                         <label class="block text-xs font-semibold text-slate-600 mb-1">Stock Qty</label>
-                        <input type="number" id="stockQty" min="0" placeholder="0" class="w-full border border-slate-200 rounded-xl p-2.5 focus:ring-2 focus:ring-amber-600 outline-none text-xs md:text-sm">
+                        <input type="number" id="stockQty" min="0" placeholder="0" class="w-full border border-slate-200 rounded-xl p-2.5 focus:ring-2 focus:ring-amber-600 outline-none text-xs md:text-sm bg-white">
                     </div>
                     <div>
                         <label class="block text-xs font-semibold text-slate-600 mb-1">Sale Price (Ks)</label>
-                        <input type="number" id="stockSalePrice" min="0" placeholder="0" oninput="calculateModalProfit()" class="w-full border border-slate-200 rounded-xl p-2.5 focus:ring-2 focus:ring-amber-600 outline-none text-xs md:text-sm">
+                        <input type="number" id="stockSalePrice" min="0" placeholder="0" oninput="calculateModalProfit()" class="w-full border border-slate-200 rounded-xl p-2.5 focus:ring-2 focus:ring-amber-600 outline-none text-xs md:text-sm bg-white">
                     </div>
                 </div>
                 <div id="cogsInputContainer" class="hidden admin-only bg-amber-50 p-3 rounded-xl border border-amber-200 space-y-2">
@@ -1076,29 +1112,29 @@
                 <input type="hidden" id="editPreorderIndex">
                 <div>
                     <label class="block text-xs font-semibold text-slate-600 mb-1">Customer Name</label>
-                    <input type="text" id="preCustName" class="w-full border border-slate-200 rounded-xl p-2.5 outline-none focus:ring-2 focus:ring-amber-600 text-xs md:text-sm">
+                    <input type="text" id="preCustName" class="w-full border border-slate-200 rounded-xl p-2.5 outline-none focus:ring-2 focus:ring-amber-600 text-xs md:text-sm bg-white">
                 </div>
                 <div>
                     <label class="block text-xs font-semibold text-slate-600 mb-1">Item Description</label>
-                    <input type="text" id="preItemDesc" class="w-full border border-slate-200 rounded-xl p-2.5 outline-none focus:ring-2 focus:ring-amber-600 text-xs md:text-sm">
+                    <input type="text" id="preItemDesc" class="w-full border border-slate-200 rounded-xl p-2.5 outline-none focus:ring-2 focus:ring-amber-600 text-xs md:text-sm bg-white">
                 </div>
                 <div>
                     <label class="block text-xs font-semibold text-slate-600 mb-1">လက်သမား နာမည် (Carpenter Name)</label>
-                    <input type="text" id="preCarpenter" placeholder="လက်သမားအမည် ထည့်ရန်" class="w-full border border-slate-200 rounded-xl p-2.5 outline-none focus:ring-2 focus:ring-amber-600 text-xs md:text-sm">
+                    <input type="text" id="preCarpenter" placeholder="လက်သမားအမည် ထည့်ရန်" class="w-full border border-slate-200 rounded-xl p-2.5 outline-none focus:ring-2 focus:ring-amber-600 text-xs md:text-sm bg-white">
                 </div>
                 <div class="grid grid-cols-2 gap-3">
                     <div>
                         <label class="block text-xs font-semibold text-slate-600 mb-1">Deposit Money (Ks)</label>
-                        <input type="number" id="preDeposit" min="0" class="w-full border border-slate-200 rounded-xl p-2.5 outline-none focus:ring-2 focus:ring-amber-600 text-xs md:text-sm">
+                        <input type="number" id="preDeposit" min="0" class="w-full border border-slate-200 rounded-xl p-2.5 outline-none focus:ring-2 focus:ring-amber-600 text-xs md:text-sm bg-white">
                     </div>
                     <div>
                         <label class="block text-xs font-semibold text-slate-600 mb-1">Full Price (Ks)</label>
-                        <input type="number" id="preFullPrice" min="0" class="w-full border border-slate-200 rounded-xl p-2.5 outline-none focus:ring-2 focus:ring-amber-600 text-xs md:text-sm">
+                        <input type="number" id="preFullPrice" min="0" class="w-full border border-slate-200 rounded-xl p-2.5 outline-none focus:ring-2 focus:ring-amber-600 text-xs md:text-sm bg-white">
                     </div>
                 </div>
                 <div>
                     <label class="block text-xs font-semibold text-slate-600 mb-1">Pickup Date</label>
-                    <input type="date" id="preDate" class="w-full border border-slate-200 rounded-xl p-2.5 outline-none focus:ring-2 focus:ring-amber-600 text-xs md:text-sm">
+                    <input type="date" id="preDate" class="w-full border border-slate-200 rounded-xl p-2.5 outline-none focus:ring-2 focus:ring-amber-600 text-xs md:text-sm bg-white">
                 </div>
             </div>
             <div class="flex space-x-2 pt-2 border-t border-slate-100">
@@ -1121,21 +1157,21 @@
                 <input type="hidden" id="editInstIndex">
                 <div>
                     <label class="block text-xs font-semibold text-slate-600 mb-1">Customer Name</label>
-                    <input type="text" id="instCustName" class="w-full border border-slate-200 rounded-xl p-2.5 outline-none focus:ring-2 focus:ring-amber-600 text-xs md:text-sm">
+                    <input type="text" id="instCustName" class="w-full border border-slate-200 rounded-xl p-2.5 outline-none focus:ring-2 focus:ring-amber-600 text-xs md:text-sm bg-white">
                 </div>
                 <div class="grid grid-cols-2 gap-3">
                     <div>
                         <label class="block text-xs font-semibold text-slate-600 mb-1">Total Debt (Ks)</label>
-                        <input type="number" id="instTotalDebt" min="0" class="w-full border border-slate-200 rounded-xl p-2.5 outline-none focus:ring-2 focus:ring-amber-600 text-xs md:text-sm">
+                        <input type="number" id="instTotalDebt" min="0" class="w-full border border-slate-200 rounded-xl p-2.5 outline-none focus:ring-2 focus:ring-amber-600 text-xs md:text-sm bg-white">
                     </div>
                     <div>
                         <label class="block text-xs font-semibold text-slate-600 mb-1">Remaining Debt (Ks)</label>
-                        <input type="number" id="instRemaining" min="0" class="w-full border border-slate-200 rounded-xl p-2.5 outline-none focus:ring-2 focus:ring-amber-600 text-xs md:text-sm">
+                        <input type="number" id="instRemaining" min="0" class="w-full border border-slate-200 rounded-xl p-2.5 outline-none focus:ring-2 focus:ring-amber-600 text-xs md:text-sm bg-white">
                     </div>
                 </div>
                 <div>
                     <label class="block text-xs font-semibold text-slate-600 mb-1">Installment Count</label>
-                    <input type="text" id="instCount" placeholder="ဥပမာ: ၃ ကြိမ် (၆ ကြိမ်အနက်)" class="w-full border border-slate-200 rounded-xl p-2.5 outline-none focus:ring-2 focus:ring-amber-600 text-xs md:text-sm">
+                    <input type="text" id="instCount" placeholder="ဥပမာ: ၃ ကြိမ် (၆ ကြိမ်အနက်)" class="w-full border border-slate-200 rounded-xl p-2.5 outline-none focus:ring-2 focus:ring-amber-600 text-xs md:text-sm bg-white">
                 </div>
             </div>
             <div class="flex space-x-2 pt-2 border-t border-slate-100">
@@ -1158,7 +1194,6 @@
     let rtdb = null;
     let isCloudSynced = false;
 
-    // 100% Pure Cloud State (No localStorage fallback)
     let db = {
         stocks: [],
         sales: [],
@@ -1255,7 +1290,6 @@
                     if (!db.settings.adminPin) db.settings.adminPin = '0000';
                     if (!db.settings.staffPin) db.settings.staffPin = '0000';
                 } else {
-                    // Initialize cloud with default data and PINs if empty
                     rtdb.ref('sanmaw_furniture_db').set(db);
                 }
                 isCloudSynced = true;
@@ -1283,7 +1317,7 @@
                     if (cloudData.settings) {
                         db.settings = cloudData.settings;
                     }
-                    if (!db.settings.adminPin) db.settings.adminPin = '1965';
+                    if (!db.settings.adminPin) db.settings.adminPin = '0000';
                     if (!db.settings.staffPin) db.settings.staffPin = '0000';
 
                     isCloudSynced = true;
@@ -1316,7 +1350,6 @@
     }
 
     function saveData() {
-        // Pure Cloud Save (No localStorage)
         if (rtdb) {
             rtdb.ref('sanmaw_furniture_db').set(db).then(() => {
                 updateSyncIndicator(true);
@@ -1531,9 +1564,6 @@
         }
     }
 
-    /**
-     * FINANCIAL CALCULATOR WITH PRIORITY COGS REFILL LOGIC
-     */
     function calculateFinancials() {
         const pettyTarget = parseFloat(db.settings.pettyCashTarget) || 200000;
         const mainCapTarget = parseFloat(db.settings.mainCapital) || 3000000;
@@ -1696,7 +1726,6 @@
                 unitC = db.stocks[s.stockIndex].cogs || 0;
             }
             let fullTotal = (s.qty || 0) * unitP;
-            // Revenue collected logic: If remaining balance exists, count only deposit so far; if fully paid/collected, count full total!
             let collectedRev = (s.remaining > 0) ? (parseFloat(s.deposit) || 0) : fullTotal;
             totalRev += collectedRev;
             totalCogs += (s.qty || 0) * unitC;
@@ -1730,7 +1759,7 @@
             } else {
                 netProfitContainer.className = "bg-indigo-900 text-white p-4 rounded-2xl shadow-sm border border-indigo-950";
                 if (netProfitAlertText) {
-                    netProfitAlertText.innerText = "စုစုပေါင်း အမြတ် - စုစုပေါင်း ဆိုင်သုံးစရိတ်";
+                    netProfitAlertText.innerText = "စုစုပေါင်း အမြတ် - ဆိုင်သုံးစရိတ်";
                     netProfitAlertText.className = "text-[9px] text-indigo-300 font-medium";
                 }
             }
@@ -1928,11 +1957,10 @@
         const monthFilter = document.getElementById('salesMonthFilter');
         if (!tbody) return;
 
-        // Populate month filter options dynamically from sales dates
         let availableMonths = [];
         db.sales.forEach(s => {
             if (s.date) {
-                let mStr = s.date.slice(0, 7); // YYYY-MM
+                let mStr = s.date.slice(0, 7);
                 if (!availableMonths.includes(mStr)) availableMonths.push(mStr);
             }
         });
@@ -1967,7 +1995,6 @@
             let isPendingEdit = db.approvals.some(a => a.type === 'sale_edit' && a.targetId === s.id);
             let isPending = isPendingDelete || isPendingEdit;
 
-            // Shortened badge labels
             let payShort = s.paymentType === 'Cash' ? 'Cash' : (s.paymentType === 'K Pay' ? 'KPay' : (s.paymentType === 'UAB Pay' ? 'UAB' : (s.paymentType === 'Mobile Banking' ? 'MBank' : 'Half')));
             let delShort = s.deliveryType === 'Full Paid' ? 'Full' : (s.deliveryType === 'Door to Door' ? 'D2D' : (s.deliveryType === 'Deposit + COD' ? 'COD+Dep' : 'Pick'));
 
@@ -2021,7 +2048,7 @@
         s.isCollected = true;
         saveData();
         renderAll();
-        showToast("ငွေအပြည့်ရှင်းပြီးကြောင်း မှတ်တမ်းတင်ပြီးပါပြီ။ (Report တွင် ဝင်ငွေအပြည့် တွက်ပေးပါမည်)", "success");
+        showToast("ငွေအပြည့်ရှင်းပြီးကြောင်း မှတ်တမ်းတင်ပြီးပါပြီ။", "success");
     }
 
     function onSaleDeliveryTypeChanged() {
@@ -2041,7 +2068,7 @@
         const unitPrice = parseFloat(document.getElementById('saleUnitPrice').value) || 0;
         const total = qty * unitPrice;
         const deliveryType = document.getElementById('saleDeliveryType').value;
-        
+
         let deposit = 0;
         if (deliveryType === 'Full Paid' || deliveryType === 'Self Pick-up') {
             deposit = total;
@@ -2050,7 +2077,6 @@
         }
 
         const remaining = Math.max(0, total - deposit);
-
         const displayEl = document.getElementById('saleRemainingDisplay');
         if (displayEl) {
             displayEl.innerText = Number(remaining).toLocaleString() + ' Ks';
@@ -2059,7 +2085,7 @@
 
     function openSaleModal() {
         const select = document.getElementById('saleStockSelect');
-        select.innerHTML = `<option value="">-- စတော့ထဲမှ ပစ္စည်းရွေးပါ --</option>`;
+        select.innerHTML = `<option value="">-- စတော့ပစ္စည်း ရွေးပါ (သို့မဟုတ် အောက်တွင် ကိုယ်တိုင်ရိုက်ထည့်ပါ) --</option>`;
         db.stocks.forEach((st, idx) => {
             select.innerHTML += `<option value="${idx}">${st.name} (${st.sku}) - လက်ကျန် Qty: ${st.qty}</option>`;
         });
@@ -2084,7 +2110,7 @@
     function editSale(idx) {
         let s = db.sales[idx];
         const select = document.getElementById('saleStockSelect');
-        select.innerHTML = `<option value="">-- စတော့ထဲမှ ပစ္စည်းရွေးပါ --</option>`;
+        select.innerHTML = `<option value="">-- စတော့ပစ္စည်း ရွေးပါ --</option>`;
         db.stocks.forEach((st, sIdx) => {
             select.innerHTML += `<option value="${sIdx}" ${s.stockIndex === sIdx ? 'selected' : ''}>${st.name} (${st.sku}) - လက်ကျန် Qty: ${st.qty}</option>`;
         });
@@ -2397,7 +2423,6 @@
 
         if (!tbody) return;
 
-        // Populate month filter options dynamically
         let availableMonths = [];
         db.expenses.forEach(ex => {
             if (ex.date) {
@@ -2610,7 +2635,6 @@
             }
         }
 
-        // Populate month filter options dynamically
         let availableMonths = [];
         db.purchases.forEach(p => {
             if (p.date) {
