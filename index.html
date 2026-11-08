@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>စန်းမော် ပရိဘောဂ - Stock & Preorder Tracker (v2.8.1)</title>
+    <title>စန်းမော် ပရိဘောဂ - Stock & Preorder Tracker (v2.8.7)</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Google Font: Inter -->
@@ -13,6 +13,10 @@
     <!-- Firebase SDKs for Real-Time Multi-Device Cloud Sync -->
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
+    <!-- jsPDF Library for 3-inch Thermal Receipt PDF Generation -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <!-- html2canvas for Thermal Receipt PDF rendering -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <style>
         body { font-family: 'Inter', sans-serif; }
         ::-webkit-scrollbar { width: 4px; height: 4px; }
@@ -25,6 +29,39 @@
             -webkit-box-shadow: 0 0 0 30px white inset !important;
             -webkit-text-fill-color: #1e293b !important;
         }
+
+        /* Android / Browser Standard Window Print Styling Fix */
+        @media print {
+            body * {
+                visibility: hidden !important;
+            }
+            #voucherPreviewModal, #voucherPreviewModal * {
+                visibility: visible !important;
+            }
+            #voucherPreviewModal {
+                display: block !important;
+                position: fixed !important;
+                left: 0 !important;
+                top: 0 !important;
+                width: 100% !important;
+                height: 100% !important;
+                background: white !important;
+                z-index: 999999 !important;
+                padding: 0 !important;
+                margin: 0 !important;
+            }
+            #voucherModalCard {
+                box-shadow: none !important;
+                border: none !important;
+                width: 100% !important;
+                max-width: 100% !important;
+                margin: 0 !important;
+            }
+            /* Print ထုတ်ချိန်တွင် ခလုတ်များကို ဖုံးကွယ်မည် */
+            #voucherPreviewModal button {
+                display: none !important;
+            }
+        }
     </style>
 </head>
 <body class="bg-slate-100 text-slate-800 h-full flex flex-col antialiased pb-20 select-none">
@@ -34,7 +71,7 @@
     <div class="text-center space-y-4 animate-pulse px-4">
         <i class="fa-solid fa-couch text-5xl text-amber-300"></i>
         <h1 class="text-2xl font-bold tracking-wide">စန်းမော် ပရိဘောဂ</h1>
-        <p class="text-xs text-amber-200">Stock, Sales & Daily Capital Tracker (v2.8.1)</p>
+        <p class="text-xs text-amber-200">Stock, Sales & Daily Capital Tracker (v2.8.7)</p>
         <div class="w-8 h-8 border-4 border-amber-300 border-t-transparent rounded-full animate-spin mx-auto mt-4"></div>
     </div>
     <div class="absolute bottom-6 text-[11px] text-amber-200/80 font-medium">
@@ -572,30 +609,29 @@
 
 </main>
 
-<!-- MODAL: Thermal Voucher Preview & Share Modal -->
+<!-- MODAL: Thermal Voucher Preview & RawBT Print Modal -->
 <div id="voucherPreviewModal" class="fixed inset-0 bg-slate-900/80 backdrop-blur-sm hidden z-[110] flex items-center justify-center p-4 overflow-y-auto">
     <div id="voucherModalCard" class="bg-white rounded-3xl w-full max-w-sm shadow-2xl border border-slate-200 overflow-hidden my-auto">
-        <!-- Modal Header -->
         <div class="bg-amber-900 text-white px-5 py-3.5 flex justify-between items-center">
             <div class="flex items-center space-x-2">
                 <i class="fa-solid fa-receipt text-amber-300"></i>
-                <h3 class="text-sm font-bold">ဘောက်ချာ (Voucher Preview)</h3>
+                <h3 class="text-sm font-bold">ဘောက်ချာ (3” Thermal Preview)</h3>
             </div>
             <button onclick="closeModal('voucherPreviewModal')" class="w-7 h-7 rounded-full bg-amber-950/40 hover:bg-amber-950 flex items-center justify-center text-amber-200 transition text-base">&times;</button>
         </div>
 
-        <!-- Voucher Receipt Content Area -->
-        <div id="voucherReceiptBody" class="p-6 bg-white text-slate-900 space-y-3 font-mono text-xs leading-relaxed border-b border-slate-100">
-            <!-- Dynamically injected receipt content -->
-        </div>
+        <div id="voucherReceiptBody" class="p-6 bg-white text-slate-900 space-y-2 font-mono text-xs leading-relaxed border-b border-slate-100"></div>
 
-        <!-- Modal Footer Actions -->
-        <div class="p-4 bg-slate-50 flex items-center space-x-2">
-            <button onclick="shareVoucherText()" class="flex-1 bg-indigo-600 hover:bg-indigo-700 text-white py-2.5 px-3 rounded-xl text-xs font-bold shadow transition flex items-center justify-center space-x-1.5">
-                <i class="fa-solid fa-share-nodes"></i>
-                <span>Share / Copy Text</span>
+        <div class="p-4 bg-slate-50 flex flex-col space-y-2">
+            <button onclick="generateThermalReceiptPDF('download')" class="w-full bg-amber-700 hover:bg-amber-800 text-white py-3 px-3 rounded-xl text-xs font-bold shadow transition flex items-center justify-center space-x-2">
+                <i class="fa-solid fa-download text-sm text-amber-300"></i>
+                <span>3” PDF Download လုပ်မည်</span>
             </button>
-            <button onclick="closeModal('voucherPreviewModal')" class="bg-slate-200 hover:bg-slate-300 text-slate-700 py-2.5 px-3 rounded-xl text-xs font-bold transition">
+            <button onclick="generateThermalReceiptPDF('share')" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-3 px-3 rounded-xl text-xs font-bold shadow transition flex items-center justify-center space-x-2">
+                <i class="fa-solid fa-share-nodes text-sm text-indigo-200"></i>
+                <span>3” PDF Share မည် (Viber / Telegram / etc.)</span>
+            </button>
+            <button onclick="closeModal('voucherPreviewModal')" class="w-full bg-slate-200 hover:bg-slate-300 text-slate-700 py-2.5 px-3 rounded-xl text-xs font-bold transition">
                 ပိတ်မည်
             </button>
         </div>
@@ -613,7 +649,6 @@
             <div>
                 <label class="block font-semibold text-slate-600 mb-1">Petty Cash Target Limit (Ks)</label>
                 <input type="number" id="inputPettyTarget" min="0" placeholder="200000" class="w-full border rounded-xl p-2.5 outline-none focus:ring-2 focus:ring-amber-600 font-bold text-sm">
-                <p class="text-[10px] text-slate-400 mt-1">မူလ သတ်မှတ်ချက်: 200,000 Ks (၂ သိန်း)</p>
             </div>
         </div>
         <div class="flex space-x-2 pt-2 border-t">
@@ -634,7 +669,6 @@
             <div>
                 <label class="block font-semibold text-slate-600 mb-1">ပင်မ မတည်ငွေ ပမာဏ (Ks)</label>
                 <input type="number" id="inputMainCapital" min="0" placeholder="3000000" class="w-full border rounded-xl p-2.5 outline-none focus:ring-2 focus:ring-amber-600 font-bold text-sm">
-                <p class="text-[10px] text-slate-400 mt-1">မူလ သတ်မှတ်ချက်: 3,000,000 Ks (သိန်း ၃၀)</p>
             </div>
         </div>
         <div class="flex space-x-2 pt-2 border-t">
@@ -664,7 +698,7 @@
                         <i class="fa-solid fa-boxes-stacked mr-1.5 text-amber-700"></i> ၁။ စတော့ထဲမှ ပစ္စည်းရွေးချယ်ရန်
                     </label>
                     <select id="saleStockSelect" onchange="onSaleStockSelected()" class="w-full border border-slate-200 rounded-xl p-3 outline-none focus:ring-2 focus:ring-amber-600 bg-white font-medium text-slate-800">
-                        <option value="">-- စတော့ပစ္စည်း ရွေးပါ (သို့မဟုတ် အောက်တွင် ကိုယ်တိုင်ရိုက်ထည့်ပါ) --</option>
+                        <option value="">-- စတော့ပစ္စည်း ရွေးပါ --</option>
                     </select>
                 </div>
 
@@ -800,7 +834,7 @@
     </div>
 </div>
 
-<!-- MODAL: Purchase Modal (Admin Only) -->
+<!-- MODAL: Purchase Modal -->
 <div id="purchaseModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm hidden z-50 overflow-y-auto">
     <div class="min-h-full flex items-center justify-center p-4 text-center">
         <div class="bg-white rounded-2xl w-full max-w-sm p-5 space-y-4 shadow-xl text-left my-auto">
@@ -1100,6 +1134,7 @@
 <script>
     let currentRole = 'Staff';
     let activeTab = 'stock';
+    let currentSaleForVoucher = null;
 
     const FIREBASE_DATABASE_URL = "https://sanmawfurniture-72d7f-default-rtdb.asia-southeast1.firebasedatabase.app/";
     const FIREBASE_API_KEY = "AIzaSyBA6VWlCyIsQK8-pipHlSt_-cUxTK_lPSQ";
@@ -1544,7 +1579,6 @@
         const periodFilter = document.getElementById('reportPeriodFilter')?.value || 'all';
         const dateTargetInput = document.getElementById('reportDateTarget');
         const monthTargetInput = document.getElementById('reportMonthTarget');
-        const periodBadge = document.getElementById('reportPeriodBadge');
 
         if (dateTargetInput) {
             if (periodFilter === 'daily' || periodFilter === 'weekly') {
@@ -1562,11 +1596,6 @@
             } else {
                 monthTargetInput.classList.add('hidden');
             }
-        }
-
-        if (periodBadge) {
-            let badgeTexts = { 'all': 'Overall (အားလုံး)', 'daily': 'Total Daily Report', 'weekly': 'Weekly Report', 'monthly': 'Monthly Report' };
-            periodBadge.innerText = badgeTexts[periodFilter] || periodFilter;
         }
 
         let filteredSales = [...db.sales];
@@ -1909,7 +1938,7 @@
                                 <i class="fa-solid fa-circle-check"></i> <span>ရှင်းပြီး</span>
                             </button>
                         ` : ''}
-                        
+
                         <button onclick="openVoucherPreview(${idx})" class="px-2.5 py-1 bg-amber-700 hover:bg-amber-800 text-white rounded-lg text-[10px] font-medium flex items-center space-x-1 shadow-sm transition" title="View Voucher">
                             <i class="fa-solid fa-receipt"></i> <span>Voucher</span>
                         </button>
@@ -1928,78 +1957,81 @@
     function openVoucherPreview(index) {
         let s = db.sales[index];
         if (!s) return;
-        let total = (s.qty || 1) * (s.unitPrice || 0);
+        currentSaleForVoucher = s;
+        const total = (s.qty || 1) * (s.unitPrice || 0);
 
         const receiptBody = document.getElementById('voucherReceiptBody');
         if (receiptBody) {
             receiptBody.innerHTML = `
-                <div style="text-align: center; font-weight: bold; font-size: 15px; margin-bottom: 2px;">စန်းမော် ပရိဘောဂ</div>
-                <div style="text-align: center; font-size: 11px; margin-bottom: 8px; color: #555;">Voucher</div>
-                <div style="border-top: 1px dashed #000; margin: 6px 0;"></div>
-                <div>ရက်စွဲ: ${s.date || '-'}</div>
-                <div>ဝယ်သူ: ${s.custName || 'Walk-in Customer'}</div>
-                <div>ဖုန်း: ${s.custPhone || '-'}</div>
-                ${s.custAddress ? `<div>လိပ်စာ: ${s.custAddress}</div>` : ''}
-                <div style="border-top: 1px dashed #000; margin: 6px 0;"></div>
-                <div style="font-weight: bold;">${s.itemName}</div>
-                <div>အရေအတွက်: ${s.qty} x ${Number(s.unitPrice).toLocaleString()} Ks</div>
-                <div style="text-align: right; font-weight: bold; font-size: 13px; margin-top: 4px;">စုစုပေါင်း: ${Number(total).toLocaleString()} Ks</div>
-                <div style="border-top: 1px dashed #000; margin: 6px 0;"></div>
-                <div>ပေးငွေ/စရန်: ${Number(s.deposit !== undefined ? s.deposit : total).toLocaleString()} Ks</div>
-                <div style="font-weight: bold; color: #000;">ကျန်ငွေ: ${Number(s.remaining || 0).toLocaleString()} Ks</div>
+                <div class="text-center font-bold text-base">စန်းမော် ပရိဘောဂ</div>
+                <div class="text-center text-xs text-slate-500 mb-3">Voucher</div>
+                <div class="border-b border-dashed border-slate-300 my-2"></div>
+                <div class="flex justify-between"><span>ရက်စွဲ:</span> <span>${s.date || '-'}</span></div>
+                <div class="flex justify-between"><span>ဝယ်သူ:</span> <span>${s.custName || 'Walk-in Customer'}</span></div>
+                ${s.custPhone ? `<div class="flex justify-between"><span>ဖုန်း:</span> <span>${s.custPhone}</span></div>` : ''}
+                ${s.custAddress ? `<div class="flex justify-between"><span>လိပ်စာ:</span> <span>${s.custAddress}</span></div>` : ''}
+                <div class="border-b border-dashed border-slate-300 my-2"></div>
+                <div class="font-bold">${s.itemName}</div>
+                <div class="flex justify-between text-slate-600"><span>${s.qty} x ${Number(s.unitPrice).toLocaleString()} Ks</span> <span>${Number(total).toLocaleString()} Ks</span></div>
+                <div class="border-b border-dashed border-slate-300 my-2"></div>
+                <div class="flex justify-between font-bold text-sm"><span>စုစုပေါင်း:</span> <span>${Number(total).toLocaleString()} Ks</span></div>
+                <div class="flex justify-between"><span>ပေးငွေ/စရန်:</span> <span>${Number(s.deposit !== undefined ? s.deposit : total).toLocaleString()} Ks</span></div>
+                <div class="flex justify-between"><span>ကျန်ငွေ:</span> <span>${Number(s.remaining || 0).toLocaleString()} Ks</span></div>
             `;
         }
 
         document.getElementById('voucherPreviewModal').classList.remove('hidden');
     }
 
-    // Ultra-reliable share function with automatic fallback to clipboard and text prompt
-    function shareVoucherText() {
-        const receiptBody = document.getElementById('voucherReceiptBody');
-        if (!receiptBody) return;
-        let textContent = receiptBody.innerText || receiptBody.textContent;
+    async function generateThermalReceiptPDF(action = 'download') {
+        const receiptElement = document.getElementById('voucherReceiptBody');
+        if (!receiptElement) return;
 
-        if (navigator.share) {
-            navigator.share({
-                title: 'စန်းမော် ပရိဘောဂ ဘောက်ချာ',
-                text: textContent
-            }).then(() => {
-                showToast("ဘောက်ချာ စာသားကို အောင်မြင်စွာ မျှဝေပြီးပါပြီ။", "success");
-            }).catch(err => {
-                // If sharing was cancelled or not fully supported in this context, fallback to clipboard
-                copyToClipboardFallback(textContent);
-            });
-        } else {
-            copyToClipboardFallback(textContent);
-        }
-    }
-
-    function copyToClipboardFallback(text) {
-        if (navigator.clipboard && navigator.clipboard.writeText) {
-            navigator.clipboard.writeText(text).then(() => {
-                showToast("ဘောက်ချာ စာသားများကို ကူးယူပြီးပါပြီ (Clipboard)।", "success");
-            }).catch(() => {
-                promptTextFallback(text);
-            });
-        } else {
-            promptTextFallback(text);
-        }
-    }
-
-    function promptTextFallback(text) {
-        let textarea = document.createElement('textarea');
-        textarea.value = text;
-        textarea.style.position = 'fixed';
-        textarea.style.opacity = '0';
-        document.body.appendChild(textarea);
-        textarea.select();
         try {
-            document.execCommand('copy');
-            showToast("ဘောက်ချာ စာသားများကို ကူးယူပြီးပါပြီ။", "success");
-        } catch (err) {
-            showToast("စာသားကူးယူရန် အဆင်မပြေပါ။", "error");
+            const canvas = await html2canvas(receiptElement, {
+                scale: 2,
+                useCORS: true,
+                backgroundColor: '#ffffff'
+            });
+
+            const imgData = canvas.toDataURL('image/png');
+            const { jsPDF } = window.jspdf;
+
+            const imgWidth = 72; // mm (3-inch thermal printer printable width)
+            const pageHeight = (canvas.height * imgWidth) / canvas.width;
+
+            const doc = new jsPDF({
+                orientation: 'portrait',
+                unit: 'mm',
+                format: [80, Math.max(100, pageHeight + 20)]
+            });
+
+            doc.addImage(imgData, 'PNG', 4, 4, imgWidth, pageHeight);
+
+            const fileName = `SanMaw_Voucher_${Date.now()}.pdf`;
+
+            if (action === 'download') {
+                doc.save(fileName);
+                showToast("3” Thermal Voucher PDF ကို Download လုပ်ပြီးပါပြီ။", "success");
+            } else if (action === 'share') {
+                const pdfBlob = doc.output('blob');
+                const file = new File([pdfBlob], fileName, { type: 'application/pdf' });
+                if (navigator.canShare && navigator.canShare({ files: [file] })) {
+                    await navigator.share({
+                        files: [file],
+                        title: 'San Maw Furniture Voucher',
+                        text: 'စန်းမော် ပရိဘောဂ ဘောက်ချာ PDF'
+                    });
+                    showToast("Voucher PDF ကို အောင်မြင်စွာ Share လိုက်ပါပြီ။", "success");
+                } else {
+                    doc.save(fileName);
+                    showToast("ဒီဖုန်း/ဘရောက်ဆာမှာ File Share မရပါသဖြင့် Download လုပ်ပေးလိုက်ပါသည်။", "success");
+                }
+            }
+        } catch (error) {
+            console.error("PDF Generation Error:", error);
+            showToast("PDF ဖိုင်ထုတ်ယူရာတွင် အမှားအယွင်း ရှိပါသည်။", "error");
         }
-        document.body.removeChild(textarea);
     }
 
     function markSaleAsPaid(idx) {
@@ -2047,7 +2079,7 @@
     function openSaleModal() {
         const select = document.getElementById('saleStockSelect');
         if (select) {
-            let opts = `<option value="">-- စတော့ပစ္စည်း ရွေးပါ (သို့မဟုတ် အောက်တွင် ကိုယ်တိုင်ရိုက်ထည့်ပါ) --</option>`;
+            let opts = `<option value="">-- စတော့ပစ္စည်း ရွေးပါ --</option>`;
             db.stocks.forEach((st, idx) => {
                 opts += `<option value="${idx}">[${st.sku}] ${st.name} (လက်ကျန်: ${st.qty}) - ဈေး: ${st.salePrice}</option>`;
             });
