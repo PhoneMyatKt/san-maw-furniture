@@ -1180,7 +1180,7 @@
     };
 
     function getAdminPin() {
-        return String(db.settings?.adminPin || '1965').trim();
+        return String(db.settings?.adminPin || '0000').trim();
     }
 
     function getStaffPin() {
@@ -1252,7 +1252,7 @@
                     if (cloudData.settings) {
                         db.settings = cloudData.settings;
                     }
-                    if (!db.settings.adminPin) db.settings.adminPin = '1965';
+                    if (!db.settings.adminPin) db.settings.adminPin = '0000';
                     if (!db.settings.staffPin) db.settings.staffPin = '0000';
                 } else {
                     // Initialize cloud with default data and PINs if empty
