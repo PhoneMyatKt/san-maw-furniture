@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>စန်းမော် ပရိဘောဂ - Stock & Preorder Tracker (v2.9.12)</title>
+    <title>စန်းမော် ပရိဘောဂ - Stock & Preorder Tracker (v2.9.13)</title>
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -99,7 +99,7 @@
     <div class="text-center space-y-4 animate-pulse px-4">
         <i class="fa-solid fa-couch text-5xl text-amber-300"></i>
         <h1 class="text-2xl font-bold tracking-wide">စန်းမော် ပရိဘောဂ</h1>
-        <p class="text-xs text-amber-200">Stock, Sales & Daily Capital Tracker (v2.9.12)</p>
+        <p class="text-xs text-amber-200">Stock, Sales & Daily Capital Tracker (v2.9.13)</p>
         <div class="w-8 h-8 border-4 border-amber-300 border-t-transparent rounded-full animate-spin mx-auto mt-4"></div>
     </div>
     <div class="absolute bottom-6 text-[11px] text-amber-200/80 font-medium">
@@ -817,7 +817,7 @@
                     <div class="grid grid-cols-2 gap-3">
                         <div>
                             <span class="block text-[11px] font-semibold text-slate-600 mb-1">အရေအတွက် (Qty)</span>
-                            <input type="number" id="saleQty" min="1" value="1" oninput="calculateSaleRemaining()" class="w-full border border-slate-200 rounded-xl p-2.5 outline-none focus:ring-2 focus:ring-amber-600 bg-white font-bold text-amber-900">
+                            <input type="number" id="saleQty" min="1" value="1" oninput="validateSaleQtyLimit(); calculateSaleRemaining();" class="w-full border border-slate-200 rounded-xl p-2.5 outline-none focus:ring-2 focus:ring-amber-600 bg-white font-bold text-amber-900">
                         </div>
                         <div>
                             <span class="block text-[11px] font-semibold text-slate-600 mb-1">ရောင်းဈေး (Unit Price Ks)</span>
@@ -2127,16 +2127,38 @@
         if(index === '') {
             db.stocks.push({ sku, category, name, qty, salePrice, cogs });
             showToast("စတော့ပစ္စည်းအသစ် ထည့်သွင်းပြီးပါပြီ။", "success");
+            saveData();
+            closeModal('stockModal');
+            renderAll();
         } else {
             if(currentRole !== 'Admin') {
                 cogs = db.stocks[index].cogs || 0;
             }
-            db.stocks[index] = { ...db.stocks[index], sku, category, name, qty, salePrice, cogs };
-            showToast("စတော့ပစ္စည်း အောင်မြင်စွာ ပြင်ဆင်ပြီးပါပြီ။", "success");
+            let updatedStockObj = { ...db.stocks[index], sku, category, name, qty, salePrice, cogs };
+
+            if (currentRole === 'Admin') {
+                db.stocks[index] = updatedStockObj;
+                showToast("စတော့ပစ္စည်း အောင်မြင်စွာ ပြင်ဆင်ပြီးပါပြီ။", "success");
+                saveData();
+                closeModal('stockModal');
+                renderAll();
+            } else {
+                db.approvals.push({
+                    id: Date.now(),
+                    type: 'stock_edit',
+                    targetId: sku,
+                    targetIndex: parseInt(index),
+                    custName: name,
+                    detail: `စတော့ပြင်ရန်: ${name} (SKU: ${sku})`,
+                    newData: updatedStockObj,
+                    actionType: 'Edit Stock'
+                });
+                saveData();
+                closeModal('stockModal');
+                renderStocks();
+                showToast("Admin ထံသို့ စတော့ပြင်ရန် Approval တောင်းဆိုချက် ပို့လိုက်ပါပြီ။", "success");
+            }
         }
-        saveData();
-        closeModal('stockModal');
-        renderAll();
     }
 
     function deleteStock(index) {
@@ -2192,6 +2214,8 @@
             let profit = st.salePrice - (st.cogs || 0);
             let margin = st.salePrice > 0 ? ((profit / st.salePrice) * 100).toFixed(1) : '0.0';
             let isPendingDelete = db.approvals.some(a => a.type === 'stock' && (a.targetId === st.sku || a.custName === st.name));
+            let isPendingEdit = db.approvals.some(a => a.type === 'stock_edit' && a.targetId === st.sku);
+            let isPending = isPendingDelete || isPendingEdit;
 
             let tr = document.createElement('tr');
             tr.className = "hover:bg-slate-50 transition-colors";
@@ -2210,8 +2234,10 @@
                 </td>
                 <td class="p-3 text-center">
                     <div class="flex items-center justify-center space-x-1">
-                        <button onclick="editStock(${realIdx})" class="px-2 py-1 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg text-xs font-medium">ပြင်</button>
-                        ${isPendingDelete && currentRole !== 'Admin' ? `<button disabled class="px-2 py-1 bg-amber-400 text-amber-950 rounded-lg text-xs font-bold animate-pulse cursor-not-allowed">Pending</button>` : `<button onclick="deleteStock(${realIdx})" class="px-2 py-1 bg-red-50 hover:bg-red-100 text-red-600 rounded-lg text-xs font-medium">ဖျက်</button>`}
+                        ${isPending && currentRole !== 'Admin' ? `<button disabled class="px-2 py-1 bg-amber-400 text-amber-950 rounded-lg text-xs font-bold animate-pulse cursor-not-allowed">Pending</button>` : `
+                            <button onclick="editStock(${realIdx})" class="px-2 py-1 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg text-xs font-medium">ပြင်</button>
+                            <button onclick="deleteStock(${realIdx})" class="px-2 py-1 bg-red-50 hover:bg-red-100 text-red-600 rounded-lg text-xs font-medium">ဖျက်</button>
+                        `}
                     </div>
                 </td>
             `;
@@ -2546,6 +2572,32 @@
         if (remDisplay) remDisplay.innerText = Number(remaining).toLocaleString() + ' Ks';
     }
 
+    function validateSaleQtyLimit() {
+        const stockSelectIdx = document.getElementById('saleStockSelect').value;
+        const qtyInput = document.getElementById('saleQty');
+        const editIndex = document.getElementById('editSaleIndex').value;
+
+        if (stockSelectIdx !== '') {
+            let st = db.stocks[parseInt(stockSelectIdx)];
+            if (st) {
+                let maxQty = st.qty || 0;
+                // If editing an existing sale, add back its original quantity to the limit check
+                if (editIndex !== '') {
+                    let oldSale = db.sales[parseInt(editIndex)];
+                    if (oldSale && oldSale.stockIndex !== null && oldSale.stockIndex !== undefined && Number(oldSale.stockIndex) === Number(stockSelectIdx)) {
+                        maxQty += (oldSale.qty || 0);
+                    }
+                }
+
+                let currentEnteredQty = parseInt(qtyInput.value) || 1;
+                if (currentEnteredQty > maxQty) {
+                    showToast(`စတော့လက်ကျန် ${maxQty} ခုသာ ရှိသဖြင့် ထိုပမာဏထက် ကျော်လွန်၍ ရွေးချယ်၍ မရပါ။`, "error");
+                    qtyInput.value = maxQty > 0 ? maxQty : 1;
+                }
+            }
+        }
+    }
+
     function openSaleModal() {
         const select = document.getElementById('saleStockSelect');
         if (select) {
@@ -2580,6 +2632,8 @@
             if (st) {
                 document.getElementById('saleItemName').value = st.name;
                 document.getElementById('saleUnitPrice').value = st.salePrice;
+                document.getElementById('saleQty').value = 1;
+                validateSaleQtyLimit();
                 calculateSaleRemaining();
             }
         }
@@ -2589,6 +2643,12 @@
         let s = db.sales[index];
         openSaleModal();
         document.getElementById('editSaleIndex').value = index;
+
+        // Automatically pre-select stock option if stockIndex matches
+        if (s.stockIndex !== null && s.stockIndex !== undefined && db.stocks[s.stockIndex]) {
+            document.getElementById('saleStockSelect').value = s.stockIndex;
+        }
+
         document.getElementById('saleCustName').value = s.custName || '';
         document.getElementById('saleCustPhone').value = s.custPhone || '';
         document.getElementById('saleCustAddress').value = s.custAddress || '';
@@ -2636,9 +2696,26 @@
             let st = db.stocks[stockIndexVal];
             if (st) {
                 cogs = st.cogs || 0;
-                if (editIndex === '') {
-                    st.qty = Math.max(0, (st.qty || 0) - qty);
+                
+                // Calculate previous quantity if editing this sale
+                let prevQty = 0;
+                if (editIndex !== '') {
+                    let oldSale = db.sales[editIndex];
+                    if (oldSale && oldSale.stockIndex === stockIndexVal) {
+                        prevQty = oldSale.qty || 0;
+                    }
                 }
+
+                // Required additional stock needed for this transaction
+                let netQtyNeeded = qty - prevQty;
+
+                if (netQtyNeeded > st.qty) {
+                    showToast(`စတော့လက်ကျန် မလုံလောက်ပါ။ (လက်ကျန်: ${st.qty} ခုသာရှိပါသည် - ကုန်ဝယ်ရန်လိုသည်)`, "error");
+                    return;
+                }
+
+                // Adjust stock quantity
+                st.qty = Math.max(0, st.qty - netQtyNeeded);
             }
         }
 
@@ -2699,10 +2776,14 @@
     function deleteSale(index) {
         let s = db.sales[index];
         if (currentRole === 'Admin') {
+            // Restore stock qty if linked to a stock item
+            if (s.stockIndex !== null && s.stockIndex !== undefined && db.stocks[s.stockIndex]) {
+                db.stocks[s.stockIndex].qty = (db.stocks[s.stockIndex].qty || 0) + (s.qty || 0);
+            }
             db.sales.splice(index, 1);
             saveData();
             renderAll();
-            showToast("အရောင်းမှတ်တမ်း ဖယ်ရှားပြီးပါပြီ။", "success");
+            showToast("အရောင်းမှတ်တမ်း ဖယ်ရှားပြီး စတော့အရေအတွက် ပြန်လည်ဖြည့်တင်းပြီးပါပြီ။", "success");
         } else {
             if (db.approvals.some(a => a.type === 'sale' && a.targetId === s.id)) {
                 showToast("Admin ဖျက်ရန် ခွင့်ပြုချက် တောင်းဆိုထားပြီး ဖြစ်ပါသည်။", "error");
@@ -2850,6 +2931,8 @@
             let idx = db.expenses.indexOf(ex);
             let payM = ex.paymentType || 'Cash';
             let isPendingEdit = db.approvals.some(a => a.type === 'expense_edit' && a.targetId === ex.id);
+            let isPendingDelete = db.approvals.some(a => a.type === 'expense_delete' && a.targetId === ex.id);
+            let isPending = isPendingEdit || isPendingDelete;
 
             let tr = document.createElement('tr');
             tr.className = "hover:bg-slate-50 transition-colors";
@@ -2865,8 +2948,10 @@
                 <td class="p-3 text-right font-bold text-rose-600">-${Number(ex.amount).toLocaleString()} Ks</td>
                 <td class="p-3 text-center">
                     <div class="flex items-center justify-center space-x-1">
-                        <button onclick="openExpenseModal(${idx})" class="px-2 py-1 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg text-xs font-medium">ပြင်</button>
-                        ${isPendingEdit && currentRole !== 'Admin' ? `<button disabled class="px-2 py-1 bg-amber-400 text-amber-950 rounded-lg text-xs font-bold animate-pulse cursor-not-allowed">Pending</button>` : `<button onclick="deleteExpense(${idx})" class="px-2 py-1 bg-red-50 hover:bg-red-100 text-red-600 rounded-lg text-xs font-medium">ဖျက်</button>`}
+                        ${isPending && currentRole !== 'Admin' ? `<button disabled class="px-2 py-1 bg-amber-400 text-amber-950 rounded-lg text-xs font-bold animate-pulse cursor-not-allowed">Pending</button>` : `
+                            <button onclick="openExpenseModal(${idx})" class="px-2 py-1 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg text-xs font-medium">ပြင်</button>
+                            <button onclick="deleteExpense(${idx})" class="px-2 py-1 bg-red-50 hover:bg-red-100 text-red-600 rounded-lg text-xs font-medium">ဖျက်</button>
+                        `}
                     </div>
                 </td>
             `;
@@ -2876,20 +2961,39 @@
 
     function deleteExpense(index) {
         let ex = db.expenses[index];
-        let deletedAmt = parseFloat(ex.amount) || 0;
+        if (currentRole === 'Admin') {
+            let deletedAmt = parseFloat(ex.amount) || 0;
 
-        let drawnFromMain = parseFloat(db.settings.mainCapitalDrawnForPetty) || 0;
-        let reduceMain = Math.min(drawnFromMain, deletedAmt);
-        db.settings.mainCapitalDrawnForPetty = Math.max(0, drawnFromMain - reduceMain);
-        let remainderDelete = deletedAmt - reduceMain;
-        if (remainderDelete > 0 && db.settings.allocatedPettyRefill) {
-            db.settings.allocatedPettyRefill = Math.max(0, (parseFloat(db.settings.allocatedPettyRefill) || 0) - remainderDelete);
+            let drawnFromMain = parseFloat(db.settings.mainCapitalDrawnForPetty) || 0;
+            let reduceMain = Math.min(drawnFromMain, deletedAmt);
+            db.settings.mainCapitalDrawnForPetty = Math.max(0, drawnFromMain - reduceMain);
+            let remainderDelete = deletedAmt - reduceMain;
+            if (remainderDelete > 0 && db.settings.allocatedPettyRefill) {
+                db.settings.allocatedPettyRefill = Math.max(0, (parseFloat(db.settings.allocatedPettyRefill) || 0) - remainderDelete);
+            }
+
+            db.expenses.splice(index, 1);
+            saveData();
+            renderAll();
+            showToast("ဆိုင်သုံးစရိတ် ဖျက်ပြီးပါပြီ (ရန်ပုံငွေများ အလိုအလျောက် ပြန်ရောက်သွားပါပြီ)။", "success");
+        } else {
+            if (db.approvals.some(a => a.type === 'expense_delete' && a.targetId === ex.id)) {
+                showToast("Admin ဖျက်ရန် ခွင့်ပြုချက် တောင်းဆိုထားပြီး ဖြစ်ပါသည်။", "error");
+                return;
+            }
+            db.approvals.push({
+                id: Date.now(),
+                type: 'expense_delete',
+                targetId: ex.id,
+                targetIndex: index,
+                custName: ex.title,
+                detail: `ဆိုင်သုံးစရိတ်ဖျက်ရန်: ${ex.title} (${Number(ex.amount).toLocaleString()} Ks)`,
+                actionType: 'Delete Expense'
+            });
+            saveData();
+            renderExpenses();
+            showToast("Admin ထံသို့ ဆိုင်သုံးစရိတ်ဖျက်ရန် Approval တောင်းဆိုချက် ပို့လိုက်ပါပြီ။", "success");
         }
-
-        db.expenses.splice(index, 1);
-        saveData();
-        renderAll();
-        showToast("ဆိုင်သုံးစရိတ် ဖျက်ပြီးပါပြီ (ရန်ပုံငွေများ အလိုအလျောက် ပြန်ရောက်သွားပါပြီ)။", "success");
     }
 
     function openPettyCashTargetModal() {
@@ -3112,14 +3216,33 @@
         if (index === '') {
             db.preorders.push(preObj);
             showToast("Preorder အသစ် သိမ်းဆည်းပြီးပါပြီ။", "success");
+            saveData();
+            closeModal('preorderModal');
+            renderAll();
         } else {
-            db.preorders[index] = preObj;
-            showToast("Preorder ပြင်ဆင်ပြီးပါပြီ။", "success");
+            if (currentRole === 'Admin') {
+                db.preorders[index] = preObj;
+                showToast("Preorder ပြင်ဆင်ပြီးပါပြီ။", "success");
+                saveData();
+                closeModal('preorderModal');
+                renderAll();
+            } else {
+                db.approvals.push({
+                    id: Date.now(),
+                    type: 'preorder_edit',
+                    targetId: preObj.id,
+                    targetIndex: parseInt(index),
+                    custName: custName,
+                    detail: `Preorder ပြင်ရန်: ${custName} (${itemDesc})`,
+                    newData: preObj,
+                    actionType: 'Edit Preorder'
+                });
+                saveData();
+                closeModal('preorderModal');
+                renderPreorders();
+                showToast("Admin ထံသို့ Preorder ပြင်ရန် Approval တောင်းဆိုချက် ပို့လိုက်ပါပြီ။", "success");
+            }
         }
-
-        saveData();
-        closeModal('preorderModal');
-        renderAll();
     }
 
     function togglePreorderArrival(index) {
@@ -3169,7 +3292,9 @@
 
         db.preorders.forEach((p) => {
             let idx = db.preorders.indexOf(p);
-            let isPending = db.approvals.some(a => a.type === 'preorder' && a.targetId === p.id);
+            let isPendingDelete = db.approvals.some(a => a.type === 'preorder' && a.targetId === p.id);
+            let isPendingEdit = db.approvals.some(a => a.type === 'preorder_edit' && a.targetId === p.id);
+            let isPending = isPendingDelete || isPendingEdit;
 
             let card = document.createElement('div');
             card.className = `bg-white rounded-2xl p-4 shadow-sm border ${p.isArrived ? 'border-emerald-300 bg-emerald-50/20' : 'border-slate-200'} space-y-3 relative`;
@@ -3205,7 +3330,7 @@
 
                 <div class="flex items-center justify-between pt-1 border-t border-slate-100">
                     <button onclick="togglePreorderArrival(${idx})" class="px-3 py-1.5 rounded-lg text-xs font-bold ${p.isArrived ? 'bg-slate-200 text-slate-700 hover:bg-slate-300' : 'bg-emerald-600 text-white hover:bg-emerald-700'} transition">
-                        ${p.isArrived ? 'အခြေအနေ ပြန်ပြောင်းမည်' : 'Warehouse ရောက်ပြီ စစ်မည်'}
+                        ${p.isArrived ? 'အခြေအနေ ပြန်ပြောင်းမည်' : 'Warehouse ရောက်လျှင် နှိပ်ရန်'}
                     </button>
                     <div class="flex items-center space-x-1">
                         <button onclick="editPreorder(${idx})" class="px-2 py-1.5 bg-slate-100 text-slate-700 rounded-lg text-xs font-medium">ပြင်</button>
@@ -3255,14 +3380,33 @@
         if (index === '') {
             db.installments.push(instObj);
             showToast("အရစ်ကျ မှတ်တမ်း သိမ်းဆည်းပြီးပါပြီ။", "success");
+            saveData();
+            closeModal('installmentModal');
+            renderAll();
         } else {
-            db.installments[index] = instObj;
-            showToast("အရစ်ကျ ပြင်ဆင်ပြီးပါပြီ။", "success");
+            if (currentRole === 'Admin') {
+                db.installments[index] = instObj;
+                showToast("အရစ်ကျ ပြင်ဆင်ပြီးပါပြီ။", "success");
+                saveData();
+                closeModal('installmentModal');
+                renderAll();
+            } else {
+                db.approvals.push({
+                    id: Date.now(),
+                    type: 'installment_edit',
+                    targetId: instObj.id,
+                    targetIndex: parseInt(index),
+                    custName: custName,
+                    detail: `အရစ်ကျပြင်ရန်: ${custName} (ကျန်ငွေ: ${remainingDebt})`,
+                    newData: instObj,
+                    actionType: 'Edit Installment'
+                });
+                saveData();
+                closeModal('installmentModal');
+                renderInstallments();
+                showToast("Admin ထံသို့ အရစ်ကျပြင်ရန် Approval တောင်းဆိုချက် ပို့လိုက်ပါပြီ။", "success");
+            }
         }
-
-        saveData();
-        closeModal('installmentModal');
-        renderAll();
     }
 
     function deleteInstallment(index) {
@@ -3304,7 +3448,9 @@
 
         db.installments.forEach((i) => {
             let idx = db.installments.indexOf(i);
-            let isPending = db.approvals.some(a => a.type === 'installment' && a.targetId === i.id);
+            let isPendingDelete = db.approvals.some(a => a.type === 'installment' && a.targetId === i.id);
+            let isPendingEdit = db.approvals.some(a => a.type === 'installment_edit' && a.targetId === i.id);
+            let isPending = isPendingDelete || isPendingEdit;
 
             let tr = document.createElement('tr');
             tr.className = "hover:bg-slate-50 transition-colors";
@@ -3503,6 +3649,10 @@
         if (app.type === 'stock') {
             db.stocks.splice(app.targetIndex, 1);
         } else if (app.type === 'sale') {
+            let s = db.sales[app.targetIndex];
+            if (s && s.stockIndex !== null && s.stockIndex !== undefined && db.stocks[s.stockIndex]) {
+                db.stocks[s.stockIndex].qty = (db.stocks[s.stockIndex].qty || 0) + (s.qty || 0);
+            }
             db.sales.splice(app.targetIndex, 1);
         } else if (app.type === 'sale_edit') {
             db.sales[app.targetIndex] = app.newData;
@@ -3517,7 +3667,7 @@
         db.approvals.splice(index, 1);
         saveData();
         renderAll();
-        showToast("တောင်းဆိုချက်ကို အောင်မြင်စွာ အတည်ပြုပြီးပါပြီ။", "success");
+        showToast("တောင်းဆိုချက်ကို အောင်မြင်စွာ အတည်ပြုပြီးပါပြီ (စတော့ အရေအတွက် ပြန်လည် ချိန်ညှိပြီးပါပြီ)။", "success");
     }
 
     function rejectAction(index) {
