@@ -3,8 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>စန်းမော် ပရိဘောဂ - Stock & Preorder Tracker (v2.8.8)</title>
-    <!-- PWA Single-File Inline Manifest & Native App Settings -->
+    <title>စန်းမော် ပရိဘောဂ - Stock & Preorder Tracker (v2.9.12)</title>
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -13,29 +12,29 @@
 
     <!-- Auto PWA Dynamic Manifest Injector (Full-Screen Fix) -->
     <script>
-      (function() {
-        const manifest = {
-          "name": "စန်းမော် ပရိဘောဂ POS",
-          "short_name": "SanMaw POS",
-          "start_url": window.location.href,
-          "display": "standalone",
-          "background_color": "#92400e",
-          "theme_color": "#92400e",
-          "icons": [{
-            "src": "https://cdn-icons-png.flaticon.com/512/2603/2603741.png",
-            "sizes": "192x192",
-            "type": "image/png"
-          }]
-        };
-        const blob = new Blob([JSON.stringify(manifest)], {type: 'application/json'});
-        const manifestURL = URL.createObjectURL(blob);
-        const link = document.createElement('link');
-        link.rel = 'manifest';
-        link.href = manifestURL;
-        document.head.appendChild(link);
-      })();
+        (function() {
+            const manifest = {
+                "name": "စန်းမော် ပရိဘောဂ POS",
+                "short_name": "SanMaw POS",
+                "start_url": window.location.href,
+                "display": "standalone",
+                "background_color": "#92400e",
+                "theme_color": "#92400e",
+                "icons": [{
+                    "src": "https://cdn-icons-png.flaticon.com/512/2603/2603741.png",
+                    "sizes": "192x192",
+                    "type": "image/png"
+                }]
+            };
+            const blob = new Blob([JSON.stringify(manifest)], {type: 'application/json'});
+            const manifestURL = URL.createObjectURL(blob);
+            const link = document.createElement('link');
+            link.rel = 'manifest';
+            link.href = manifestURL;
+            document.head.appendChild(link);
+        })();
     </script>
-    
+    <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Google Font: Inter -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -61,7 +60,6 @@
             -webkit-text-fill-color: #1e293b !important;
         }
 
-        /* Android / Browser Standard Window Print Styling Fix */
         @media print {
             body * {
                 visibility: hidden !important;
@@ -88,7 +86,6 @@
                 max-width: 100% !important;
                 margin: 0 !important;
             }
-            /* Print ထုတ်ချိန်တွင် ခလုတ်များကို ဖုံးကွယ်မည် */
             #voucherPreviewModal button {
                 display: none !important;
             }
@@ -102,7 +99,7 @@
     <div class="text-center space-y-4 animate-pulse px-4">
         <i class="fa-solid fa-couch text-5xl text-amber-300"></i>
         <h1 class="text-2xl font-bold tracking-wide">စန်းမော် ပရိဘောဂ</h1>
-        <p class="text-xs text-amber-200">Stock, Sales & Daily Capital Tracker (v2.8.8)</p>
+        <p class="text-xs text-amber-200">Stock, Sales & Daily Capital Tracker (v2.9.12)</p>
         <div class="w-8 h-8 border-4 border-amber-300 border-t-transparent rounded-full animate-spin mx-auto mt-4"></div>
     </div>
     <div class="absolute bottom-6 text-[11px] text-amber-200/80 font-medium">
@@ -188,6 +185,16 @@
             </div>
         </div>
         <div class="flex items-center space-x-2">
+            <button onclick="switchTab('dashboard')" class="admin-only hidden bg-amber-900 hover:bg-amber-950 text-amber-200 px-3 py-1.5 rounded-xl text-xs font-medium border border-amber-700/50 transition flex items-center space-x-1">
+                <i class="fa-solid fa-chart-pie mr-1"></i> <span>Dashboard</span>
+            </button>
+            <button onclick="switchTab('report')" class="admin-only hidden bg-amber-900 hover:bg-amber-950 text-amber-200 px-3 py-1.5 rounded-xl text-xs font-medium border border-amber-700/50 transition flex items-center space-x-1">
+                <i class="fa-solid fa-chart-line mr-1"></i> <span>Report</span>
+            </button>
+            <button onclick="switchTab('approval')" class="admin-only hidden bg-amber-900 hover:bg-amber-950 text-amber-200 px-3 py-1.5 rounded-xl text-xs font-medium border border-amber-700/50 transition flex items-center space-x-1 relative">
+                <i class="fa-solid fa-user-check mr-1"></i> <span>Approvals</span>
+                <span id="topApprovalBadge" class="absolute -top-1.5 -right-1.5 bg-rose-600 text-white text-[10px] min-w-[18px] h-[18px] px-1 rounded-full flex items-center justify-center font-bold shadow-md z-10 hidden">0</span>
+            </button>
             <button onclick="promptRoleSwitch()" id="roleToggleBtn" class="bg-amber-950/60 hover:bg-amber-950 text-amber-100 px-3 py-1.5 rounded-xl text-xs font-medium border border-amber-700/50 transition flex items-center space-x-1">
                 <i class="fa-solid fa-user-shield mr-1"></i> <span>Switch to Admin</span>
             </button>
@@ -206,49 +213,49 @@
                 <i class="fa-solid fa-boxes-stacked text-amber-700"></i>
                 <span id="activeTabName">Stock List</span>
             </div>
-
-            <!-- Admin Quick Access Bar -->
-            <div class="hidden admin-only flex items-center space-x-1.5 pl-3 border-l border-slate-200">
-                <button onclick="switchTab('purchases')" id="quickTab-purchases" class="px-2.5 py-1 bg-amber-50 hover:bg-amber-100 text-amber-900 rounded-lg text-xs font-bold flex items-center space-x-1 transition border border-amber-200">
-                    <i class="fa-solid fa-bag-shopping text-amber-700"></i> <span class="hidden sm:inline">ကုန်ဝယ်စာရင်း</span>
-                </button>
-                <button onclick="switchTab('workers')" id="quickTab-workers" class="px-2.5 py-1 bg-amber-50 hover:bg-amber-100 text-amber-900 rounded-lg text-xs font-bold flex items-center space-x-1 transition border border-amber-200">
+            <!-- Workers and Staff Mode buttons placed on the left -->
+            <div class="flex items-center space-x-1 sm:space-x-2 ml-2 sm:ml-4">
+                <button onclick="switchTab('workers')" id="tab-workers" class="tab-btn admin-only hidden px-2.5 sm:px-3 py-1.5 rounded-xl text-xs font-medium border border-slate-200 transition flex items-center space-x-1 bg-slate-100 text-slate-700 hover:bg-slate-200">
                     <i class="fa-solid fa-users-gear text-amber-700"></i> <span class="hidden sm:inline">Workers</span>
                 </button>
-                <button onclick="switchTab('approval')" id="quickTab-approval" class="px-2.5 py-1 bg-amber-50 hover:bg-amber-100 text-amber-900 rounded-lg text-xs font-bold flex items-center space-x-1 transition border border-amber-200 relative">
-                    <i class="fa-solid fa-user-check text-amber-700"></i> <span class="hidden sm:inline">Approvals</span>
-                    <span id="navApprovalBadge" class="hidden px-1.5 py-0.2 bg-amber-600 text-white rounded-full text-[9px] font-bold">0</span>
+                <button onclick="switchTab('stock')" id="tab-stock-left" class="tab-btn staff-only hidden px-2.5 sm:px-3 py-1.5 rounded-xl text-xs font-medium border border-slate-200 transition flex items-center space-x-1 bg-slate-100 text-slate-700 hover:bg-slate-200">
+                    <i class="fa-solid fa-boxes-stacked text-amber-700"></i> <span class="hidden sm:inline">Stock List</span>
                 </button>
-                <button onclick="switchTab('report')" id="quickTab-report" class="px-2.5 py-1 bg-amber-50 hover:bg-amber-100 text-amber-900 rounded-lg text-xs font-bold flex items-center space-x-1 transition border border-amber-200">
-                    <i class="fa-solid fa-chart-line text-amber-700"></i> <span class="hidden sm:inline">Report</span>
+                <button onclick="switchTab('expenses')" id="tab-expenses-left" class="tab-btn staff-only hidden px-2.5 sm:px-3 py-1.5 rounded-xl text-xs font-medium border border-slate-200 transition flex items-center space-x-1 bg-slate-100 text-slate-700 hover:bg-slate-200">
+                    <i class="fa-solid fa-receipt text-amber-700"></i> <span class="hidden sm:inline">ဆိုင်သုံးစရိတ်</span>
                 </button>
             </div>
         </div>
 
-        <div class="relative">
-            <button onclick="toggleMenuDropdown(event)" class="bg-slate-100 hover:bg-slate-200 text-slate-700 w-9 h-9 rounded-xl flex items-center justify-center transition shadow-sm border border-slate-200">
-                <i class="fa-solid fa-ellipsis-vertical text-sm"></i>
-            </button>
+        <div class="flex items-center space-x-2">
+            <div class="relative">
+                <button onclick="toggleMenuDropdown(event)" class="bg-slate-100 hover:bg-slate-200 text-slate-700 w-9 h-9 rounded-xl flex items-center justify-center transition shadow-sm border border-slate-200">
+                    <i class="fa-solid fa-ellipsis-vertical text-sm"></i>
+                </button>
 
-            <div id="menuDropdown" class="hidden absolute right-0 mt-2 w-56 bg-white rounded-2xl shadow-xl border border-slate-200 py-2 z-50 space-y-1">
-                <button onclick="switchTab('stock'); closeMenuDropdown();" id="tab-stock" class="tab-btn w-full text-left px-4 py-2 text-xs font-semibold bg-amber-50 text-amber-900 flex items-center space-x-2 transition">
-                    <i class="fa-solid fa-boxes-stacked w-5 text-amber-700"></i> <span>Stock List</span>
-                </button>
-                <button onclick="switchTab('sales'); closeMenuDropdown();" id="tab-sales" class="tab-btn w-full text-left px-4 py-2 text-xs font-medium text-slate-700 hover:bg-slate-50 flex items-center space-x-2 transition">
-                    <i class="fa-solid fa-cart-shopping w-5 text-amber-700"></i> <span>Sales List</span>
-                </button>
-                <button onclick="switchTab('expenses'); closeMenuDropdown();" id="tab-expenses" class="tab-btn w-full text-left px-4 py-2 text-xs font-medium text-slate-700 hover:bg-slate-50 flex items-center space-x-2 transition">
-                    <i class="fa-solid fa-receipt w-5 text-amber-700"></i> <span>ဆိုင်သုံးစရိတ် (Expenses)</span>
-                </button>
-                <button onclick="switchTab('preorder'); closeMenuDropdown();" id="tab-preorder" class="tab-btn w-full text-left px-4 py-2 text-xs font-medium text-slate-700 hover:bg-slate-50 flex items-center space-x-2 transition">
-                    <i class="fa-solid fa-clock w-5 text-amber-700"></i> <span>Preorder</span>
-                </button>
-                <button onclick="switchTab('installment'); closeMenuDropdown();" id="tab-installment" class="tab-btn w-full text-left px-4 py-2 text-xs font-medium text-slate-700 hover:bg-slate-50 flex items-center space-x-2 transition">
-                    <i class="fa-solid fa-file-invoice-dollar w-5 text-amber-700"></i> <span>အရစ်ကျ (Installment)</span>
-                </button>
-                <button onclick="switchTab('suppliers'); closeMenuDropdown();" id="tab-suppliers" class="tab-btn w-full text-left px-4 py-2 text-xs font-medium text-slate-700 hover:bg-slate-50 flex items-center space-x-2 transition">
-                    <i class="fa-solid fa-address-book w-5 text-amber-700"></i> <span>Supplier Contact</span>
-                </button>
+                <div id="menuDropdown" class="hidden absolute right-0 mt-2 w-56 bg-white rounded-2xl shadow-xl border border-slate-200 py-2 z-50 space-y-1">
+                    <button onclick="switchTab('stock'); closeMenuDropdown();" id="tab-stock" class="tab-btn menu-tab-btn w-full text-left px-4 py-2 text-xs font-semibold bg-amber-50 text-amber-900 flex items-center space-x-2 transition">
+                        <i class="fa-solid fa-boxes-stacked w-5 text-amber-700"></i> <span>Stock List</span>
+                    </button>
+                    <button onclick="switchTab('sales'); closeMenuDropdown();" id="tab-sales" class="tab-btn menu-tab-btn w-full text-left px-4 py-2 text-xs font-medium text-slate-700 hover:bg-slate-50 flex items-center space-x-2 transition">
+                        <i class="fa-solid fa-cart-shopping w-5 text-amber-700"></i> <span>Sales List</span>
+                    </button>
+                    <button onclick="switchTab('expenses'); closeMenuDropdown();" id="tab-expenses" class="tab-btn menu-tab-btn w-full text-left px-4 py-2 text-xs font-medium text-slate-700 hover:bg-slate-50 flex items-center space-x-2 transition">
+                        <i class="fa-solid fa-receipt w-5 text-amber-700"></i> <span>ဆိုင်သုံးစရိတ် (Expenses)</span>
+                    </button>
+                    <button onclick="switchTab('purchases'); closeMenuDropdown();" id="tab-purchases" class="tab-btn menu-tab-btn admin-only hidden w-full text-left px-4 py-2 text-xs font-medium text-slate-700 hover:bg-slate-50 items-center space-x-2 transition">
+                        <i class="fa-solid fa-bag-shopping w-5 text-amber-700"></i> <span>ကုန်ဝယ် စာရင်း</span>
+                    </button>
+                    <button onclick="switchTab('preorder'); closeMenuDropdown();" id="tab-preorder" class="tab-btn menu-tab-btn w-full text-left px-4 py-2 text-xs font-medium text-slate-700 hover:bg-slate-50 flex items-center space-x-2 transition">
+                        <i class="fa-solid fa-clock w-5 text-amber-700"></i> <span>Preorder</span>
+                    </button>
+                    <button onclick="switchTab('installment'); closeMenuDropdown();" id="tab-installment" class="tab-btn menu-tab-btn w-full text-left px-4 py-2 text-xs font-medium text-slate-700 hover:bg-slate-50 flex items-center space-x-2 transition">
+                        <i class="fa-solid fa-file-invoice-dollar w-5 text-amber-700"></i> <span>အရစ်ကျ (Installment)</span>
+                    </button>
+                    <button onclick="switchTab('suppliers'); closeMenuDropdown();" id="tab-suppliers" class="tab-btn menu-tab-btn w-full text-left px-4 py-2 text-xs font-medium text-slate-700 hover:bg-slate-50 flex items-center space-x-2 transition">
+                        <i class="fa-solid fa-address-book w-5 text-amber-700"></i> <span>Supplier Contact</span>
+                    </button>
+                </div>
             </div>
         </div>
     </div>
@@ -263,28 +270,122 @@
 <!-- Main Container -->
 <main class="max-w-7xl mx-auto p-3 md:p-6 w-full flex-1">
 
-    <!-- STOCK TAB -->
-    <section id="section-stock" class="space-y-4">
-        <div id="categoryBreakdownCard" class="bg-white p-4 rounded-2xl shadow-sm border border-slate-200 admin-only hidden space-y-3">
+    <!-- DASHBOARD TAB -->
+    <section id="section-dashboard" class="space-y-4 hidden">
+        <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200 space-y-3">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-2">
+                    <div class="w-9 h-9 rounded-xl bg-amber-100 text-amber-800 flex items-center justify-center">
+                        <i class="fa-solid fa-wallet text-base"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-sm font-bold text-slate-900">Petty Cash (Manual Refill စနစ်)</h3>
+                        <p class="text-[10px] text-slate-500 font-medium">စရိတ်များသုံး၍ Petty Cash လျော့သွားပါက Admin မှ Refill ခလုတ်နှိပ်၍ အရင်း (COGS) မှ အဆင့်လိုက် ဖြည့်တင်းပါ</p>
+                    </div>
+                </div>
+                <div class="flex items-center space-x-2">
+                    <button onclick="executeManualRefill()" class="admin-only hidden px-3.5 py-1.5 bg-amber-700 hover:bg-amber-800 text-white rounded-xl text-xs font-bold shadow transition flex items-center space-x-1">
+                        <i class="fa-solid fa-rotate"></i>
+                        <span>Refill လုပ်မည်</span>
+                    </button>
+                    <button onclick="openPettyCashTargetModal()" class="admin-only hidden px-3.5 py-1.5 bg-amber-50 hover:bg-amber-100 text-amber-900 rounded-xl text-xs font-bold border border-amber-300 transition flex items-center space-x-1">
+                        <i class="fa-solid fa-pen-to-square"></i>
+                        <span>Target Limit ပြောင်းမည်</span>
+                    </button>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-1">
+                <div class="bg-amber-50/70 border border-amber-200 p-3.5 rounded-xl">
+                    <span class="text-[10px] font-bold text-amber-900 block mb-0.5">Daily Petty Cash Target</span>
+                    <div id="displayPettyTarget" class="text-lg font-extrabold text-amber-950">200,000 Ks</div>
+                    <span class="text-[9px] text-amber-800 font-medium">(သတ်မှတ်ထားသော Petty Cash ပမာဏ)</span>
+                </div>
+                <div id="pettyBalanceCard" class="bg-emerald-50/70 border border-emerald-200 p-3.5 rounded-xl">
+                    <span class="text-[10px] font-bold text-emerald-900 block mb-0.5">လက်ရှိ Petty Cash လက်ကျန်</span>
+                    <div id="displayPettyBalance" class="text-lg font-extrabold text-emerald-700">200,000 Ks</div>
+                    <span id="pettyStatusBadge" class="text-[9px] text-emerald-700 font-bold">100% ပြည့်မီ</span>
+                </div>
+                <div id="advanceDrawCard" class="bg-rose-50/70 border border-rose-200 p-3.5 rounded-xl">
+                    <span class="text-[10px] font-bold text-rose-900 block mb-0.5"> အသုံးစရိတ်</span>
+                    <div id="displayAdvanceDraw" class="text-lg font-extrabold text-rose-600">0 Ks</div>
+                    <span id="advanceStatusBadge" class="text-[9px] text-rose-700 font-medium">လိုငွေ (Deficit)</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 admin-only hidden">
+            <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm space-y-2">
+                <div class="flex items-center justify-between">
+                    <span class="text-xs font-bold text-amber-900">ပင်မ လည်ပတ်ငွေ (Main Capital)</span>
+                    <button onclick="openMainCapitalModal()" class="text-[11px] px-2.5 py-1 bg-amber-100 hover:bg-amber-200 text-amber-900 font-bold rounded-lg transition border border-amber-300">
+                        <i class="fa-solid fa-pen-to-square mr-1"></i> ပြင်မည်
+                    </button>
+                </div>
+                <div id="displayMainCapital" class="text-xl font-extrabold text-slate-900">3,000,000 Ks</div>
+                <div class="flex justify-between items-center text-[10px] text-slate-500 font-medium pt-1 border-t border-slate-100">
+                    <span>Target: <strong id="displayMainCapTarget" class="text-slate-700">30 သိန်း</strong></span>
+                    <span id="mainCapStatusText" class="text-emerald-600 font-bold">100% ပြည့်မီ</span>
+                </div>
+            </div>
+
+            <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm space-y-2">
+                <div class="flex items-center justify-between">
+                    <span class="text-xs font-bold text-slate-700">Stock ဝယ်ရန် လက်ကျန်ငွေ (Available Buying Cash)</span>
+                    <div class="w-7 h-7 rounded-lg bg-emerald-100 text-emerald-800 flex items-center justify-center">
+                        <i class="fa-solid fa-boxes-packing text-xs"></i>
+                    </div>
+                </div>
+                <div id="displaySalesCapital" class="text-xl font-extrabold text-emerald-600">0 Ks</div>
+                <p class="text-[10px] text-slate-400 font-medium">(အရောင်း COGS (အရင်း) မှ Waterfall ဖြင့် ကျန်ရှိသော လက်ကျန်ငွေ)</p>
+            </div>
+
+            <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm space-y-2">
+                <div class="flex items-center justify-between">
+                    <span class="text-xs font-bold text-slate-700">စုစုပေါင်း ကုန်ဝယ်စရိတ်</span>
+                    <div class="w-7 h-7 rounded-lg bg-rose-100 text-rose-800 flex items-center justify-center">
+                        <i class="fa-solid fa-bag-shopping text-xs"></i>
+                    </div>
+                </div>
+                <div id="displayTotalPurchases" class="text-xl font-extrabold text-rose-600">0 Ks</div>
+                <p class="text-[10px] text-slate-400 font-medium">ဝယ်ယူထားပြီးသော ကုန်ကြမ်း/ပစ္စည်း စုစုပေါင်း</p>
+            </div>
+        </div>
+
+        <div id="categoryBreakdownCard" class="bg-white p-4 rounded-2xl shadow-sm border border-slate-200 space-y-3">
             <h3 class="text-xs font-bold text-slate-800 uppercase tracking-wide flex items-center">
                 <i class="fa-solid fa-chart-pie mr-2 text-amber-700"></i> Category အလိုက် စတော့ ပမာဏ အခြေအနေ (Stock Category Breakdown)
             </h3>
-            <div id="categoryBreakdownGrid" class="grid grid-cols-2 sm:grid-cols-4 gap-3"></div>
+            <div id="categoryBreakdownGrid" class="grid grid-cols-2 sm:grid-cols-3 gap-3"></div>
         </div>
 
+        <!-- Workers Absent & Leave Card (Admin / Dashboard) -->
+        <div class="bg-white p-4 rounded-2xl shadow-sm border border-slate-200 space-y-3 admin-only hidden">
+            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
+                <h3 class="text-xs font-bold text-slate-800 uppercase tracking-wide flex items-center">
+                    <i class="fa-solid fa-user-clock mr-2 text-amber-700"></i> ဝန်ထမ်း ပျက်ကွက် & ခွင့် မှတ်တမ်း (Monthly Workers Absent & Leave Summary)
+                </h3>
+                <input type="month" id="dashboardWorkerMonthFilter" onchange="renderDashboardWorkersAttendance()" class="border border-slate-200 rounded-xl px-2.5 py-1 text-xs font-bold outline-none focus:ring-2 focus:ring-amber-600 bg-slate-50">
+            </div>
+            <div id="dashboardWorkersAttendanceGrid" class="space-y-3"></div>
+        </div>
+    </section>
+
+    <!-- STOCK TAB -->
+    <section id="section-stock" class="space-y-4">
         <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center bg-white p-4 rounded-2xl shadow-sm border border-slate-200 gap-3">
             <div>
                 <h2 class="text-base font-bold text-slate-900"><i class="fa-solid fa-warehouse mr-2 text-amber-700"></i>ပရိဘောဂ စတော့စာရင်း</h2>
-                <p class="text-xs text-slate-500">ကျွန်း၊ Blockboard၊ Particle board၊ ဘုရားစင် စသည်ဖြင့် စီမံရန်</p>
+                <p class="text-xs text-slate-500">ကျွန်း၊ Blockboard၊ Particle board စသည်ဖြင့် စီမံရန်</p>
             </div>
 
             <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 w-full sm:w-auto">
                 <select id="stockCategoryFilter" onchange="renderStocks()" class="bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs font-medium outline-none focus:ring-2 focus:ring-amber-700">
                     <option value="">Category အားလုံး</option>
                     <option value="ကျွန်း">ကျွန်း</option>
+                    <option value="Sofa">Sofa</option>
                     <option value="Blockboard">Blockboard</option>
                     <option value="Particle board">Particle board</option>
-                    <option value="ဘုရားစင်">ဘုရားစင်</option>
                     <option value="General">General</option>
                 </select>
                 <div class="relative flex-1 sm:w-56">
@@ -355,51 +456,10 @@
 
     <!-- EXPENSES TAB -->
     <section id="section-expenses" class="space-y-4 hidden">
-        <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200 space-y-3">
-            <div class="flex items-center justify-between">
-                <div class="flex items-center space-x-2">
-                    <div class="w-9 h-9 rounded-xl bg-amber-100 text-amber-800 flex items-center justify-center">
-                        <i class="fa-solid fa-wallet text-base"></i>
-                    </div>
-                    <div>
-                        <h3 class="text-sm font-bold text-slate-900">Petty Cash (နေ့စဉ် ၂ သိန်း Auto Refill စနစ်)</h3>
-                        <p class="text-[10px] text-slate-500 font-medium">ရက်စွဲအလိုက် စရိတ်များကို နေ့စဉ် Petty Cash မှ နှုတ်ယူပြီး မလောက်ပါက Main Capital မှ အလိုအလျောက် ချေးယူပါသည်</p>
-                    </div>
-                </div>
-                <button onclick="openPettyCashTargetModal()" class="admin-only hidden px-3 py-1.5 bg-amber-50 hover:bg-amber-100 text-amber-900 rounded-xl text-xs font-bold border border-amber-300 transition flex items-center space-x-1">
-                    <i class="fa-solid fa-pen-to-square"></i>
-                    <span>Target Limit ပြောင်းမည်</span>
-                </button>
-            </div>
-
-            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-1">
-                <div class="bg-amber-50/70 border border-amber-200 p-3.5 rounded-xl">
-                    <span class="text-[10px] font-bold text-amber-900 block mb-0.5">Daily Petty Cash Target</span>
-                    <div id="displayPettyTarget" class="text-lg font-extrabold text-amber-950">200,000 Ks</div>
-                    <span class="text-[9px] text-amber-800 font-medium">(ရက်စွဲအလိုက် နေ့စဉ် ၂ သိန်း Refill မည်)</span>
-                </div>
-                <div id="pettyBalanceCard" class="bg-emerald-50/70 border border-emerald-200 p-3.5 rounded-xl">
-                    <span class="text-[10px] font-bold text-emerald-900 block mb-0.5">ယနေ့အတွက် Petty Cash လက်ကျန်</span>
-                    <div id="displayPettyBalance" class="text-lg font-extrabold text-emerald-700">200,000 Ks</div>
-                    <span id="pettyStatusBadge" class="text-[9px] text-emerald-700 font-bold">100% ပြည့်မီ</span>
-                </div>
-                <div id="advanceDrawCard" class="bg-rose-50/70 border border-rose-200 p-3.5 rounded-xl">
-                    <span class="text-[10px] font-bold text-rose-900 block mb-0.5">Main Capital မှ စုစုပေါင်း Advance ချေးယူမှု</span>
-                    <div id="displayAdvanceDraw" class="text-lg font-extrabold text-rose-600">0 Ks</div>
-                    <span id="advanceStatusBadge" class="text-[9px] text-rose-700 font-medium">နေ့စဉ် Petty Cash ပိုသုံးစရိတ် စုစုပေါင်း</span>
-                </div>
-            </div>
-
-            <div class="bg-slate-50 p-2.5 rounded-xl text-[11px] text-slate-600 flex items-center justify-between border border-slate-200/80">
-                <span><i class="fa-solid fa-rotate text-amber-700 mr-1"></i> Auto-Refill Priority Engine:</span>
-                <span class="font-medium text-slate-700">COGS ဝင်ပါက (၁) Main Capital Advance ပြန်ဆပ် ➔ (၂) Petty Cash ဖြည့် ➔ (၃) Stock ဝယ်ရန်လက်ကျန် သို့ စီးဆင်း</span>
-            </div>
-        </div>
-
         <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center bg-white p-4 rounded-2xl shadow-sm border border-slate-200 gap-2">
             <div>
                 <h2 class="text-base font-bold text-slate-900"><i class="fa-solid fa-receipt mr-2 text-amber-700"></i>ဆိုင်သုံးစရိတ် မှတ်တမ်း (Daily Expenses)</h2>
-                <p class="text-xs text-slate-500">ကားခ၊ ဝင်ဆောင်ခ စရိတ်များကို မှတ်တမ်းတင်ပြီး ၁ လစာ Folder များဖြင့် ပြသမည်</p>
+                <p class="text-xs text-slate-500">ကားခ၊ ဝင်ဆောင်ခ စရိတ်များနှင့် Payment Method များကို မှတ်တမ်းတင်ရန် (Staff မှ Edit လျှင် Admin Approval လိုအပ်ပါသည်)</p>
             </div>
             <div class="flex items-center space-x-2 w-full sm:w-auto">
                 <select id="expensesMonthFilter" onchange="renderExpenses()" class="bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs font-bold outline-none focus:ring-2 focus:ring-amber-700">
@@ -417,7 +477,7 @@
                     <thead>
                     <tr class="bg-slate-50 text-slate-600 border-b border-slate-200 font-semibold">
                         <th class="p-3">ရက်စွဲ / ခေါင်းစဉ်</th>
-                        <th class="p-3">အမျိုးအစား (Category)</th>
+                        <th class="p-3">အမျိုးအစား & Payment</th>
                         <th class="p-3 text-right">ပမာဏ (Ks)</th>
                         <th class="p-3 text-center">Action</th>
                     </tr>
@@ -430,48 +490,10 @@
 
     <!-- PURCHASES TAB (Admin Only) -->
     <section id="section-purchases" class="space-y-4 hidden admin-only">
-        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
-            <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm space-y-2">
-                <div class="flex items-center justify-between">
-                    <span class="text-xs font-bold text-amber-900">ပင်မ မတည်လည်ပတ်ငွေ (Main Capital)</span>
-                    <button onclick="openMainCapitalModal()" class="text-[11px] px-2.5 py-1 bg-amber-100 hover:bg-amber-200 text-amber-900 font-bold rounded-lg transition border border-amber-300">
-                        <i class="fa-solid fa-pen-to-square mr-1"></i> ပြင်မည်
-                    </button>
-                </div>
-                <div id="displayMainCapital" class="text-xl font-extrabold text-slate-900">3,000,000 Ks</div>
-                <div class="flex justify-between items-center text-[10px] text-slate-500 font-medium pt-1 border-t border-slate-100">
-                    <span>Target: <strong id="displayMainCapTarget" class="text-slate-700">30 သိန်း</strong></span>
-                    <span id="mainCapStatusText" class="text-emerald-600 font-bold">100% ပြည့်မီ</span>
-                </div>
-            </div>
-
-            <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm space-y-2">
-                <div class="flex items-center justify-between">
-                    <span class="text-xs font-bold text-slate-700">Stock ဝယ်ရန် လက်ကျန်ငွေ (Available Buying Cash)</span>
-                    <div class="w-7 h-7 rounded-lg bg-emerald-100 text-emerald-800 flex items-center justify-center">
-                        <i class="fa-solid fa-boxes-packing text-xs"></i>
-                    </div>
-                </div>
-                <div id="displaySalesCapital" class="text-xl font-extrabold text-emerald-600">0 Ks</div>
-                <p class="text-[10px] text-slate-400 font-medium">(Priority 1 & 2 ပြည့်ပြီးမှ စီးဝင်လာသော COGS လက်ကျန်)</p>
-            </div>
-
-            <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm space-y-2">
-                <div class="flex items-center justify-between">
-                    <span class="text-xs font-bold text-slate-700">စုစုပေါင်း ကုန်ဝယ်စရိတ်</span>
-                    <div class="w-7 h-7 rounded-lg bg-rose-100 text-rose-800 flex items-center justify-center">
-                        <i class="fa-solid fa-bag-shopping text-xs"></i>
-                    </div>
-                </div>
-                <div id="displayTotalPurchases" class="text-xl font-extrabold text-rose-600">0 Ks</div>
-                <p class="text-[10px] text-slate-400 font-medium">ဝယ်ယူထားပြီးသော ကုန်ကြမ်း/ပစ္စည်း စုစုပေါင်း</p>
-            </div>
-        </div>
-
         <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center bg-white p-4 rounded-2xl shadow-sm border border-slate-200 gap-2">
             <div>
                 <h2 class="text-base font-bold text-slate-900"><i class="fa-solid fa-bag-shopping mr-2 text-amber-700"></i>ကုန်ဝယ် စာရင်း (Purchases / Material Costs)</h2>
-                <p class="text-xs text-slate-500">သစ်နှင့် ပစ္စည်းများ ဝယ်ယူစရိတ်များကို ၁ လစာ Folder များဖြင့် စီမံမည်</p>
+                <p class="text-xs text-slate-500">သစ်နှင့် ပစ္စည်းများ ဝယ်ယူစရိတ်များကို Payment Method များနှင့်တကွ မှတ်တမ်းတင်ရန်</p>
             </div>
             <div class="flex items-center space-x-2 w-full sm:w-auto">
                 <select id="purchasesMonthFilter" onchange="renderPurchases()" class="bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs font-bold outline-none focus:ring-2 focus:ring-amber-700">
@@ -489,7 +511,7 @@
                     <thead>
                     <tr class="bg-slate-50 text-slate-600 border-b border-slate-200 font-semibold">
                         <th class="p-3">ရက်စွဲ / ကုန်ပစ္စည်းအမည်</th>
-                        <th class="p-3">Supplier / တည်နေရာ</th>
+                        <th class="p-3">Supplier & Payment</th>
                         <th class="p-3 text-right">ဝယ်ယူပမာဏ (Ks)</th>
                         <th class="p-3 text-center">Action</th>
                     </tr>
@@ -576,14 +598,14 @@
     <section id="section-workers" class="space-y-4 hidden admin-only">
         <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center bg-white p-4 rounded-2xl shadow-sm border border-slate-200 gap-2">
             <div>
-                <h2 class="text-base font-bold text-slate-900"><i class="fa-solid fa-users-gear mr-2 text-amber-700"></i>ဝန်ထမ်း & လက်သမား (Workers Attendance)</h2>
-                <p class="text-xs text-slate-500">လက်သမားများနှင့် ဝန်ထမ်းများ၏ တက်ရောက်မှု (1-15 နှင့် 16-30 ရက် ပျက်ကွက်ရက်များ စစ်ဆေးရန်)</p>
+                <h2 class="text-base font-bold text-slate-900"><i class="fa-solid fa-users-gear mr-2 text-amber-700"></i>ဝန်ထမ်း (Workers Attendance)</h2>
+                <p class="text-xs text-slate-500">ဝန်ထမ်းများ၏ တက်ရောက်မှု (Attendance ထည့်ရန်)</p>
             </div>
             <div class="flex items-center space-x-2 w-full sm:w-auto">
                 <input type="date" id="attendanceDateFilter" onchange="renderWorkers()" class="border border-slate-200 rounded-xl px-3 py-2 text-xs font-bold outline-none focus:ring-2 focus:ring-amber-600 bg-slate-50">
-                <input type="month" id="workerMonthFilter" onchange="renderWorkers()" class="border border-slate-200 rounded-xl px-3 py-2 text-xs font-bold outline-none focus:ring-2 focus:ring-amber-600 bg-slate-50">
+                
                 <button onclick="openWorkerModal()" class="bg-amber-800 hover:bg-amber-900 text-white px-4 py-2.5 rounded-xl text-xs font-semibold shadow transition flex items-center space-x-1.5 whitespace-nowrap">
-                    <i class="fa-solid fa-plus"></i> <span>အသစ်</span>
+                    <i class="fa-solid fa-plus"></i> <span>လူသစ်</span>
                 </button>
             </div>
         </div>
@@ -595,7 +617,7 @@
         <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center bg-white p-4 rounded-2xl shadow-sm border border-slate-200 gap-2">
             <div>
                 <h2 class="text-base font-bold text-slate-900"><i class="fa-solid fa-chart-line mr-2 text-amber-700"></i>Report & Dashboard</h2>
-                <p class="text-xs text-slate-500">Revenue (ငွေရှင်းပြီးမှ ပေါင်းမည်), Gross Profit, Expenses, Net Income များကို သီးသန့် ကြည့်ရှုရန်</p>
+                <p class="text-xs text-slate-500">Revenue, Gross Profit, Expenses, Net Income နှင့် Cash Reconciliation များကို ကြည့်ရှုရန်</p>
             </div>
             <div class="flex items-center space-x-2">
                 <select id="reportPeriodFilter" onchange="renderReportDashboard()" class="border border-slate-200 rounded-xl px-3 py-2 text-xs font-bold outline-none focus:ring-2 focus:ring-amber-600 bg-slate-50">
@@ -606,6 +628,25 @@
                 </select>
                 <input type="date" id="reportDateTarget" onchange="renderReportDashboard()" class="hidden border border-slate-200 rounded-xl px-3 py-2 text-xs font-bold outline-none focus:ring-2 focus:ring-amber-600">
                 <input type="month" id="reportMonthTarget" onchange="renderReportDashboard()" class="hidden border border-slate-200 rounded-xl px-3 py-2 text-xs font-bold outline-none focus:ring-2 focus:ring-amber-600">
+            </div>
+        </div>
+
+        <!-- Cash Reconciliation Card (Nightly Check) - Expected Cash Only -->
+        <div class="bg-gradient-to-r from-amber-900 to-amber-950 text-white p-5 rounded-2xl shadow-md space-y-3">
+            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
+                <div class="flex items-center space-x-2.5">
+                    <div class="w-10 h-10 rounded-xl bg-amber-800 flex items-center justify-center text-amber-300">
+                        <i class="fa-solid fa-vault text-lg"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-sm font-bold tracking-wide">ညနေခင်း Cash Reconciliation (လက်ထဲရှိ ရမည့်ငွေ)</h3>
+                        <p class="text-[10px] text-amber-200">စုစုပေါင်း လက်ကျန်ငွေ တွက်ချက်မှု </p>
+                    </div>
+                </div>
+                <div class="text-right bg-amber-950/80 px-4 py-2 rounded-xl border border-amber-700/60 w-full sm:w-auto">
+                    <span class="text-[10px] text-amber-300 block font-semibold">Total Remaining Balance</span>
+                    <div id="expectedCashDisplay" class="text-xl font-extrabold text-amber-100">0 Ks</div>
+                </div>
             </div>
         </div>
 
@@ -628,6 +669,14 @@
                 <div id="netProfitAlertText" class="text-[9px] text-indigo-300 font-medium">စုစုပေါင်း အမြတ် - ဆိုင်သုံးစရိတ်</div>
             </div>
         </div>
+
+        <!-- Payment Method Inflow / Outflow Breakdown Card -->
+        <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200 space-y-3">
+            <h3 class="text-xs font-bold text-slate-900 uppercase tracking-wide flex items-center">
+                <i class="fa-solid fa-credit-card mr-2 text-amber-700"></i> Payment Methods အလိုက် အဝင်နှင့် အထွက် (Inflow & Outflow Breakdown)
+            </h3>
+            <div class="grid grid-cols-1 sm:grid-cols-5 gap-3" id="paymentMethodBreakdownGrid"></div>
+        </div>
     </section>
 
     <!-- APPROVAL TAB (Admin Only) -->
@@ -635,7 +684,7 @@
         <div class="bg-white p-4 rounded-2xl shadow-sm border border-slate-200 flex justify-between items-center">
             <div>
                 <h2 class="text-base font-bold text-slate-900"><i class="fa-solid fa-user-check mr-2 text-amber-700"></i>Admin Approval Queue</h2>
-                <p class="text-xs text-slate-500">Staff များမှ Preorder သို့မဟုတ် အရစ်ကျ ဖျက်ရန်/ပြင်ရန် တောင်းဆိုထားသော စာရင်းများ</p>
+                <p class="text-xs text-slate-500">Staff များမှ Preorder, အရစ်ကျ သို့မဟုတ် စရိတ်များ ပြင်ရန်/ဖျက်ရန် တောင်းဆိုထားသော စာရင်းများ</p>
             </div>
             <span id="approvalQueueCountText" class="px-3 py-1 bg-amber-100 text-amber-900 rounded-xl text-xs font-bold">0 Pending</span>
         </div>
@@ -784,12 +833,12 @@
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                         <div>
                             <span class="block text-[11px] font-semibold text-slate-600 mb-1">Payment Type</span>
-                            <select id="salePaymentType" class="w-full border border-slate-200 rounded-xl p-2.5 outline-none focus:ring-2 focus:ring-amber-600 bg-white">
-                                <option value="Cash">Cash (လက်ငင်းငွေသား)</option>
+                            <select id="salePaymentType" class="w-full border border-slate-200 rounded-xl p-2.5 outline-none focus:ring-2 focus:ring-amber-600 bg-white font-semibold">
+                                <option value="Cash">Cash (ငွေသား)</option>
                                 <option value="K Pay">K Pay</option>
                                 <option value="UAB Pay">UAB Pay</option>
-                                <option value="Mobile Banking">Banking (Kpay/CB/AYA/KBZ)</option>
-                                <option value="Half Cash / Half Banking">Half Cash with Half Banking</option>
+                                <option value="Banking">Banking (KBZ/CB/AYA)</option>
+                                <option value="Half Cash with Half Banking">Half Cash with Half Banking</option>
                             </select>
                         </div>
                         <div>
@@ -853,6 +902,16 @@
                     </select>
                 </div>
                 <div>
+                    <label class="block font-semibold text-slate-600 mb-1">Payment Method (ငွေပေးချေမှု နည်းလမ်း)</label>
+                    <select id="expPaymentType" class="w-full border rounded-xl p-2.5 outline-none focus:ring-2 focus:ring-amber-600 bg-white font-semibold">
+                        <option value="Cash">Cash (ငွေသား)</option>
+                        <option value="K Pay">K Pay</option>
+                        <option value="UAB Pay">UAB Pay</option>
+                        <option value="Banking">Banking (KBZ/CB/AYA)</option>
+                        <option value="Half Cash with Half Banking">Half Cash with Half Banking</option>
+                    </select>
+                </div>
+                <div>
                     <label class="block font-semibold text-slate-600 mb-1">ပမာဏ (Ks)</label>
                     <input type="number" id="expAmount" min="0" placeholder="0" class="w-full border rounded-xl p-2.5 outline-none focus:ring-2 focus:ring-amber-600 bg-white">
                 </div>
@@ -886,6 +945,16 @@
                 <div>
                     <label class="block font-semibold text-slate-600 mb-1">Supplier / ဆိုင်အမည်</label>
                     <input type="text" id="purchSupplier" placeholder="ဥပမာ: ဦးမောင်မောင် သစ်ဆိုင်" class="w-full border rounded-xl p-2.5 outline-none focus:ring-2 focus:ring-amber-600 bg-white">
+                </div>
+                <div>
+                    <label class="block font-semibold text-slate-600 mb-1">Payment Method (ငွေပေးချေမှု နည်းလမ်း)</label>
+                    <select id="purchPaymentType" class="w-full border rounded-xl p-2.5 outline-none focus:ring-2 focus:ring-amber-600 bg-white font-semibold">
+                        <option value="Cash">Cash (ငွေသား)</option>
+                        <option value="K Pay">K Pay</option>
+                        <option value="UAB Pay">UAB Pay</option>
+                        <option value="Banking">Banking (KBZ/CB/AYA)</option>
+                        <option value="Half Cash with Half Banking">Half Cash with Half Banking</option>
+                    </select>
                 </div>
                 <div>
                     <label class="block font-semibold text-slate-600 mb-1">ဝယ်ယူပမာဏ (Ks)</label>
@@ -1038,9 +1107,9 @@
                     <label class="block text-xs font-semibold text-slate-600 mb-1">Category (အမျိုးအစား)</label>
                     <select id="stockCategory" class="w-full border border-slate-200 rounded-xl p-2.5 outline-none focus:ring-2 focus:ring-amber-600 text-xs md:text-sm bg-white">
                         <option value="ကျွန်း">ကျွန်း (Teak)</option>
+                        <option value="Sofa">Sofa</option>
                         <option value="Blockboard">Blockboard</option>
                         <option value="Particle board">Particle board</option>
-                        <option value="ဘုရားစင်">ဘုရားစင် (Altar)</option>
                         <option value="General">General</option>
                     </select>
                 </div>
@@ -1187,14 +1256,14 @@
         purchases: [],
         suppliers: [],
         workers: [],
-        advances: [],
         approvals: [],
         settings: {
             adminPin: '0000',
             staffPin: '0000',
             mainCapital: 3000000,
             pettyCashTarget: 200000,
-            lastRefillCheck: new Date().toISOString()
+            allocatedMainCapRepay: 0,
+            allocatedPettyRefill: 0
         }
     };
 
@@ -1265,11 +1334,10 @@
                     db.purchases = cloudData.purchases || [];
                     db.suppliers = cloudData.suppliers || [];
                     db.workers = cloudData.workers || [];
-                    db.advances = cloudData.advances || [];
                     db.approvals = cloudData.approvals || [];
 
                     if (cloudData.settings) {
-                        db.settings = cloudData.settings;
+                        db.settings = { ...db.settings, ...cloudData.settings };
                     }
                     if (!db.settings.adminPin) db.settings.adminPin = '0000';
                     if (!db.settings.staffPin) db.settings.staffPin = '0000';
@@ -1295,11 +1363,10 @@
                     db.purchases = cloudData.purchases || [];
                     db.suppliers = cloudData.suppliers || [];
                     db.workers = cloudData.workers || [];
-                    db.advances = cloudData.advances || [];
                     db.approvals = cloudData.approvals || [];
 
                     if (cloudData.settings) {
-                        db.settings = cloudData.settings;
+                        db.settings = { ...db.settings, ...cloudData.settings };
                     }
                     if (!db.settings.adminPin) db.settings.adminPin = '0000';
                     if (!db.settings.staffPin) db.settings.staffPin = '0000';
@@ -1349,11 +1416,64 @@
         document.getElementById('startupRoleModal').classList.remove('hidden');
     }
 
+    function selectStartupRole(role) {
+        currentRole = role;
+        document.getElementById('startupRoleModal').classList.add('hidden');
+        showToast(`${role} Mode သို့ ဝင်ရောက်ပါပြီ။`, "success");
+        updateRoleUI();
+    }
+
+    function promptStartupStaffPin() {
+        document.getElementById('startupRoleModal').classList.add('hidden');
+        document.getElementById('startupStaffPinModal').classList.remove('hidden');
+        document.getElementById('startupStaffPinInput').value = '';
+        document.getElementById('startupStaffPinInput').focus();
+    }
+
+    function backToStartupRoleModalFromStaff() {
+        document.getElementById('startupStaffPinModal').classList.add('hidden');
+        document.getElementById('startupRoleModal').classList.remove('hidden');
+    }
+
+    function verifyStartupStaffPin() {
+        const pin = document.getElementById('startupStaffPinInput').value.trim();
+        if (pin === getStaffPin() || pin === getAdminPin()) {
+            currentRole = 'Staff';
+            document.getElementById('startupStaffPinModal').classList.add('hidden');
+            showToast("Staff Mode သို့ အောင်မြင်စွာ ဝင်ရောက်ပါပြီ။", "success");
+            updateRoleUI();
+        } else {
+            showToast("Staff PIN နံပါတ် မှားယွင်းနေပါသည်။", "error");
+        }
+    }
+
+    function promptStartupAdminPin() {
+        document.getElementById('startupRoleModal').classList.add('hidden');
+        document.getElementById('startupAdminPinModal').classList.remove('hidden');
+        document.getElementById('startupPinInput').value = '';
+        document.getElementById('startupPinInput').focus();
+    }
+
+    function backToStartupRoleModal() {
+        document.getElementById('startupAdminPinModal').classList.add('hidden');
+        document.getElementById('startupRoleModal').classList.remove('hidden');
+    }
+
+    function verifyStartupAdminPin() {
+        const pin = document.getElementById('startupPinInput').value.trim();
+        if (pin === getAdminPin()) {
+            currentRole = 'Admin';
+            document.getElementById('startupAdminPinModal').classList.add('hidden');
+            showToast("Admin Mode သို့ အောင်မြင်စွာ ဝင်ရောက်ပါပြီ။", "success");
+            updateRoleUI();
+        } else {
+            showToast("Admin PIN နံပါတ် မှားယွင်းနေပါသည်။", "error");
+        }
+    }
+
     function verifyAdminPin() {
         const pin = document.getElementById('adminPinInput').value.trim();
-        const currentSavedPin = String(getAdminPin()).trim();
-
-        if (pin === currentSavedPin) {
+        if (pin === getAdminPin()) {
             currentRole = 'Admin';
             closeModal('pinModal');
             showToast("Admin Mode သို့ အောင်မြင်စွာ ဝင်ရောက်ပါပြီ။", "success");
@@ -1409,18 +1529,86 @@
         const roleBtn = document.getElementById('roleToggleBtn');
 
         const adminOnlyElements = document.querySelectorAll('.admin-only');
+        const tabWorkers = document.getElementById('tab-workers');
+        const tabApproval = document.getElementById('tab-approval');
+        const tabStockLeft = document.getElementById('tab-stock-left');
+        const tabExpensesLeft = document.getElementById('tab-expenses-left');
+
         if (currentRole === 'Admin') {
             roleBtn.innerHTML = `<i class="fa-solid fa-repeat mr-1"></i> <span>Switch Mode</span>`;
             roleBtn.className = "bg-rose-950/60 hover:bg-rose-950 text-rose-100 px-3 py-1.5 rounded-xl text-xs font-medium border border-rose-700/50 transition flex items-center space-x-1";
-            adminOnlyElements.forEach(el => el.classList.remove('hidden'));
+            adminOnlyElements.forEach(el => {
+                el.classList.remove('hidden');
+                if (el.classList.contains('menu-tab-btn')) {
+                    el.style.display = 'flex';
+                } else if (el.id === 'tab-workers' || el.id === 'tab-approval') {
+                    el.style.display = 'flex';
+                } else {
+                    el.style.display = '';
+                }
+            });
+            if (tabWorkers) {
+                tabWorkers.classList.remove('hidden');
+                tabWorkers.style.display = 'flex';
+            }
+            if (tabApproval) {
+                tabApproval.classList.remove('hidden');
+                tabApproval.style.display = 'flex';
+            }
+            if (tabStockLeft) {
+                tabStockLeft.classList.add('hidden');
+                tabStockLeft.style.display = 'none';
+            }
+            if (tabExpensesLeft) {
+                tabExpensesLeft.classList.add('hidden');
+                tabExpensesLeft.style.display = 'none';
+            }
         } else if (currentRole === 'Sale') {
             roleBtn.innerHTML = `<i class="fa-solid fa-repeat mr-1"></i> <span>Switch Mode</span>`;
             roleBtn.className = "bg-emerald-950/60 hover:bg-emerald-950 text-emerald-100 px-3 py-1.5 rounded-xl text-xs font-medium border border-emerald-700/50 transition flex items-center space-x-1";
-            adminOnlyElements.forEach(el => el.classList.add('hidden'));
+            adminOnlyElements.forEach(el => {
+                el.classList.add('hidden');
+                el.style.display = 'none';
+            });
+            if (tabWorkers) {
+                tabWorkers.classList.add('hidden');
+                tabWorkers.style.display = 'none';
+            }
+            if (tabApproval) {
+                tabApproval.classList.add('hidden');
+                tabApproval.style.display = 'none';
+            }
+            if (tabStockLeft) {
+                tabStockLeft.classList.add('hidden');
+                tabStockLeft.style.display = 'none';
+            }
+            if (tabExpensesLeft) {
+                tabExpensesLeft.classList.add('hidden');
+                tabExpensesLeft.style.display = 'none';
+            }
         } else {
             roleBtn.innerHTML = `<i class="fa-solid fa-repeat mr-1"></i> <span>Switch Mode</span>`;
             roleBtn.className = "bg-amber-950/60 hover:bg-amber-950 text-amber-100 px-3 py-1.5 rounded-xl text-xs font-medium border border-amber-700/50 transition flex items-center space-x-1";
-            adminOnlyElements.forEach(el => el.classList.add('hidden'));
+            adminOnlyElements.forEach(el => {
+                el.classList.add('hidden');
+                el.style.display = 'none';
+            });
+            if (tabWorkers) {
+                tabWorkers.classList.add('hidden');
+                tabWorkers.style.display = 'none';
+            }
+            if (tabApproval) {
+                tabApproval.classList.add('hidden');
+                tabApproval.style.display = 'none';
+            }
+            if (tabStockLeft) {
+                tabStockLeft.classList.remove('hidden');
+                tabStockLeft.style.display = 'flex';
+            }
+            if (tabExpensesLeft) {
+                tabExpensesLeft.classList.remove('hidden');
+                tabExpensesLeft.style.display = 'flex';
+            }
         }
 
         const menuDropdown = document.getElementById('menuDropdown');
@@ -1429,15 +1617,27 @@
             buttons.forEach(btn => {
                 if (currentRole === 'Sale') {
                     if (btn.getAttribute('onclick')?.includes("'sales'")) {
-                        btn.style.display = 'block';
+                        btn.style.display = 'flex';
+                        btn.classList.remove('hidden');
                     } else {
                         btn.style.display = 'none';
+                        btn.classList.add('hidden');
+                    }
+                } else if (currentRole === 'Staff') {
+                    if (btn.getAttribute('onclick')?.includes("'stock'") || btn.getAttribute('onclick')?.includes("'expenses'") || btn.classList.contains('admin-only') || btn.getAttribute('onclick')?.includes("'purchases'") || btn.id === 'tab-purchases') {
+                        btn.style.display = 'none';
+                        btn.classList.add('hidden');
+                    } else {
+                        btn.style.display = 'flex';
+                        btn.classList.remove('hidden');
                     }
                 } else {
                     if (btn.classList.contains('admin-only')) {
-                        btn.style.display = currentRole === 'Admin' ? 'block' : 'none';
+                        btn.style.display = 'flex';
+                        btn.classList.remove('hidden');
                     } else {
-                        btn.style.display = 'block';
+                        btn.style.display = 'flex';
+                        btn.classList.remove('hidden');
                     }
                 }
             });
@@ -1473,6 +1673,7 @@
         if (targetSec) targetSec.classList.remove('hidden');
 
         const tabNames = {
+            'dashboard': 'Dashboard Summary',
             'stock': 'Stock List',
             'sales': 'Sales List',
             'expenses': 'ဆိုင်သုံးစရိတ်',
@@ -1488,32 +1689,21 @@
         if (activeIndicatorName) activeIndicatorName.innerText = tabNames[tabId] || tabId;
 
         document.querySelectorAll('.tab-btn').forEach(btn => {
-            btn.className = "tab-btn w-full text-left px-4 py-2 text-xs font-medium text-slate-700 hover:bg-slate-50 flex items-center space-x-2 transition";
-        });
-
-        const activeBtn = document.getElementById(`tab-${tabId}`);
-        if (activeBtn) {
-            activeBtn.className = "tab-btn w-full text-left px-4 py-2 text-xs font-semibold bg-amber-50 text-amber-900 flex items-center space-x-2 transition";
-        }
-
-        ['purchases', 'workers', 'approval', 'report'].forEach(qTab => {
-            const qBtn = document.getElementById(`quickTab-${qTab}`);
-            if (qBtn) {
-                if (tabId === qTab) {
-                    qBtn.className = "px-2.5 py-1 bg-amber-600 text-white rounded-lg text-xs font-bold flex items-center space-x-1 transition border border-amber-700 shadow-sm";
-                    if (qTab === 'approval') {
-                        const badge = document.getElementById('navApprovalBadge');
-                        if (badge) badge.className = "px-1.5 py-0.2 bg-white text-amber-900 rounded-full text-[9px] font-bold";
-                    }
-                } else {
-                    qBtn.className = "px-2.5 py-1 bg-amber-50 hover:bg-amber-100 text-amber-900 rounded-lg text-xs font-bold flex items-center space-x-1 transition border border-amber-200";
-                    if (qTab === 'approval') {
-                        const badge = document.getElementById('navApprovalBadge');
-                        if (badge) badge.className = "px-1.5 py-0.2 bg-amber-600 text-white rounded-full text-[9px] font-bold";
-                    }
-                }
+            if (btn.classList.contains('menu-tab-btn')) {
+                btn.className = "tab-btn menu-tab-btn w-full text-left px-4 py-2 text-xs font-medium text-slate-700 hover:bg-slate-50 flex items-center space-x-2 transition";
+            } else {
+                btn.className = "tab-btn px-3 py-1.5 rounded-xl text-xs font-medium border border-slate-200 transition flex items-center space-x-1 bg-slate-100 text-slate-700 hover:bg-slate-200";
             }
         });
+
+        const activeBtn = document.getElementById(`tab-${tabId}`) || document.getElementById(`tab-${tabId}-left`);
+        if (activeBtn) {
+            if (activeBtn.classList.contains('menu-tab-btn')) {
+                activeBtn.className = "tab-btn menu-tab-btn w-full text-left px-4 py-2 text-xs font-semibold bg-amber-50 text-amber-900 flex items-center space-x-2 transition";
+            } else {
+                activeBtn.className = "tab-btn px-3 py-1.5 rounded-xl text-xs font-semibold border border-amber-300 transition flex items-center space-x-1 bg-amber-50 text-amber-900 shadow-sm";
+            }
+        }
 
         if (tabId === 'report') {
             renderReportDashboard();
@@ -1528,17 +1718,20 @@
 
     function updateApprovalBadge() {
         const navBadge = document.getElementById('navApprovalBadge');
+        const topBadge = document.getElementById('topApprovalBadge');
         const count = db.approvals ? db.approvals.length : 0;
 
-        if (navBadge) {
-            if (count > 0) {
-                navBadge.classList.remove('hidden');
-                navBadge.innerText = count;
-            } else {
-                navBadge.classList.add('hidden');
-                navBadge.innerText = '0';
+        [navBadge, topBadge].forEach(badge => {
+            if (badge) {
+                if (count > 0) {
+                    badge.classList.remove('hidden');
+                    badge.innerText = count;
+                } else {
+                    badge.classList.add('hidden');
+                    badge.innerText = '0';
+                }
             }
-        }
+        });
     }
 
     function calculateFinancials() {
@@ -1546,18 +1739,10 @@
         const mainCapTarget = parseFloat(db.settings.mainCapital) || 3000000;
 
         let totalExpenses = 0;
-        (db.expenses || []).forEach(ex => {
-            totalExpenses += (parseFloat(ex.amount) || 0);
-        });
-
-        const grossMainCapAdvance = Math.max(0, totalExpenses - pettyTarget);
-        const initialPettyCash = Math.max(0, pettyTarget - totalExpenses);
-        const pettyCashDeficit = pettyTarget - initialPettyCash;
+        (db.expenses || []).forEach(ex => totalExpenses += (parseFloat(ex.amount) || 0));
 
         let totalPurchases = 0;
-        (db.purchases || []).forEach(p => {
-            totalPurchases += (parseFloat(p.amount) || 0);
-        });
+        (db.purchases || []).forEach(p => totalPurchases += (parseFloat(p.amount) || 0));
 
         let totalSalesCOGS = 0;
         (db.sales || []).forEach(s => {
@@ -1570,52 +1755,63 @@
             totalSalesCOGS += (parseFloat(s.qty) || 0) * unitC;
         });
 
-        let remainingCOGS = totalSalesCOGS;
+        const allocatedPettyRefill = parseFloat(db.settings.allocatedPettyRefill) || 0;
+        const mainCapitalDrawnForPetty = parseFloat(db.settings.mainCapitalDrawnForPetty) || 0;
+        const unrefilledExpenses = Math.max(0, totalExpenses - allocatedPettyRefill);
+        const currentPettyCash = Math.max(0, pettyTarget - unrefilledExpenses);
 
-        const cogsToMainCap = Math.min(remainingCOGS, grossMainCapAdvance);
-        remainingCOGS -= cogsToMainCap;
-        const remainingMainCapAdvance = grossMainCapAdvance - cogsToMainCap;
+        const allocatedMainCapRepay = parseFloat(db.settings.allocatedMainCapRepay) || 0;
 
-        const cogsToPetty = Math.min(remainingCOGS, pettyCashDeficit);
-        remainingCOGS -= cogsToPetty;
-        const currentPettyCash = initialPettyCash + cogsToPetty;
-
-        const grossAvailableBuyingCash = remainingCOGS;
-        const finalAvailableBuyingCash = Math.max(0, grossAvailableBuyingCash - totalPurchases);
-
-        let purchasesDrawnFromMainCap = totalPurchases > grossAvailableBuyingCash ? (totalPurchases - grossAvailableBuyingCash) : 0;
-        let currentMainCapital = mainCapTarget - remainingMainCapAdvance - purchasesDrawnFromMainCap;
+        let availableStockBuyingCash = Math.max(0, totalSalesCOGS - totalPurchases - allocatedMainCapRepay - allocatedPettyRefill);
+        let currentMainCapital = mainCapTarget + allocatedMainCapRepay - Math.max(0, totalPurchases - (totalSalesCOGS - allocatedMainCapRepay - allocatedPettyRefill)) - mainCapitalDrawnForPetty;
 
         return {
             pettyTarget,
             mainCapTarget,
             totalExpenses,
             totalSalesCOGS,
-            grossMainCapAdvance,
-            remainingMainCapAdvance,
             currentPettyCash,
-            grossAvailableBuyingCash,
-            finalAvailableBuyingCash,
+            unrefilledExpenses,
+            availableStockBuyingCash,
             currentMainCapital,
             totalPurchases,
-            cogsToMainCap,
-            cogsToPetty
+            allocatedMainCapRepay,
+            allocatedPettyRefill,
+            mainCapitalDrawnForPetty
         };
     }
 
-    function checkDailyAutoRefillProcess() {
-        const now = new Date();
-        const lastCheckStr = db.settings.lastRefillCheck || now.toISOString();
-        const lastCheck = new Date(lastCheckStr);
-
-        const isNewDay = now.toDateString() !== lastCheck.toDateString();
-        const hoursPassed = (now - lastCheck) / (1000 * 60 * 60);
-
-        if (isNewDay || hoursPassed >= 24) {
-            db.settings.lastRefillCheck = now.toISOString();
-            saveData();
+    function executeManualRefill() {
+        if (currentRole !== 'Admin') {
+            showToast("Refill ပြုလုပ်ရန် Admin Mode လိုအပ်ပါသည်။", "error");
+            return;
         }
+
+        let financials = calculateFinancials();
+
+        if (financials.unrefilledExpenses <= 0) {
+            showToast("Petty Cash မလျော့သေးပါသဖြင့် Refill လုပ်၍မရပါ (၂ သိန်း ပြည့်နေပါသည်)။", "error");
+            return;
+        }
+
+        let unrefilled = financials.unrefilledExpenses;
+        let totalAllocatedSoFar = (parseFloat(db.settings.allocatedMainCapRepay) || 0) + 
+                                  (parseFloat(db.settings.allocatedPettyRefill) || 0);
+
+        let unallocatedPool = Math.max(0, financials.totalSalesCOGS - totalAllocatedSoFar);
+
+        let fromSales = Math.min(unallocatedPool, unrefilled);
+        let neededFromMainCap = unrefilled - fromSales;
+
+        db.settings.allocatedPettyRefill = (parseFloat(db.settings.allocatedPettyRefill) || 0) + unrefilled;
+
+        if (neededFromMainCap > 0) {
+            db.settings.mainCapitalDrawnForPetty = (parseFloat(db.settings.mainCapitalDrawnForPetty) || 0) + neededFromMainCap;
+        }
+
+        saveData();
         renderAll();
+        showToast("Petty Cash ကို ၂ သိန်း အပြည့် အောင်မြင်စွာ Refill ပြီးပါပြီ။", "success");
     }
 
     function renderAll() {
@@ -1630,7 +1826,38 @@
         renderApprovals();
         updateApprovalBadge();
         renderCategoryBreakdown();
+        renderDashboardWorkersAttendance();
         if (activeTab === 'report') renderReportDashboard();
+    }
+
+    function renderDashboardWorkersAttendance() {
+        const grid = document.getElementById('dashboardWorkersAttendanceGrid');
+        if (!grid) return;
+
+        let todayStr = new Date().toISOString().split('T')[0];
+        let absentWorkers = [];
+        let leaveWorkers = [];
+
+        (db.workers || []).forEach(w => {
+            if (w.attendance && w.attendance[todayStr] === 'absent') {
+                absentWorkers.push(w.name);
+            } else if (w.attendance && w.attendance[todayStr] === 'leave') {
+                leaveWorkers.push(w.name);
+            }
+        });
+
+        grid.innerHTML = `
+            <div class="bg-rose-50 border border-rose-200 p-3 rounded-xl space-y-1">
+                <span class="text-[10px] font-bold text-rose-900 block uppercase">ယနေ့ ပျက်ကွက်သူ (Absent)</span>
+                <div class="text-lg font-extrabold text-rose-600">${absentWorkers.length} ဦး</div>
+                <div class="text-[11px] text-slate-600 truncate">${absentWorkers.length > 0 ? absentWorkers.join(', ') : 'မရှိပါ။'}</div>
+            </div>
+            <div class="bg-amber-50 border border-amber-200 p-3 rounded-xl space-y-1">
+                <span class="text-[10px] font-bold text-amber-900 block uppercase">ယနေ့ ခွင့်ယူသူ (Leave)</span>
+                <div class="text-lg font-extrabold text-amber-700">${leaveWorkers.length} ဦး</div>
+                <div class="text-[11px] text-slate-600 truncate">${leaveWorkers.length > 0 ? leaveWorkers.join(', ') : 'မရှိပါ။'}</div>
+            </div>
+        `;
     }
 
     function renderReportDashboard() {
@@ -1658,6 +1885,7 @@
 
         let filteredSales = [...db.sales];
         let filteredExpenses = [...db.expenses];
+        let filteredPurchases = [...db.purchases];
 
         let targetDateStr = dateTargetInput ? dateTargetInput.value : '';
         let targetMonthStr = monthTargetInput ? monthTargetInput.value : '';
@@ -1665,6 +1893,7 @@
         if (periodFilter === 'daily' && targetDateStr) {
             filteredSales = filteredSales.filter(s => s.date === targetDateStr);
             filteredExpenses = filteredExpenses.filter(ex => ex.date === targetDateStr);
+            filteredPurchases = filteredPurchases.filter(p => p.date === targetDateStr);
         } else if (periodFilter === 'weekly' && targetDateStr) {
             let targetDate = new Date(targetDateStr);
             let startOfWeek = new Date(targetDate);
@@ -1682,9 +1911,15 @@
                 let d = new Date(ex.date);
                 return d >= startOfWeek && d <= endOfWeek;
             });
+            filteredPurchases = filteredPurchases.filter(p => {
+                if (!p.date) return false;
+                let d = new Date(p.date);
+                return d >= startOfWeek && d <= endOfWeek;
+            });
         } else if (periodFilter === 'monthly' && targetMonthStr) {
             filteredSales = filteredSales.filter(s => s.date && s.date.startsWith(targetMonthStr));
             filteredExpenses = filteredExpenses.filter(ex => ex.date && ex.date.startsWith(targetMonthStr));
+            filteredPurchases = filteredPurchases.filter(p => p.date && p.date.startsWith(targetMonthStr));
         }
 
         let totalRev = 0;
@@ -1735,6 +1970,96 @@
                 }
             }
         }
+
+        // Calculate Cash Reconciliation (Expected Cash in hand)
+        let totalCashInflow = 0;
+        filteredSales.forEach(s => {
+            let fullTotal = (s.qty || 1) * s.unitPrice;
+            let amt = (s.remaining > 0) ? (parseFloat(s.deposit) || 0) : fullTotal;
+            let pType = s.paymentType || 'Cash';
+            if (pType === 'Cash') {
+                totalCashInflow += amt;
+            } else if (pType === 'Half Cash with Half Banking') {
+                totalCashInflow += (amt / 2);
+            }
+        });
+
+        let totalCashOutflow = 0;
+        filteredExpenses.forEach(ex => {
+            let pType = ex.paymentType || 'Cash';
+            let amt = parseFloat(ex.amount) || 0;
+            if (pType === 'Cash') {
+                totalCashOutflow += amt;
+            } else if (pType === 'Half Cash with Half Banking') {
+                totalCashOutflow += (amt / 2);
+            }
+        });
+        filteredPurchases.forEach(p => {
+            let pType = p.paymentType || 'Cash';
+            let amt = parseFloat(p.amount) || 0;
+            if (pType === 'Cash') {
+                totalCashOutflow += amt;
+            } else if (pType === 'Half Cash with Half Banking') {
+                totalCashOutflow += (amt / 2);
+            }
+        });
+
+        let expectedCash = totalCashInflow - totalCashOutflow;
+        const expectedCashDisplay = document.getElementById('expectedCashDisplay');
+        if (expectedCashDisplay) expectedCashDisplay.innerText = Number(expectedCash).toLocaleString() + ' Ks';
+
+        // Payment Method Breakdown
+        renderPaymentMethodBreakdown(filteredSales, filteredExpenses, filteredPurchases);
+    }
+
+    function renderPaymentMethodBreakdown(sales, expenses, purchases) {
+        const grid = document.getElementById('paymentMethodBreakdownGrid');
+        if (!grid) return;
+        grid.innerHTML = '';
+
+        let methods = ['Cash', 'K Pay', 'UAB Pay', 'Banking', 'Half Cash with Half Banking'];
+        methods.forEach(method => {
+            let inflow = 0;
+            sales.forEach(s => {
+                let pType = s.paymentType || 'Cash';
+                let fullTotal = (s.qty || 1) * s.unitPrice;
+                let amt = (s.remaining > 0) ? (parseFloat(s.deposit) || 0) : fullTotal;
+                if (pType === method) {
+                    inflow += amt;
+                } else if (pType === 'Half Cash with Half Banking' && (method === 'Cash' || method === 'Banking')) {
+                    inflow += (amt / 2);
+                }
+            });
+
+            let outflow = 0;
+            expenses.forEach(ex => {
+                let pType = ex.paymentType || 'Cash';
+                let amt = parseFloat(ex.amount) || 0;
+                if (pType === method) {
+                    outflow += amt;
+                } else if (pType === 'Half Cash with Half Banking' && (method === 'Cash' || method === 'Banking')) {
+                    outflow += (amt / 2);
+                }
+            });
+            purchases.forEach(p => {
+                let pType = p.paymentType || 'Cash';
+                let amt = parseFloat(p.amount) || 0;
+                if (pType === method) {
+                    outflow += amt;
+                } else if (pType === 'Half Cash with Half Banking' && (method === 'Cash' || method === 'Banking')) {
+                    outflow += (amt / 2);
+                }
+            });
+
+            let div = document.createElement('div');
+            div.className = "bg-slate-50 border border-slate-200 p-3.5 rounded-xl space-y-1.5 text-xs";
+            div.innerHTML = `
+                <span class="font-bold text-slate-900 block border-b pb-1">${method}</span>
+                <div class="flex justify-between text-emerald-700"><span>အဝင် (In):</span> <strong class="font-bold">+${Number(inflow).toLocaleString()}</strong></div>
+                <div class="flex justify-between text-rose-600"><span>အထွက် (Out):</span> <strong class="font-bold">-${Number(outflow).toLocaleString()}</strong></div>
+            `;
+            grid.appendChild(div);
+        });
     }
 
     function openStockModal() {
@@ -1899,12 +2224,13 @@
         if (!grid) return;
         grid.innerHTML = '';
 
-        let cats = ['ကျွန်း', 'Blockboard', 'Particle board', 'ဘုရားစင်'];
+        let cats = ['ကျွန်း', 'Sofa', 'Blockboard', 'Particle board', 'General'];
         cats.forEach(cat => {
             let count = 0;
             let totalQty = 0;
             db.stocks.forEach(st => {
-                if (st.category === cat) {
+                let stCat = st.category || 'General';
+                if (stCat === cat) {
                     count++;
                     totalQty += (st.qty || 0);
                 }
@@ -1921,6 +2247,92 @@
             `;
             grid.appendChild(div);
         });
+    }
+
+    function renderDashboardWorkersAttendance() {
+        const grid = document.getElementById('dashboardWorkersAttendanceGrid');
+        const monthInput = document.getElementById('dashboardWorkerMonthFilter');
+        if (!grid) return;
+
+        if (monthInput && !monthInput.value) {
+            monthInput.value = new Date().toISOString().slice(0, 7);
+        }
+        let targetMonth = monthInput ? monthInput.value : new Date().toISOString().slice(0, 7);
+
+        let todayStr = new Date().toISOString().split('T')[0];
+        let todayAbsent = [];
+        let todayLeave = [];
+
+        (db.workers || []).forEach(w => {
+            if (w.attendance && w.attendance[todayStr] === 'absent') {
+                todayAbsent.push(w.name);
+            } else if (w.attendance && w.attendance[todayStr] === 'leave') {
+                todayLeave.push(w.name);
+            }
+        });
+
+        let html = `
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pb-2 border-b border-slate-100">
+                <div class="bg-rose-50 border border-rose-200 p-3 rounded-xl space-y-1">
+                    <span class="text-[10px] font-bold text-rose-900 block uppercase">ယနေ့ ပျက်ကွက်သူ (Today Absent)</span>
+                    <div class="text-lg font-extrabold text-rose-600">${todayAbsent.length} ဦး</div>
+                    <div class="text-[11px] text-slate-600 truncate">${todayAbsent.length > 0 ? todayAbsent.join(', ') : 'မရှိပါ။'}</div>
+                </div>
+                <div class="bg-amber-50 border border-amber-200 p-3 rounded-xl space-y-1">
+                    <span class="text-[10px] font-bold text-amber-900 block uppercase">ယနေ့ ခွင့်ယူသူ (Today Leave)</span>
+                    <div class="text-lg font-extrabold text-amber-700">${todayLeave.length} ဦး</div>
+                    <div class="text-[11px] text-slate-600 truncate">${todayLeave.length > 0 ? todayLeave.join(', ') : 'မရှိပါ။'}</div>
+                </div>
+            </div>
+            <div class="space-y-2 pt-1">
+                <h4 class="text-xs font-bold text-slate-700">📁 ${targetMonth} လအတွင်း ဝန်ထမ်းအလိုက် ပျက်ကွက် & ခွင့်ရက်များ</h4>
+        `;
+
+        if (!db.workers || db.workers.length === 0) {
+            html += `<p class="text-xs text-slate-400 text-center py-4">ဝန်ထမ်းစာရင်း မရှိသေးပါ။</p>`;
+        } else {
+            let listHtml = `<div class="grid grid-cols-1 md:grid-cols-2 gap-3">`;
+            db.workers.forEach(w => {
+                let absentDays = [];
+                let leaveDays = [];
+
+                if (w.attendance) {
+                    Object.keys(w.attendance).forEach(dateStr => {
+                        if (dateStr.startsWith(targetMonth)) {
+                            if (w.attendance[dateStr] === 'absent') {
+                                absentDays.push(dateStr.slice(8));
+                            } else if (w.attendance[dateStr] === 'leave') {
+                                leaveDays.push(dateStr.slice(8));
+                            }
+                        }
+                    });
+                }
+
+                absentDays.sort();
+                leaveDays.sort();
+
+                listHtml += `
+                    <div class="bg-slate-50 border border-slate-200 p-3 rounded-xl space-y-1.5 text-xs">
+                        <div class="flex justify-between items-center font-bold text-slate-900 border-b pb-1">
+                            <span>${w.name} <span class="text-[10px] font-normal text-slate-500">(${w.role || '-'})</span></span>
+                        </div>
+                        <div class="flex justify-between text-rose-600">
+                            <span>ပျက်ကွက်ရက် (${absentDays.length} ရက်):</span>
+                            <span class="font-bold">${absentDays.length > 0 ? absentDays.join(', ') + ' ရက်' : 'မရှိ'}</span>
+                        </div>
+                        <div class="flex justify-between text-amber-700">
+                            <span>ခွင့်ယူရက် (${leaveDays.length} ရက်):</span>
+                            <span class="font-bold">${leaveDays.length > 0 ? leaveDays.join(', ') + ' ရက်' : 'မရှိ'}</span>
+                        </div>
+                    </div>
+                `;
+            });
+            listHtml += `</div>`;
+            html += listHtml;
+        }
+
+        html += `</div>`;
+        grid.innerHTML = html;
     }
 
     function renderSales() {
@@ -1966,7 +2378,7 @@
             let isPendingEdit = db.approvals.some(a => a.type === 'sale_edit' && a.targetId === s.id);
             let isPending = isPendingDelete || isPendingEdit;
 
-            let payShort = s.paymentType === 'Cash' ? 'Cash' : (s.paymentType === 'K Pay' ? 'KPay' : (s.paymentType === 'UAB Pay' ? 'UAB' : (s.paymentType === 'Mobile Banking' ? 'MBank' : 'Half')));
+            let payShort = s.paymentType === 'Cash' ? 'Cash' : (s.paymentType === 'K Pay' ? 'KPay' : (s.paymentType === 'UAB Pay' ? 'UAB' : (s.paymentType === 'Banking' ? 'Banking' : 'Half')));
             let delShort = s.deliveryType === 'Full Paid' ? 'Full' : (s.deliveryType === 'Door to Door' ? 'D2D' : (s.deliveryType === 'Deposit + COD' ? 'COD+Dep' : 'Pick'));
 
             let tr = document.createElement('tr');
@@ -2055,7 +2467,7 @@
             const imgData = canvas.toDataURL('image/png');
             const { jsPDF } = window.jspdf;
             
-            const imgWidth = 72; // mm (3-inch thermal printer printable width)
+            const imgWidth = 72; // mm
             const pageHeight = (canvas.height * imgWidth) / canvas.width;
             
             const doc = new jsPDF({
@@ -2311,13 +2723,25 @@
         }
     }
 
-    function openExpenseModal() {
-        document.getElementById('editExpenseIndex').value = '';
-        document.getElementById('expTitle').value = '';
-        document.getElementById('expCategory').value = 'ကားခ';
-        document.getElementById('expAmount').value = '';
-        document.getElementById('expDate').value = new Date().toISOString().split('T')[0];
-        document.getElementById('expenseModalTitle').innerText = 'ဆိုင်သုံးစရိတ် အသစ်ထည့်ရန်';
+    function openExpenseModal(index = null) {
+        if (index !== null && index !== undefined && index !== '') {
+            let ex = db.expenses[index];
+            document.getElementById('editExpenseIndex').value = index;
+            document.getElementById('expTitle').value = ex.title || '';
+            document.getElementById('expCategory').value = ex.category || 'ကားခ';
+            document.getElementById('expPaymentType').value = ex.paymentType || 'Cash';
+            document.getElementById('expAmount').value = ex.amount || '';
+            document.getElementById('expDate').value = ex.date || new Date().toISOString().split('T')[0];
+            document.getElementById('expenseModalTitle').innerText = 'ဆိုင်သုံးစရိတ် ပြင်ဆင်ရန်';
+        } else {
+            document.getElementById('editExpenseIndex').value = '';
+            document.getElementById('expTitle').value = '';
+            document.getElementById('expCategory').value = 'ကားခ';
+            document.getElementById('expPaymentType').value = 'Cash';
+            document.getElementById('expAmount').value = '';
+            document.getElementById('expDate').value = new Date().toISOString().split('T')[0];
+            document.getElementById('expenseModalTitle').innerText = 'ဆိုင်သုံးစရိတ် အသစ်ထည့်ရန်';
+        }
         document.getElementById('expenseModal').classList.remove('hidden');
     }
 
@@ -2325,6 +2749,7 @@
         let index = document.getElementById('editExpenseIndex').value;
         let title = document.getElementById('expTitle').value.trim();
         let category = document.getElementById('expCategory').value;
+        let paymentType = document.getElementById('expPaymentType').value || 'Cash';
         let amount = parseFloat(document.getElementById('expAmount').value) || 0;
         let date = document.getElementById('expDate').value || new Date().toISOString().split('T')[0];
 
@@ -2333,19 +2758,43 @@
             return;
         }
 
-        let expObj = { id: index === '' ? Date.now() : db.expenses[index].id, title, category, amount, date };
+        let expObj = { id: index === '' ? Date.now() : db.expenses[index].id, title, category, paymentType, amount, date };
 
         if (index === '') {
             db.expenses.push(expObj);
             showToast("ဆိုင်သုံးစရိတ် မှတ်တမ်းတင်ပြီးပါပြီ။", "success");
+            saveData();
+            closeModal('expenseModal');
+            renderAll();
         } else {
-            db.expenses[index] = expObj;
-            showToast("ဆိုင်သုံးစရိတ် ပြင်ဆင်ပြီးပါပြီ။", "success");
+            if (currentRole === 'Admin') {
+                let oldAmount = parseFloat(db.expenses[index].amount) || 0;
+                let diff = amount - oldAmount;
+                if (diff !== 0 && db.settings.allocatedPettyRefill && db.settings.allocatedPettyRefill > 0) {
+                    db.settings.allocatedPettyRefill = Math.max(0, (parseFloat(db.settings.allocatedPettyRefill) || 0) + diff);
+                }
+                db.expenses[index] = expObj;
+                showToast("ဆိုင်သုံးစရိတ် ပြင်ဆင်ပြီးပါပြီ။", "success");
+                saveData();
+                closeModal('expenseModal');
+                renderAll();
+            } else {
+                db.approvals.push({
+                    id: Date.now(),
+                    type: 'expense_edit',
+                    targetId: expObj.id,
+                    targetIndex: parseInt(index),
+                    custName: title,
+                    detail: `ဆိုင်သုံးစရိတ်ပြင်ရန်: ${title} (${Number(amount).toLocaleString()} Ks)`,
+                    newData: expObj,
+                    actionType: 'Edit Expense'
+                });
+                saveData();
+                closeModal('expenseModal');
+                renderExpenses();
+                showToast("Admin ထံသို့ ဆိုင်သုံးစရိတ်ပြင်ရန် Approval တောင်းဆိုချက် ပို့လိုက်ပါပြီ။", "success");
+            }
         }
-
-        saveData();
-        closeModal('expenseModal');
-        renderAll();
     }
 
     function renderExpenses() {
@@ -2386,7 +2835,7 @@
 
         if (displayPettyTarget) displayPettyTarget.innerText = Number(financials.pettyTarget).toLocaleString() + ' Ks';
         if (displayPettyBalance) displayPettyBalance.innerText = Number(financials.currentPettyCash).toLocaleString() + ' Ks';
-        if (displayAdvanceDraw) displayAdvanceDraw.innerText = Number(financials.grossMainCapAdvance).toLocaleString() + ' Ks';
+        if (displayAdvanceDraw) displayAdvanceDraw.innerText = Number(financials.unrefilledExpenses).toLocaleString() + ' Ks';
         if (pettyStatusBadge) {
             let pct = Math.round((financials.currentPettyCash / financials.pettyTarget) * 100);
             pettyStatusBadge.innerText = `${pct}% လက်ကျန်`;
@@ -2399,6 +2848,9 @@
 
         filteredExpenses.forEach((ex) => {
             let idx = db.expenses.indexOf(ex);
+            let payM = ex.paymentType || 'Cash';
+            let isPendingEdit = db.approvals.some(a => a.type === 'expense_edit' && a.targetId === ex.id);
+
             let tr = document.createElement('tr');
             tr.className = "hover:bg-slate-50 transition-colors";
             tr.innerHTML = `
@@ -2406,11 +2858,15 @@
                     <div class="font-bold text-slate-900">${ex.title}</div>
                     <div class="text-[10px] text-slate-400 font-mono">${ex.date || '-'}</div>
                 </td>
-                <td class="p-3"><span class="px-2 py-0.5 rounded-md text-[10px] font-bold bg-amber-50 text-amber-900 border border-amber-200">${ex.category}</span></td>
+                <td class="p-3">
+                    <span class="px-2 py-0.5 rounded-md text-[10px] font-bold bg-amber-50 text-amber-900 border border-amber-200 block w-max">${ex.category}</span>
+                    <span class="text-[10px] text-slate-500 font-semibold mt-1 block"><i class="fa-solid fa-wallet mr-1 text-amber-700"></i>${payM}</span>
+                </td>
                 <td class="p-3 text-right font-bold text-rose-600">-${Number(ex.amount).toLocaleString()} Ks</td>
                 <td class="p-3 text-center">
                     <div class="flex items-center justify-center space-x-1">
-                        <button onclick="deleteExpense(${idx})" class="px-2 py-1 bg-red-50 hover:bg-red-100 text-red-600 rounded-lg text-xs font-medium">ဖျက်</button>
+                        <button onclick="openExpenseModal(${idx})" class="px-2 py-1 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg text-xs font-medium">ပြင်</button>
+                        ${isPendingEdit && currentRole !== 'Admin' ? `<button disabled class="px-2 py-1 bg-amber-400 text-amber-950 rounded-lg text-xs font-bold animate-pulse cursor-not-allowed">Pending</button>` : `<button onclick="deleteExpense(${idx})" class="px-2 py-1 bg-red-50 hover:bg-red-100 text-red-600 rounded-lg text-xs font-medium">ဖျက်</button>`}
                     </div>
                 </td>
             `;
@@ -2419,10 +2875,21 @@
     }
 
     function deleteExpense(index) {
+        let ex = db.expenses[index];
+        let deletedAmt = parseFloat(ex.amount) || 0;
+
+        let drawnFromMain = parseFloat(db.settings.mainCapitalDrawnForPetty) || 0;
+        let reduceMain = Math.min(drawnFromMain, deletedAmt);
+        db.settings.mainCapitalDrawnForPetty = Math.max(0, drawnFromMain - reduceMain);
+        let remainderDelete = deletedAmt - reduceMain;
+        if (remainderDelete > 0 && db.settings.allocatedPettyRefill) {
+            db.settings.allocatedPettyRefill = Math.max(0, (parseFloat(db.settings.allocatedPettyRefill) || 0) - remainderDelete);
+        }
+
         db.expenses.splice(index, 1);
         saveData();
         renderAll();
-        showToast("ဆိုင်သုံးစရိတ် ဖျက်ပြီးပါပြီ။", "success");
+        showToast("ဆိုင်သုံးစရိတ် ဖျက်ပြီးပါပြီ (ရန်ပုံငွေများ အလိုအလျောက် ပြန်ရောက်သွားပါပြီ)။", "success");
     }
 
     function openPettyCashTargetModal() {
@@ -2463,14 +2930,26 @@
         }
     }
 
-    function openPurchaseModal() {
+    function openPurchaseModal(index = null) {
         if (currentRole !== 'Admin') return;
-        document.getElementById('editPurchaseIndex').value = '';
-        document.getElementById('purchTitle').value = '';
-        document.getElementById('purchSupplier').value = '';
-        document.getElementById('purchAmount').value = '';
-        document.getElementById('purchDate').value = new Date().toISOString().split('T')[0];
-        document.getElementById('purchaseModalTitle').innerText = 'ကုန်ဝယ်စရိတ် အသစ်ထည့်ရန်';
+        if (index !== null && index !== undefined && index !== '') {
+            let p = db.purchases[index];
+            document.getElementById('editPurchaseIndex').value = index;
+            document.getElementById('purchTitle').value = p.title || '';
+            document.getElementById('purchSupplier').value = p.supplier || '';
+            document.getElementById('purchPaymentType').value = p.paymentType || 'Cash';
+            document.getElementById('purchAmount').value = p.amount || '';
+            document.getElementById('purchDate').value = p.date || new Date().toISOString().split('T')[0];
+            document.getElementById('purchaseModalTitle').innerText = 'ကုန်ဝယ်စရိတ် ပြင်ဆင်ရန်';
+        } else {
+            document.getElementById('editPurchaseIndex').value = '';
+            document.getElementById('purchTitle').value = '';
+            document.getElementById('purchSupplier').value = '';
+            document.getElementById('purchPaymentType').value = 'Cash';
+            document.getElementById('purchAmount').value = '';
+            document.getElementById('purchDate').value = new Date().toISOString().split('T')[0];
+            document.getElementById('purchaseModalTitle').innerText = 'ကုန်ဝယ်စရိတ် အသစ်ထည့်ရန်';
+        }
         document.getElementById('purchaseModal').classList.remove('hidden');
     }
 
@@ -2479,6 +2958,7 @@
         let index = document.getElementById('editPurchaseIndex').value;
         let title = document.getElementById('purchTitle').value.trim();
         let supplier = document.getElementById('purchSupplier').value.trim();
+        let paymentType = document.getElementById('purchPaymentType').value || 'Cash';
         let amount = parseFloat(document.getElementById('purchAmount').value) || 0;
         let date = document.getElementById('purchDate').value || new Date().toISOString().split('T')[0];
 
@@ -2487,7 +2967,7 @@
             return;
         }
 
-        let purchObj = { id: index === '' ? Date.now() : db.purchases[index].id, title, supplier, amount, date };
+        let purchObj = { id: index === '' ? Date.now() : db.purchases[index].id, title, supplier, paymentType, amount, date };
 
         if (index === '') {
             db.purchases.push(purchObj);
@@ -2509,7 +2989,7 @@
 
         let financials = calculateFinancials();
         if (document.getElementById('displayMainCapital')) document.getElementById('displayMainCapital').innerText = Number(financials.currentMainCapital).toLocaleString() + ' Ks';
-        if (document.getElementById('displaySalesCapital')) document.getElementById('displaySalesCapital').innerText = Number(financials.finalAvailableBuyingCash).toLocaleString() + ' Ks';
+        if (document.getElementById('displaySalesCapital')) document.getElementById('displaySalesCapital').innerText = Number(financials.availableStockBuyingCash).toLocaleString() + ' Ks';
         if (document.getElementById('displayTotalPurchases')) document.getElementById('displayTotalPurchases').innerText = Number(financials.totalPurchases).toLocaleString() + ' Ks';
 
         let availableMonths = [];
@@ -2544,6 +3024,7 @@
 
         filteredPurchases.forEach((p) => {
             let idx = db.purchases.indexOf(p);
+            let payM = p.paymentType || 'Cash';
             let tr = document.createElement('tr');
             tr.className = "hover:bg-slate-50 transition-colors";
             tr.innerHTML = `
@@ -2551,10 +3032,14 @@
                     <div class="font-bold text-slate-900">${p.title}</div>
                     <div class="text-[10px] text-slate-400 font-mono">${p.date || '-'}</div>
                 </td>
-                <td class="p-3 text-slate-700">${p.supplier || '-'}</td>
+                <td class="p-3">
+                    <div class="text-slate-700 font-semibold">${p.supplier || '-'}</div>
+                    <span class="text-[10px] text-slate-500 font-semibold mt-0.5 block"><i class="fa-solid fa-wallet mr-1 text-amber-700"></i>${payM}</span>
+                </td>
                 <td class="p-3 text-right font-bold text-rose-600">-${Number(p.amount).toLocaleString()} Ks</td>
                 <td class="p-3 text-center">
                     <div class="flex items-center justify-center space-x-1">
+                        <button onclick="openPurchaseModal(${idx})" class="px-2 py-1 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg text-xs font-medium">ပြင်</button>
                         <button onclick="deletePurchase(${idx})" class="px-2 py-1 bg-red-50 hover:bg-red-100 text-red-600 rounded-lg text-xs font-medium">ဖျက်</button>
                     </div>
                 </td>
@@ -2798,7 +3283,7 @@
                 targetId: i.id,
                 targetIndex: index,
                 custName: i.custName,
-                detail: `အရစ်ကျဖျက်ရန်: ${i.custName} (ကျန်ငွေ: ${i.remainingDebt})`,
+                detail: `အရစ်ကျ ဖျက်ရန်: ${i.custName} (ကျန်ငွေ: ${i.remainingDebt})`,
                 actionType: 'Delete Installment'
             });
             saveData();
@@ -2813,7 +3298,7 @@
         tbody.innerHTML = '';
 
         if (db.installments.length === 0) {
-            tbody.innerHTML = `<tr><td colspan="5" class="text-center py-6 text-slate-400 text-xs">အရစ်ကျ ဝယ်ယူသူ မရှိသေးပါ။</td></tr>`;
+            tbody.innerHTML = `<tr><td colspan="5" class="text-center py-6 text-slate-400 text-xs">အရစ်ကျ စာရင်း မရှိသေးပါ။</td></tr>`;
             return;
         }
 
@@ -2827,7 +3312,7 @@
                 <td class="p-3 font-bold text-slate-900">${i.custName}</td>
                 <td class="p-3 text-right font-bold text-slate-800">${Number(i.totalDebt).toLocaleString()} Ks</td>
                 <td class="p-3 text-right font-bold text-rose-600">${Number(i.remainingDebt).toLocaleString()} Ks</td>
-                <td class="p-3"><span class="px-2 py-0.5 rounded-md text-xs font-bold bg-amber-50 text-amber-900 border border-amber-200">${i.installmentCount || '-'}</span></td>
+                <td class="p-3 text-xs font-semibold text-amber-900">${i.installmentCount || '-'}</td>
                 <td class="p-3 text-center">
                     <div class="flex items-center justify-center space-x-1">
                         <button onclick="editInstallment(${idx})" class="px-2 py-1 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg text-xs font-medium">ပြင်</button>
@@ -2848,16 +3333,6 @@
         document.getElementById('supplierModal').classList.remove('hidden');
     }
 
-    function editSupplier(index) {
-        if (currentRole !== 'Admin') return;
-        let s = db.suppliers[index];
-        document.getElementById('editSupplierIndex').value = index;
-        document.getElementById('suppName').value = s.name || '';
-        document.getElementById('suppPhone').value = s.phone || '';
-        document.getElementById('supplierModalTitle').innerText = 'Supplier ပြင်ဆင်ရန်';
-        document.getElementById('supplierModal').classList.remove('hidden');
-    }
-
     function saveSupplier() {
         if (currentRole !== 'Admin') return;
         let index = document.getElementById('editSupplierIndex').value;
@@ -2865,7 +3340,7 @@
         let phone = document.getElementById('suppPhone').value.trim();
 
         if (!name || !phone) {
-            showToast("Supplier Name နှင့် Phone နံပါတ် ထည့်ပါ။", "error");
+            showToast("Supplier Name နှင့် Phone Number ထည့်ပါ။", "error");
             return;
         }
 
@@ -2873,7 +3348,7 @@
 
         if (index === '') {
             db.suppliers.push(suppObj);
-            showToast("Supplier အသစ် ထည့်သွင်းပြီးပါပြီ။", "success");
+            showToast("Supplier အသစ် သိမ်းဆည်းပြီးပါပြီ။", "success");
         } else {
             db.suppliers[index] = suppObj;
             showToast("Supplier ပြင်ဆင်ပြီးပါပြီ။", "success");
@@ -2881,15 +3356,7 @@
 
         saveData();
         closeModal('supplierModal');
-        renderSuppliers();
-    }
-
-    function deleteSupplier(index) {
-        if (currentRole !== 'Admin') return;
-        db.suppliers.splice(index, 1);
-        saveData();
-        renderSuppliers();
-        showToast("Supplier ဖျက်ပြီးပါပြီ။", "success");
+        renderAll();
     }
 
     function renderSuppliers() {
@@ -2898,27 +3365,20 @@
         tbody.innerHTML = '';
 
         if (db.suppliers.length === 0) {
-            tbody.innerHTML = `<tr><td colspan="3" class="text-center py-6 text-slate-400 text-xs">Supplier မှတ်တမ်း မရှိသေးပါ။</td></tr>`;
+            tbody.innerHTML = `<tr><td colspan="3" class="text-center py-6 text-slate-400 text-xs">Supplier စာရင်း မရှိသေးပါ။</td></tr>`;
             return;
         }
 
-        db.suppliers.forEach((s) => {
-            let idx = db.suppliers.indexOf(s);
+        db.suppliers.forEach((sup) => {
             let tr = document.createElement('tr');
             tr.className = "hover:bg-slate-50 transition-colors";
             tr.innerHTML = `
-                <td class="p-3 font-bold text-slate-900">${s.name}</td>
-                <td class="p-3 font-mono text-amber-900 font-bold">${s.phone}</td>
+                <td class="p-3 font-bold text-slate-900">${sup.name}</td>
+                <td class="p-3 text-slate-700 font-mono">${sup.phone}</td>
                 <td class="p-3 text-center">
-                    <div class="flex items-center justify-center space-x-1.5">
-                        <a href="tel:${s.phone}" class="px-2.5 py-1 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-xs font-medium flex items-center space-x-1 shadow-sm">
-                            <i class="fa-solid fa-phone"></i> <span>ဖုန်းခေါ်မည်</span>
-                        </a>
-                        ${currentRole === 'Admin' ? `
-                            <button onclick="editSupplier(${idx})" class="px-2 py-1 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg text-xs font-medium">ပြင်</button>
-                            <button onclick="deleteSupplier(${idx})" class="px-2 py-1 bg-red-50 hover:bg-red-100 text-red-600 rounded-lg text-xs font-medium">ဖျက်</button>
-                        ` : ''}
-                    </div>
+                    <a href="tel:${sup.phone}" class="px-3 py-1 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold inline-flex items-center space-x-1 shadow-sm transition">
+                        <i class="fa-solid fa-phone"></i> <span>ခေါ်ဆိုမည်</span>
+                    </a>
                 </td>
             `;
             tbody.appendChild(tr);
@@ -2938,107 +3398,70 @@
         let role = document.getElementById('workerRole').value.trim();
 
         if (!name) {
-            showToast("ဝန်ထမ်းအမည် ထည့်ရန် လိုအပ်ပါသည်။", "error");
+            showToast("ဝန်ထမ်းအမည် ထည့်ပါ။", "error");
             return;
         }
 
-        db.workers.push({ id: Date.now(), name, role: role || 'လက်သမား', absences: [] });
+        db.workers.push({
+            id: Date.now(),
+            name,
+            role,
+            attendance: {}
+        });
+
         saveData();
         closeModal('workerModal');
         renderWorkers();
         showToast("ဝန်ထမ်းအသစ် ထည့်သွင်းပြီးပါပြီ။", "success");
     }
 
-    function toggleWorkerAbsence(workerId, dateStr) {
-        if (currentRole !== 'Admin') return;
-        let w = db.workers.find(x => x.id === workerId);
-        if (!w) return;
-        if (!w.absences) w.absences = [];
-
-        if (w.absences.includes(dateStr)) {
-            w.absences = w.absences.filter(d => d !== dateStr);
-        } else {
-            w.absences.push(dateStr);
-        }
-        saveData();
-        renderWorkers();
-    }
-
-    function deleteWorker(workerId) {
-        if (currentRole !== 'Admin') return;
-        db.workers = db.workers.filter(w => w.id !== workerId);
-        saveData();
-        renderWorkers();
-        showToast("ဝန်ထမ်းစာရင်းမှ ဖယ်ရှားပြီးပါပြီ။", "success");
-    }
-
     function renderWorkers() {
         const container = document.getElementById('workerListContainer');
-        const attDateInput = document.getElementById('attendanceDateFilter');
-        const monthInput = document.getElementById('workerMonthFilter');
+        const dateInput = document.getElementById('attendanceDateFilter');
         if (!container) return;
 
-        if (attDateInput && !attDateInput.value) attDateInput.value = new Date().toISOString().split('T')[0];
-        if (monthInput && !monthInput.value) monthInput.value = new Date().toISOString().slice(0, 7);
-
-        let targetDate = attDateInput ? attDateInput.value : new Date().toISOString().split('T')[0];
-        let targetMonth = monthInput ? monthInput.value : new Date().toISOString().slice(0, 7);
+        if (dateInput && !dateInput.value) {
+            dateInput.value = new Date().toISOString().split('T')[0];
+        }
+        let targetDate = dateInput ? dateInput.value : new Date().toISOString().split('T')[0];
 
         container.innerHTML = '';
         if (db.workers.length === 0) {
-            container.innerHTML = `<div class="col-span-full text-center py-8 text-slate-400 text-xs bg-white rounded-2xl border border-slate-200">ဝန်ထမ်း/လက်သမား မှတ်တမ်း မရှိသေးပါ။</div>`;
+            container.innerHTML = `<div class="col-span-full text-center py-8 text-slate-400 text-xs bg-white rounded-2xl border border-slate-200">ဝန်ထမ်းစာရင်း မရှိသေးပါ။</div>`;
             return;
         }
 
-        db.workers.forEach(w => {
-            if (!w.absences) w.absences = [];
-            let isAbsentOnTarget = w.absences.includes(targetDate);
-
-            let absentFirstHalf = 0;
-            let absentSecondHalf = 0;
-
-            w.absences.forEach(d => {
-                if (d.startsWith(targetMonth)) {
-                    let dayNum = parseInt(d.split('-')[2]);
-                    if (dayNum >= 1 && dayNum <= 15) absentFirstHalf++;
-                    else if (dayNum >= 16) absentSecondHalf++;
-                }
-            });
+        db.workers.forEach((w) => {
+            let idx = db.workers.indexOf(w);
+            if (!w.attendance) w.attendance = {};
+            let status = w.attendance[targetDate] || 'present';
 
             let card = document.createElement('div');
-            card.className = "bg-white rounded-2xl p-4 shadow-sm border border-slate-200 space-y-3";
+            card.className = "bg-white p-4 rounded-2xl border border-slate-200 shadow-sm space-y-3";
             card.innerHTML = `
                 <div class="flex justify-between items-start">
                     <div>
                         <h4 class="font-bold text-slate-900 text-sm">${w.name}</h4>
-                        <span class="px-2 py-0.5 rounded-md text-[10px] font-bold bg-amber-50 text-amber-900 border border-amber-200 mt-0.5 inline-block">${w.role}</span>
+                        <p class="text-xs text-slate-500">${w.role || 'Staff / Carpenter'}</p>
                     </div>
-                    <button onclick="deleteWorker(${w.id})" class="text-rose-500 hover:text-rose-700 text-xs font-bold"><i class="fa-solid fa-trash-can"></i></button>
-                </div>
-
-                <div class="bg-slate-50 p-3 rounded-xl border border-slate-100 flex items-center justify-between">
-                    <div>
-                        <span class="text-xs font-bold text-slate-700 block">ရက်စွဲ: <span class="font-mono text-amber-900">${targetDate}</span></span>
-                        <span class="text-[10px] text-slate-500">ယနေ့ ပျက်ကွက်ခြင်း ရှိ/မရှိ စစ်ဆေးရန်</span>
-                    </div>
-                    <button onclick="toggleWorkerAbsence(${w.id}, '${targetDate}')" class="px-3 py-1.5 rounded-xl text-xs font-bold ${isAbsentOnTarget ? 'bg-rose-600 text-white animate-pulse' : 'bg-slate-200 text-slate-700 hover:bg-slate-300'} transition">
-                        ${isAbsentOnTarget ? '❌ ပျက်ကွက်နေသည်' : '✔️ တက်ရောက်သည်'}
-                    </button>
-                </div>
-
-                <div class="grid grid-cols-2 gap-2 text-xs pt-1">
-                    <div class="bg-amber-50/60 border border-amber-200 p-2.5 rounded-xl text-center">
-                        <span class="text-[10px] font-bold text-amber-900 block">၁ ရက် - ၁၅ ရက် (ပျက်ကွက်)</span>
-                        <strong class="text-rose-600 text-sm">${absentFirstHalf} ရက်</strong>
-                    </div>
-                    <div class="bg-amber-50/60 border border-amber-200 p-2.5 rounded-xl text-center">
-                        <span class="text-[10px] font-bold text-amber-900 block">၁၆ ရက် - ၃၀ ရက် (ပျက်ကွက်)</span>
-                        <strong class="text-rose-600 text-sm">${absentSecondHalf} ရက်</strong>
+                    <div class="flex items-center space-x-1">
+                        <button onclick="setAttendance(${idx}, '${targetDate}', 'present')" class="px-2.5 py-1 rounded-lg text-xs font-bold transition ${status === 'present' ? 'bg-emerald-600 text-white shadow' : 'bg-slate-100 text-slate-600'}">တက်</button>
+                        <button onclick="setAttendance(${idx}, '${targetDate}', 'absent')" class="px-2.5 py-1 rounded-lg text-xs font-bold transition ${status === 'absent' ? 'bg-rose-600 text-white shadow' : 'bg-slate-100 text-slate-600'}">ပျက်</button>
+                        <button onclick="setAttendance(${idx}, '${targetDate}', 'leave')" class="px-2.5 py-1 rounded-lg text-xs font-bold transition ${status === 'leave' ? 'bg-amber-600 text-white shadow' : 'bg-slate-100 text-slate-600'}">ခွင့်</button>
                     </div>
                 </div>
+                <div class="text-[11px] text-slate-400 font-mono">ရက်စွဲ: ${targetDate} (${status.toUpperCase()})</div>
             `;
             container.appendChild(card);
         });
+    }
+
+    function setAttendance(workerIdx, dateStr, status) {
+        if (!db.workers[workerIdx].attendance) db.workers[workerIdx].attendance = {};
+        db.workers[workerIdx].attendance[dateStr] = status;
+        saveData();
+        renderWorkers();
+        showToast("တက်ရောက်မှု မှတ်တမ်းတင်ပြီးပါပြီ။", "success");
     }
 
     function renderApprovals() {
@@ -3047,28 +3470,26 @@
         if (!container) return;
 
         container.innerHTML = '';
-        let count = db.approvals ? db.approvals.length : 0;
-        if (countText) countText.innerText = `${count} Pending`;
+        if (countText) countText.innerText = `${db.approvals.length} Pending`;
 
-        if (count === 0) {
-            container.innerHTML = `<div class="text-center py-8 text-slate-400 text-xs bg-white rounded-2xl border border-slate-200">စောင့်ဆိုင်းဆဲ Approval တောင်းဆိုချက် မရှိပါ။</div>`;
+        if (db.approvals.length === 0) {
+            container.innerHTML = `<div class="text-center py-8 text-slate-400 text-xs bg-white rounded-2xl border border-slate-200">Approval တောင်းဆိုချက် မရှိပါ။</div>`;
             return;
         }
 
-        db.approvals.forEach((app, idx) => {
+        db.approvals.forEach((app) => {
+            let idx = db.approvals.indexOf(app);
             let card = document.createElement('div');
-            card.className = "bg-white p-4 rounded-2xl shadow-sm border border-amber-200 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3";
+            card.className = "bg-white p-4 rounded-2xl border border-slate-200 shadow-sm flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3";
             card.innerHTML = `
                 <div>
-                    <div class="flex items-center space-x-2">
-                        <span class="px-2 py-0.5 bg-amber-100 text-amber-900 rounded text-[10px] font-bold">${app.actionType || 'Action'}</span>
-                        <h4 class="font-bold text-slate-900 text-xs">${app.custName || 'Item'}</h4>
-                    </div>
-                    <p class="text-xs text-slate-600 mt-1">${app.detail || ''}</p>
+                    <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-amber-100 text-amber-900">${app.actionType}</span>
+                    <h4 class="font-bold text-slate-900 text-sm mt-1">${app.detail}</h4>
+                    <p class="text-xs text-slate-500">Customer / Target: ${app.custName || '-'}</p>
                 </div>
                 <div class="flex items-center space-x-2 w-full sm:w-auto">
-                    <button onclick="approveAction(${idx})" class="flex-1 sm:flex-none px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold shadow">အတည်ပြုမည် (Approve)</button>
-                    <button onclick="rejectAction(${idx})" class="flex-1 sm:flex-none px-4 py-2 bg-rose-50 hover:bg-rose-100 text-rose-600 rounded-xl text-xs font-bold border border-rose-200">ပယ်ချမည် (Reject)</button>
+                    <button onclick="approveAction(${idx})" class="flex-1 sm:flex-initial px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold shadow transition">ခွင့်ပြုမည် (Approve)</button>
+                    <button onclick="rejectAction(${idx})" class="flex-1 sm:flex-initial px-4 py-2 bg-rose-50 hover:bg-rose-100 text-rose-600 rounded-xl text-xs font-medium transition">ပယ်ချမည်</button>
                 </div>
             `;
             container.appendChild(card);
@@ -3078,25 +3499,25 @@
     function approveAction(index) {
         if (currentRole !== 'Admin') return;
         let app = db.approvals[index];
-        if (!app) return;
 
         if (app.type === 'stock') {
-            db.stocks = db.stocks.filter(st => st.sku !== app.targetId);
+            db.stocks.splice(app.targetIndex, 1);
         } else if (app.type === 'sale') {
-            db.sales = db.sales.filter(s => s.id !== app.targetId);
+            db.sales.splice(app.targetIndex, 1);
         } else if (app.type === 'sale_edit') {
-            let sIdx = db.sales.findIndex(s => s.id === app.targetId);
-            if (sIdx !== -1) db.sales[sIdx] = app.newData;
+            db.sales[app.targetIndex] = app.newData;
+        } else if (app.type === 'expense_edit') {
+            db.expenses[app.targetIndex] = app.newData;
         } else if (app.type === 'preorder') {
-            db.preorders = db.preorders.filter(p => p.id !== app.targetId);
+            db.preorders.splice(app.targetIndex, 1);
         } else if (app.type === 'installment') {
-            db.installments = db.installments.filter(i => i.id !== app.targetId);
+            db.installments.splice(app.targetIndex, 1);
         }
 
         db.approvals.splice(index, 1);
         saveData();
         renderAll();
-        showToast("တောင်းဆိုချက်ကို အောင်မြင်စွာ အတည်ပြုလိုက်ပါပြီ။", "success");
+        showToast("တောင်းဆိုချက်ကို အောင်မြင်စွာ အတည်ပြုပြီးပါပြီ။", "success");
     }
 
     function rejectAction(index) {
@@ -3107,85 +3528,38 @@
         showToast("တောင်းဆိုချက်ကို ပယ်ချလိုက်ပါပြီ။", "success");
     }
 
-    function closeModal(id) {
-        document.getElementById(id).classList.add('hidden');
+    function closeModal(modalId) {
+        const m = document.getElementById(modalId);
+        if (m) m.classList.add('hidden');
     }
 
     function showToast(msg, type = 'success') {
         const toast = document.getElementById('toast');
-        document.getElementById('toastMsg').innerText = msg;
-        toast.className = `fixed top-20 right-4 z-50 p-4 rounded-2xl text-xs font-medium shadow-lg flex items-center justify-between ${type === 'success' ? 'bg-emerald-600 text-white' : 'bg-red-600 text-white'}`;
+        const toastMsg = document.getElementById('toastMsg');
+        if (!toast || !toastMsg) return;
+
+        toastMsg.innerText = msg;
+        toast.className = `fixed top-20 right-4 z-50 max-w-sm w-full p-4 rounded-2xl text-xs font-medium shadow-lg transition-all duration-300 flex items-center justify-between ${type === 'success' ? 'bg-emerald-600 text-white' : 'bg-rose-600 text-white'}`;
         toast.classList.remove('hidden');
-        setTimeout(() => toast.classList.add('hidden'), 3000);
+
+        setTimeout(() => {
+            toast.classList.add('hidden');
+        }, 3500);
     }
 
     function hideToast() {
-        document.getElementById('toast').classList.add('hidden');
+        const toast = document.getElementById('toast');
+        if (toast) toast.classList.add('hidden');
     }
 
     window.onload = function() {
-        setTimeout(() => {
-            const splash = document.getElementById('splashScreen');
-            if (splash) splash.remove();
-            document.getElementById('startupRoleModal').classList.remove('hidden');
-        }, 400);
-
         initFirebase();
-        checkDailyAutoRefillProcess();
+        document.getElementById('splashScreen').style.opacity = '0';
+        setTimeout(() => {
+            document.getElementById('splashScreen').style.display = 'none';
+            document.getElementById('startupRoleModal').classList.remove('hidden');
+        }, 300);
     };
-
-    function selectStartupRole(role) {
-        currentRole = role;
-        document.getElementById('startupRoleModal').classList.add('hidden');
-        document.getElementById('startupStaffPinModal').classList.add('hidden');
-        document.getElementById('startupAdminPinModal').classList.add('hidden');
-        updateRoleUI();
-        showToast(`${role} Mode ဖြင့် ဝင်ရောက်ပါပြီ။`, "success");
-    }
-
-    function promptStartupStaffPin() {
-        document.getElementById('startupRoleModal').classList.add('hidden');
-        document.getElementById('startupStaffPinModal').classList.remove('hidden');
-        document.getElementById('startupStaffPinInput').value = '';
-        document.getElementById('startupStaffPinInput').focus();
-    }
-
-    function backToStartupRoleModalFromStaff() {
-        document.getElementById('startupStaffPinModal').classList.add('hidden');
-        document.getElementById('startupRoleModal').classList.remove('hidden');
-    }
-
-    function verifyStartupStaffPin() {
-        const pin = document.getElementById('startupStaffPinInput').value.trim();
-        const savedStaffPin = String(getStaffPin()).trim();
-        if (pin === savedStaffPin || pin === '0000') {
-            selectStartupRole('Staff');
-        } else {
-            showToast("Staff PIN နံပါတ် မှားယွင်းနေပါသည်။", "error");
-        }
-    }
-
-    function promptStartupAdminPin() {
-        document.getElementById('startupRoleModal').classList.add('hidden');
-        document.getElementById('startupAdminPinModal').classList.remove('hidden');
-        document.getElementById('startupPinInput').value = '';
-        document.getElementById('startupPinInput').focus();
-    }
-
-    function backToStartupRoleModal() {
-        document.getElementById('startupAdminPinModal').classList.add('hidden');
-        document.getElementById('startupRoleModal').classList.remove('hidden');
-    }
-
-    function verifyStartupAdminPin() {
-        const pin = document.getElementById('startupPinInput').value.trim();
-        const savedAdminPin = String(getAdminPin()).trim();
-        if (pin === savedAdminPin || pin === '1965') {
-            selectStartupRole('Admin');
-        } else {
-            showToast("Admin PIN နံပါတ် မှားယွင်းနေပါသည်။", "error");
-        }
-    }
 </script>
 </body>
 </html>
