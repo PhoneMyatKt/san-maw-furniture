@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>စန်းမော် ပရိဘောဂ - Stock & Preorder Tracker (v3.0.1)</title>
+    <title>စန်းမော် ပရိဘောဂ - Stock & Preorder Tracker (v3.1)</title>
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -267,7 +267,7 @@
                         <i class="fa-solid fa-bag-shopping w-5 text-amber-700 dark:text-amber-400 text-sm"></i> <span>ကုန်ဝယ်စာရင်း (Purchases)</span>
                     </button>
                     <button onclick="switchTab('preorder'); closeMenuDropdown();" id="tab-preorder" class="tab-btn menu-tab-btn w-full text-left px-4 py-2.5 text-xs font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 flex items-center space-x-2.5 transition">
-                        <i class="fa-solid fa-clock w-5 text-amber-700 dark:text-amber-400 text-sm"></i> <span>ကြိုတင်မှာယူမှု (Preorder)</span>
+                        <i class="fa-solid fa-truck-fast w-5 text-amber-700 dark:text-amber-400 text-sm"></i> <span>ပို့ဆောင်မှု စာရင်း (Deli List)</span>
                     </button>
                     <button onclick="switchTab('suppliers'); closeMenuDropdown();" id="tab-suppliers" class="tab-btn menu-tab-btn w-full text-left px-4 py-2.5 text-xs font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 flex items-center space-x-2.5 transition">
                         <i class="fa-solid fa-address-book w-5 text-amber-700 dark:text-amber-400 text-sm"></i> <span>ဆိုင်ခေါ်ဆိုရန် (Supplier Contact)</span>
@@ -538,19 +538,16 @@
         </div>
     </section>
 
-    <!-- PREORDER TAB -->
+    <!-- DELI LIST TAB -->
     <section id="section-preorder" class="space-y-4 hidden">
         <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center bg-white dark:bg-slate-900 p-3.5 sm:p-4 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800 gap-2.5">
             <div>
-                <h2 class="text-sm sm:text-base font-bold text-slate-900 dark:text-slate-100"><i class="fa-solid fa-clock-rotate-left mr-2 text-amber-700 dark:text-amber-400"></i>Customer Preorder</h2>
-                <p class="text-[11px] sm:text-xs text-slate-500 dark:text-slate-400">လက်သမားအမည်၊ စရန်ငွေ၊ ကျန်ငွေနှင့် Warehouse အခြေအနေ</p>
+                <h2 class="text-sm sm:text-base font-bold text-slate-900 dark:text-slate-100"><i class="fa-solid fa-truck-fast mr-2 text-amber-700 dark:text-amber-400"></i>Deli List (ပို့ဆောင်မှု စာရင်း)</h2>
+                <p class="text-[11px] sm:text-xs text-slate-500 dark:text-slate-400">နေ့ရက်၊ ရက်စွဲ၊ ပို့ရမည့်နေရာ၊ ဖုန်းနံပါတ်၊ Customer အမည်နှင့် မှတ်ချက်များ</p>
             </div>
             <div class="flex items-center space-x-2 w-full sm:w-auto">
-                <button onclick="openCompletedHistoryModal()" class="flex-1 sm:flex-initial bg-indigo-700 hover:bg-indigo-800 text-white px-3.5 py-2.5 rounded-xl text-xs font-semibold shadow transition flex items-center justify-center space-x-1.5">
-                    <i class="fa-solid fa-box-archive"></i> <span>ပြီးစီးသွားသော Preorder မှတ်တမ်း</span>
-                </button>
                 <button onclick="openPreorderModal()" class="flex-1 sm:flex-initial bg-amber-800 hover:bg-amber-900 text-white px-3.5 py-2.5 rounded-xl text-xs font-semibold shadow transition flex items-center justify-center space-x-1.5">
-                    <i class="fa-solid fa-plus"></i> <span>Preorder အသစ်သွင်းရန်</span>
+                    <i class="fa-solid fa-plus"></i> <span>Deli အသစ်သွင်းရန်</span>
                 </button>
             </div>
         </div>
@@ -1143,7 +1140,7 @@
             <div class="flex justify-between items-center border-b dark:border-slate-800 pb-3">
                 <div class="flex items-center space-x-2">
                     <i class="fa-solid fa-box-archive text-indigo-600"></i>
-                    <h3 class="text-base font-bold text-slate-900 dark:text-slate-100">ပြီးစီးသွားသော Preorder မှတ်တမ်း (Order Completed History)</h3>
+                    <h3 class="text-base font-bold text-slate-900 dark:text-slate-100">ပြီးစီးသွားသော Deli မှတ်တမ်း (Completed Deli History)</h3>
                 </div>
                 <button onclick="closeModal('completedHistoryModal')" class="text-slate-400 font-bold text-xl">&times;</button>
             </div>
@@ -1162,7 +1159,7 @@
             <i class="fa-solid fa-hourglass-half text-2xl animate-spin"></i>
         </div>
         <div class="space-y-1">
-            <h3 class="text-base font-bold text-slate-900 dark:text-slate-100">Preorder အပြီးသတ်ခြင်း</h3>
+            <h3 class="text-base font-bold text-slate-900 dark:text-slate-100">Deli ပို့ဆောင်မှု အပြီးသတ်ခြင်း</h3>
             <p id="countdownMessage" class="text-xs text-slate-500 dark:text-slate-400">ကျေးဇူးပြု၍ စောင့်ဆိုင်းပါ...</p>
         </div>
 
@@ -1181,41 +1178,49 @@
     </div>
 </div>
 
-<!-- MODAL: Preorder Modal -->
+<!-- MODAL: Deli List Modal -->
 <div id="preorderModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm hidden z-50 overflow-y-auto">
     <div class="min-h-full flex items-center justify-center p-3 sm:p-4 text-center">
         <div class="bg-white dark:bg-slate-900 rounded-2xl w-full max-w-md p-4 sm:p-6 space-y-4 shadow-xl text-left my-auto border border-slate-200 dark:border-slate-800">
             <div class="flex justify-between items-center border-b border-slate-100 dark:border-slate-800 pb-2">
-                <h3 class="text-base md:text-lg font-bold text-slate-900 dark:text-slate-100" id="preorderModalTitle">New Customer Preorder</h3>
+                <h3 class="text-base md:text-lg font-bold text-slate-900 dark:text-slate-100" id="preorderModalTitle">Deli List အသစ်ထည့်ရန်</h3>
                 <button onclick="closeModal('preorderModal')" class="text-slate-400 hover:text-slate-600 font-bold text-xl px-1">&times;</button>
             </div>
             <div class="space-y-3 text-sm">
                 <input type="hidden" id="editPreorderIndex">
                 <div>
-                    <label class="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1">Customer Name</label>
-                    <input type="text" id="preCustName" class="w-full border border-slate-200 dark:border-slate-700 rounded-xl p-2.5 outline-none focus:ring-2 focus:ring-amber-600 text-xs md:text-sm bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100">
+                    <label class="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1">Customer Name (ဝယ်သူအမည်)</label>
+                    <input type="text" id="preCustName" placeholder="ဥပမာ: ဒေါ်စန်းစန်း" class="w-full border border-slate-200 dark:border-slate-700 rounded-xl p-2.5 outline-none focus:ring-2 focus:ring-amber-600 text-xs md:text-sm bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100">
                 </div>
                 <div>
-                    <label class="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1">Item Description</label>
-                    <input type="text" id="preItemDesc" class="w-full border border-slate-200 dark:border-slate-700 rounded-xl p-2.5 outline-none focus:ring-2 focus:ring-amber-600 text-xs md:text-sm bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100">
+                    <label class="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1">Phone Number (ဖုန်းနံပါတ်)</label>
+                    <input type="text" id="preCustPhone" placeholder="ဥပမာ: 09-123456789" class="w-full border border-slate-200 dark:border-slate-700 rounded-xl p-2.5 outline-none focus:ring-2 focus:ring-amber-600 text-xs md:text-sm bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100">
                 </div>
                 <div>
-                    <label class="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1">လက်သမား နာမည် (Carpenter Name)</label>
-                    <input type="text" id="preCarpenter" placeholder="လက်သမားအမည် ထည့်ရန်" class="w-full border border-slate-200 dark:border-slate-700 rounded-xl p-2.5 outline-none focus:ring-2 focus:ring-amber-600 text-xs md:text-sm bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100">
+                    <label class="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1">Where (ပို့ဆောင်ရမည့်နေရာ / လိပ်စာ)</label>
+                    <input type="text" id="preWhere" placeholder="ဥပမာ: တောင်ကြီးမြို့၊ စေတီယံရပ်" class="w-full border border-slate-200 dark:border-slate-700 rounded-xl p-2.5 outline-none focus:ring-2 focus:ring-amber-600 text-xs md:text-sm bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100">
                 </div>
                 <div class="grid grid-cols-2 gap-3">
                     <div>
-                        <label class="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1">Deposit Money (Ks)</label>
-                        <input type="number" id="preDeposit" min="0" class="w-full border border-slate-200 dark:border-slate-700 rounded-xl p-2.5 outline-none focus:ring-2 focus:ring-amber-600 text-xs md:text-sm bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100">
+                        <label class="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1">Which Date (ရက်စွဲ)</label>
+                        <input type="date" id="preDate" onchange="autoFillDayOfWeek()" class="w-full border border-slate-200 dark:border-slate-700 rounded-xl p-2.5 outline-none focus:ring-2 focus:ring-amber-600 text-xs md:text-sm bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100">
                     </div>
                     <div>
-                        <label class="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1">Full Price (Ks)</label>
-                        <input type="number" id="preFullPrice" min="0" class="w-full border border-slate-200 dark:border-slate-700 rounded-xl p-2.5 outline-none focus:ring-2 focus:ring-amber-600 text-xs md:text-sm bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100">
+                        <label class="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1">Which Day (နေ့ရက်)</label>
+                        <select id="preDay" class="w-full border border-slate-200 dark:border-slate-700 rounded-xl p-2.5 outline-none focus:ring-2 focus:ring-amber-600 text-xs md:text-sm bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100">
+                            <option value="တနင်္ဂနွေ">တနင်္ဂနွေ (Sunday)</option>
+                            <option value="တနင်္လာ">တနင်္လာ (Monday)</option>
+                            <option value="အင်္ဂါ">အင်္ဂါ (Tuesday)</option>
+                            <option value="ဗုဒ္ဓဟူး">ဗုဒ္ဓဟူး (Wednesday)</option>
+                            <option value="ကြာသပတေး">ကြာသပတေး (Thursday)</option>
+                            <option value="သောကြာ">သောကြာ (Friday)</option>
+                            <option value="စနေ">စနေ (Saturday)</option>
+                        </select>
                     </div>
                 </div>
                 <div>
-                    <label class="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1">Pickup Date</label>
-                    <input type="date" id="preDate" class="w-full border border-slate-200 dark:border-slate-700 rounded-xl p-2.5 outline-none focus:ring-2 focus:ring-amber-600 text-xs md:text-sm bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100">
+                    <label class="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1">Note (မှတ်ချက် / ပစ္စည်းအကြောင်းအရာ)</label>
+                    <textarea id="preNote" rows="2" placeholder="ဥပမာ: ကျွန်းကုလားထိုင် ၄ လုံး ပို့ရန်..." class="w-full border border-slate-200 dark:border-slate-700 rounded-xl p-2.5 outline-none focus:ring-2 focus:ring-amber-600 text-xs md:text-sm bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100"></textarea>
                 </div>
             </div>
             <div class="flex space-x-2 pt-2 border-t border-slate-100 dark:border-slate-800">
@@ -1709,7 +1714,7 @@
             'sales': 'Sales List',
             'expenses': 'ဆိုင်သုံးစရိတ်',
             'purchases': 'ကုန်ဝယ် စာရင်း',
-            'preorder': 'Preorder',
+            'preorder': 'Deli List',
             'suppliers': 'Supplier Contact',
             'workers': 'ဝန်ထမ်း (KPI)',
             'report': 'Report & Dashboard',
@@ -3122,18 +3127,30 @@
         db.purchases.splice(index, 1);
         saveData();
         renderAll();
-        showToast("ကုန်ဝယ်စာရင်း ဖျက်ပြီးပါပြီ။", "success");
+        showToast("ကုန်ဝယ်စရိတ် ဖျက်ပြီးပါပြီ။", "success");
+    }
+
+    function autoFillDayOfWeek() {
+        const dateVal = document.getElementById('preDate').value;
+        if (!dateVal) return;
+        const days = ['တနင်္ဂနွေ', 'တနင်္လာ', 'အင်္ဂါ', 'ဗုဒ္ဓဟူး', 'ကြာသပတေး', 'သောကြာ', 'စနေ'];
+        const d = new Date(dateVal);
+        if (!isNaN(d.getTime())) {
+            const dayIdx = d.getDay();
+            document.getElementById('preDay').value = days[dayIdx];
+        }
     }
 
     function openPreorderModal() {
         document.getElementById('editPreorderIndex').value = '';
         document.getElementById('preCustName').value = '';
-        document.getElementById('preItemDesc').value = '';
-        document.getElementById('preCarpenter').value = '';
-        document.getElementById('preDeposit').value = '';
-        document.getElementById('preFullPrice').value = '';
-        document.getElementById('preDate').value = new Date().toISOString().split('T')[0];
-        document.getElementById('preorderModalTitle').innerText = 'New Customer Preorder';
+        document.getElementById('preCustPhone').value = '';
+        document.getElementById('preWhere').value = '';
+        document.getElementById('preNote').value = '';
+        const todayStr = new Date().toISOString().split('T')[0];
+        document.getElementById('preDate').value = todayStr;
+        autoFillDayOfWeek();
+        document.getElementById('preorderModalTitle').innerText = 'Deli List အသစ်ထည့်ရန်';
         document.getElementById('preorderModal').classList.remove('hidden');
     }
 
@@ -3141,53 +3158,59 @@
         let p = db.preorders[index];
         document.getElementById('editPreorderIndex').value = index;
         document.getElementById('preCustName').value = p.custName || '';
-        document.getElementById('preItemDesc').value = p.itemDesc || '';
-        document.getElementById('preCarpenter').value = p.carpenter || '';
-        document.getElementById('preDeposit').value = p.deposit || 0;
-        document.getElementById('preFullPrice').value = p.fullPrice || 0;
-        document.getElementById('preDate').value = p.pickupDate || new Date().toISOString().split('T')[0];
-        document.getElementById('preorderModalTitle').innerText = 'Edit Preorder';
+        document.getElementById('preCustPhone').value = p.phone || p.custPhone || '';
+        document.getElementById('preWhere').value = p.where || p.location || p.custAddress || '';
+        document.getElementById('preNote').value = p.note || p.itemDesc || '';
+        document.getElementById('preDate').value = p.pickupDate || p.date || new Date().toISOString().split('T')[0];
+        if (p.day) {
+            document.getElementById('preDay').value = p.day;
+        } else {
+            autoFillDayOfWeek();
+        }
+        document.getElementById('preorderModalTitle').innerText = 'Deli List ပြင်ဆင်ရန်';
         document.getElementById('preorderModal').classList.remove('hidden');
     }
 
     function savePreorder() {
         let index = document.getElementById('editPreorderIndex').value;
         let custName = document.getElementById('preCustName').value.trim();
-        let itemDesc = document.getElementById('preItemDesc').value.trim();
-        let carpenter = document.getElementById('preCarpenter').value.trim();
-        let deposit = parseFloat(document.getElementById('preDeposit').value) || 0;
-        let fullPrice = parseFloat(document.getElementById('preFullPrice').value) || 0;
+        let phone = document.getElementById('preCustPhone').value.trim();
+        let where = document.getElementById('preWhere').value.trim();
         let pickupDate = document.getElementById('preDate').value || new Date().toISOString().split('T')[0];
+        let day = document.getElementById('preDay').value;
+        let note = document.getElementById('preNote').value.trim();
 
-        if (!custName || !itemDesc) {
-            showToast("Customer Name နှင့် Item Description ထည့်ပါ။", "error");
+        if (!custName || !where) {
+            showToast("Customer Name နှင့် ပို့ရမည့်နေရာ (Where) ထည့်ရန် လိုအပ်ပါသည်။", "error");
             return;
         }
 
-        let remaining = Math.max(0, fullPrice - deposit);
         let preorderObj = {
             id: index === '' ? Date.now() : db.preorders[index].id,
             custName,
-            itemDesc,
-            carpenter,
-            deposit,
-            fullPrice,
-            remaining,
+            phone,
+            where,
             pickupDate,
+            day,
+            note,
+            itemDesc: note || where,
+            deposit: index === '' ? 0 : (db.preorders[index].deposit || 0),
+            fullPrice: index === '' ? 0 : (db.preorders[index].fullPrice || 0),
+            remaining: index === '' ? 0 : (db.preorders[index].remaining || 0),
             isArrived: index === '' ? false : db.preorders[index].isArrived,
             isCompleted: index === '' ? false : db.preorders[index].isCompleted
         };
 
         if (index === '') {
             db.preorders.push(preorderObj);
-            showToast("Preorder အသစ် သိမ်းဆည်းပြီးပါပြီ။", "success");
+            showToast("Deli List အသစ် သိမ်းဆည်းပြီးပါပြီ။", "success");
             saveData();
             closeModal('preorderModal');
             renderAll();
         } else {
             if (currentRole === 'Admin') {
                 db.preorders[index] = preorderObj;
-                showToast("Preorder ပြင်ဆင်ပြီးပါပြီ။", "success");
+                showToast("Deli List ပြင်ဆင်ပြီးပါပြီ။", "success");
                 saveData();
                 closeModal('preorderModal');
                 renderAll();
@@ -3198,14 +3221,14 @@
                     targetId: preorderObj.id,
                     targetIndex: parseInt(index),
                     custName: custName,
-                    detail: `Preorder ပြင်ရန်: ${custName} (${itemDesc})`,
+                    detail: `Deli List ပြင်ရန်: ${custName} (${where})`,
                     newData: preorderObj,
-                    actionType: 'Edit Preorder'
+                    actionType: 'Edit Deli'
                 });
                 saveData();
                 closeModal('preorderModal');
                 renderPreorders();
-                showToast("Admin ထံသို့ Preorder ပြင်ရန် Approval တောင်းဆိုချက် ပို့လိုက်ပါပြီ။", "success");
+                showToast("Admin ထံသို့ Deli List ပြင်ရန် Approval တောင်းဆိုချက် ပို့လိုက်ပါပြီ။", "success");
             }
         }
     }
@@ -3216,7 +3239,7 @@
         p.isArrived = !p.isArrived;
         saveData();
         renderPreorders();
-        showToast(p.isArrived ? "Preorder ပစ္စည်း Warehouse သို့ ရောက်ရှိကြောင်း မှတ်တမ်းတင်ပြီးပါပြီ။" : "Preorder အခြေအနေ ပြန်ပြောင်းလိုက်ပါပြီ။", "success");
+        showToast(p.isArrived ? "Deli ပစ္စည်း ပို့ဆောင်ပြီးကြောင်း မှတ်တမ်းတင်ပြီးပါပြီ။" : "Deli အခြေအနေ ပြန်ပြောင်းလိုက်ပါပြီ။", "success");
     }
 
     let activeCompletePreorderIdx = null;
@@ -3231,7 +3254,7 @@
         if (!p) return;
 
         if (p.isCompleted) {
-            showToast("ဤ Preorder မှာ ပြီးစီးပြီးသား ဖြစ်ပါသည်။", "error");
+            showToast("ဤ Deli စာရင်းမှာ ပြီးစီးပြီးသား ဖြစ်ပါသည်။", "error");
             return;
         }
 
@@ -3277,7 +3300,7 @@
         closeModal('preorderCompleteModal');
         saveData();
         renderAll();
-        showToast(`Preorder အပြီးသတ်ခြင်း အောင်မြင်ပါသည်။ ပြီးစီးသွားသော မှတ်တမ်းသို့ ပို့ဆောင်ပြီးပါပြီ။`, "success");
+        showToast(`Deli ပို့ဆောင်မှု အပြီးသတ်ခြင်း အောင်မြင်ပါသည်။ ပြီးစီးသွားသော မှတ်တမ်းသို့ ပို့ဆောင်ပြီးပါပြီ။`, "success");
         activeCompletePreorderIdx = null;
     }
 
@@ -3289,7 +3312,7 @@
         let completedItems = db.preorders.filter(p => p.isCompleted);
 
         if (completedItems.length === 0) {
-            container.innerHTML = `<div class="text-center py-8 text-slate-400 text-xs">ပြီးစီးသွားသော Preorder မှတ်တမ်း မရှိသေးပါ။</div>`;
+            container.innerHTML = `<div class="text-center py-8 text-slate-400 text-xs">ပြီးစီးသွားသော Deli မှတ်တမ်း မရှိသေးပါ။</div>`;
             document.getElementById('completedHistoryModal').classList.remove('hidden');
             return;
         }
@@ -3301,21 +3324,19 @@
             div.innerHTML = `
                 <div class="flex justify-between items-start">
                     <div>
-                        <h4 class="font-bold text-slate-900 dark:text-slate-100 text-sm">${p.custName}</h4>
-                        <p class="text-slate-600 dark:text-slate-300 font-medium">${p.itemDesc}</p>
+                        <h4 class="font-bold text-slate-900 dark:text-slate-100 text-sm">${p.custName} (${p.phone || p.custPhone || '-'})</h4>
+                        <p class="text-slate-600 dark:text-slate-300 font-medium">${p.where || p.location || '-'} | ${p.note || p.itemDesc || '-'}</p>
                     </div>
                     <div class="flex items-center space-x-2">
-                        <span class="px-2.5 py-1 rounded-full text-[10px] font-bold bg-indigo-100 dark:bg-indigo-950 text-indigo-800 dark:text-indigo-200 border border-indigo-300 dark:border-indigo-800">Order Completed</span>
+                        <span class="px-2.5 py-1 rounded-full text-[10px] font-bold bg-indigo-100 dark:bg-indigo-950 text-indigo-800 dark:text-indigo-200 border border-indigo-300 dark:border-indigo-800">Deli Delivered</span>
                         <button onclick="deleteCompletedPreorder(${actualIndex})" class="px-2.5 py-1 bg-red-50 hover:bg-red-100 dark:bg-red-950/50 text-red-600 dark:text-red-400 rounded-lg font-bold transition flex items-center space-x-1" title="ဖျက်ပြီး မူလအခြေအနေသို့ ပြန်ထားမည်">
                             <i class="fa-solid fa-trash-can"></i> <span>ဖျက်ရန်</span>
                         </button>
                     </div>
                 </div>
                 <div class="grid grid-cols-2 gap-2 text-[11px] pt-1 text-slate-500 dark:text-slate-400">
-                    <div>လက်သမား: <strong class="text-slate-800 dark:text-slate-200">${p.carpenter || '-'}</strong></div>
-                    <div>ယူမည့်ရက်: <strong class="text-amber-800 dark:text-amber-300 font-mono">${p.pickupDate || '-'}</strong></div>
-                    <div>စုစုပေါင်းတန်ဖိုး: <strong class="text-emerald-700 dark:text-emerald-400">${Number(p.fullPrice).toLocaleString()} Ks</strong></div>
-                    <div>အခြေအနေ: <strong class="text-indigo-600 dark:text-indigo-400">ငွေရှင်းပြီး (Paid)</strong></div>
+                    <div>နေ့ရက်: <strong class="text-slate-800 dark:text-slate-200">${p.day || '-'}</strong></div>
+                    <div>ရက်စွဲ: <strong class="text-amber-800 dark:text-amber-300 font-mono">${p.pickupDate || p.date || '-'}</strong></div>
                 </div>
             `;
             container.appendChild(div);
@@ -3341,7 +3362,7 @@
         saveData();
         renderAll();
         openCompletedHistoryModal();
-        showToast("Completed Preorder ကို ဖျက်ပြီး မူလအခြေအနေသို့ ပြန်လည် ထည့်သွင်းပြီးပါပြီ။", "success");
+        showToast("Completed Deli ကို ဖျက်ပြီး မူလအခြေအနေသို့ ပြန်လည် ထည့်သွင်းပြီးပါပြီ။", "success");
     }
 
     function deletePreorder(index) {
@@ -3350,7 +3371,7 @@
             db.preorders.splice(index, 1);
             saveData();
             renderAll();
-            showToast("Preorder ဖျက်ပြီးပါပြီ။", "success");
+            showToast("Deli စာရင်း ဖျက်ပြီးပါပြီ။", "success");
         } else {
             if (db.approvals.some(a => a.type === 'preorder' && a.targetId === p.id)) {
                 showToast("Admin ဖျက်ရန် ခွင့်ပြုချက် တောင်းဆိုထားပြီး ဖြစ်ပါသည်။", "error");
@@ -3362,12 +3383,12 @@
                 targetId: p.id,
                 targetIndex: index,
                 custName: p.custName,
-                detail: `Preorder ဖျက်ရန်: ${p.custName} (${p.itemDesc})`,
-                actionType: 'Delete Preorder'
+                detail: `Deli စာရင်းဖျက်ရန်: ${p.custName} (${p.where || p.location || '-'})`,
+                actionType: 'Delete Deli'
             });
             saveData();
             renderPreorders();
-            showToast("Admin ထံသို့ Preorder ဖျက်ရန် Approval တောင်းဆိုချက် ပို့လိုက်ပါပြီ။", "success");
+            showToast("Admin ထံသို့ Deli စာရင်းဖျက်ရန် Approval တောင်းဆိုချက် ပို့လိုက်ပါပြီ။", "success");
         }
     }
 
@@ -3379,7 +3400,7 @@
         let activePreorders = db.preorders.filter(p => !p.isCompleted);
 
         if (activePreorders.length === 0) {
-            container.innerHTML = `<div class="col-span-full text-center py-8 text-slate-400 text-xs bg-white rounded-2xl border border-slate-200">Preorder မှတ်တမ်း မရှိသေးပါ။</div>`;
+            container.innerHTML = `<div class="col-span-full text-center py-8 text-slate-400 text-xs bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800">Deli List စာရင်း မရှိသေးပါ။</div>`;
             return;
         }
 
@@ -3394,43 +3415,48 @@
             card.innerHTML = `
                 <div class="flex justify-between items-start">
                     <div>
-                        <h4 class="font-bold text-slate-900 dark:text-slate-100 text-sm">${p.custName}</h4>
-                        <p class="text-xs text-slate-600 dark:text-slate-300 font-semibold mt-0.5">${p.itemDesc}</p>
+                        <h4 class="font-bold text-slate-900 dark:text-slate-100 text-sm flex items-center">
+                            <i class="fa-solid fa-user text-amber-700 dark:text-amber-400 mr-1.5 text-xs"></i>${p.custName}
+                        </h4>
+                        <p class="text-xs text-slate-600 dark:text-slate-300 font-semibold mt-0.5 flex items-center">
+                            <i class="fa-solid fa-phone text-emerald-600 mr-1 text-[10px]"></i>
+                            <a href="tel:${p.phone || p.custPhone || ''}" class="hover:underline font-mono">${p.phone || p.custPhone || '-'}</a>
+                        </p>
                     </div>
                     <div class="flex flex-col items-end gap-1">
                         <span class="px-2.5 py-1 rounded-full text-[10px] font-bold ${p.isArrived ? 'bg-emerald-100 dark:bg-emerald-950 text-emerald-800 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-900' : 'bg-amber-100 dark:bg-amber-950 text-amber-800 dark:text-amber-300 border border-amber-200 dark:border-amber-900'}">
-                            ${p.isArrived ? 'Warehouse ရောက်ပြီ' : 'လုပ်ဆောင်ဆဲ'}
+                            ${p.isArrived ? 'ပို့ဆောင်ပြီး' : 'ပို့ရန်ကျန်'}
                         </span>
                     </div>
                 </div>
 
                 <div class="grid grid-cols-2 gap-2 text-xs bg-slate-50 dark:bg-slate-800/60 p-2.5 rounded-xl border border-slate-100 dark:border-slate-700">
                     <div>
-                        <span class="text-slate-500 dark:text-slate-400 block text-[10px]">လက်သမား:</span>
-                        <strong class="text-slate-800 dark:text-slate-200">${p.carpenter || '-'}</strong>
+                        <span class="text-slate-500 dark:text-slate-400 block text-[10px]">Which Day (နေ့ရက်):</span>
+                        <strong class="text-amber-900 dark:text-amber-300">${p.day || '-'}</strong>
                     </div>
                     <div>
-                        <span class="text-slate-500 dark:text-slate-400 block text-[10px]">ယူမည့်ရက်:</span>
-                        <strong class="text-amber-900 dark:text-amber-300 font-mono">${p.pickupDate || '-'}</strong>
+                        <span class="text-slate-500 dark:text-slate-400 block text-[10px]">Which Date (ရက်စွဲ):</span>
+                        <strong class="text-slate-800 dark:text-slate-200 font-mono">${p.pickupDate || p.date || '-'}</strong>
                     </div>
-                    <div>
-                        <span class="text-slate-500 dark:text-slate-400 block text-[10px]">စရန်ငွေ (Deposit):</span>
-                        <strong class="text-emerald-700 dark:text-emerald-400">${Number(p.deposit).toLocaleString()} Ks</strong>
+                    <div class="col-span-2">
+                        <span class="text-slate-500 dark:text-slate-400 block text-[10px]">Where (ပို့ရမည့်နေရာ):</span>
+                        <strong class="text-slate-800 dark:text-slate-200">${p.where || p.location || p.custAddress || '-'}</strong>
                     </div>
-                    <div>
-                        <span class="text-slate-500 dark:text-slate-400 block text-[10px]">ကျန်ငွေ (Remaining):</span>
-                        <strong class="text-rose-600 dark:text-rose-400">${Number(p.remaining).toLocaleString()} Ks</strong>
+                    <div class="col-span-2 border-t border-slate-200/60 dark:border-slate-700/60 pt-1.5 mt-0.5">
+                        <span class="text-slate-500 dark:text-slate-400 block text-[10px]">Note (မှတ်ချက်):</span>
+                        <p class="text-slate-700 dark:text-slate-300 font-medium text-[11px]">${p.note || p.itemDesc || '-'}</p>
                     </div>
                 </div>
 
                 <div class="flex items-center justify-between pt-1 border-t border-slate-100 dark:border-slate-800">
                     <div class="flex items-center space-x-1.5 flex-wrap gap-y-1">
                         <button onclick="togglePreorderArrival(${idx})" class="px-3 py-1.5 rounded-lg text-xs font-bold ${p.isArrived ? 'bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-200 hover:bg-slate-300' : 'bg-emerald-600 text-white hover:bg-emerald-700'} transition">
-                            ${p.isArrived ? 'အခြေအနေ ပြန်ပြောင်းမည်' : 'Warehouse ရောက်လျှင်'}
+                            ${p.isArrived ? 'အခြေအနေ ပြန်ပြောင်းမည်' : 'ပို့ပြီးပါက နှိပ်ရန်'}
                         </button>
                         ${currentRole === 'Admin' ? `
                             <button onclick="completePreorder(${idx})" class="px-3 py-1.5 rounded-lg text-xs font-bold bg-amber-800 hover:bg-amber-900 text-white shadow transition">
-                                အပြီးသတ်ရန် (Complete)
+                                ပြီးစီးပြီ (Complete)
                             </button>
                         ` : ''}
                     </div>
