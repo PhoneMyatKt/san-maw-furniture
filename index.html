@@ -1440,13 +1440,15 @@
             dbFirestore = firebase.firestore();
             auth = firebase.auth();
 
-            // Sign in anonymously first to satisfy security rules before loading shared main data
+            // 🛑 အလိုအလျောက် Sign-in လုပ်နေမှုကို ပိတ်လိုက်သည် (PIN ထည့်မှသာ ဝင်ခွင့်ပြုမည်)
+            /*
             auth.signInAnonymously().then(() => {
                 attachFirestoreListener();
             }).catch(err => {
                 console.warn("Auth sign-in warning:", err);
                 attachFirestoreListener();
             });
+            */
         } catch (e) {
             console.error("Firestore init failed:", e);
             isCloudSynced = false;
@@ -1545,12 +1547,16 @@
         const pin = document.getElementById('startupStaffPinInput').value.trim();
         if (pin === getStaffPin()) {
             if (auth) {
+                // 👇 ဤနေရာတွင် Anonymous Sign-in ကို ခေါ်ယူမည်
                 auth.signInAnonymously().catch(() => {});
             }
             currentRole = 'Staff';
             document.getElementById('startupStaffPinModal').classList.add('hidden');
             showToast("Staff Mode သို့ အောင်မြင်စွာ ဝင်ရောက်ပါပြီ။", "success");
             updateRoleUI();
+
+            // 👉 PIN မှန်မှသာ Data များကို စတင် ချိတ်ဆက် ဆွဲထုတ်မည်
+            attachFirestoreListener();
         } else {
             showToast("Staff PIN နံပါတ် မှားယွင်းနေပါသည်။", "error");
         }
@@ -1572,12 +1578,16 @@
         const pin = document.getElementById('startupPinInput').value.trim();
         if (pin === getAdminPin()) {
             if (auth) {
+                // 👇 ဤနေရာတွင် Anonymous Sign-in ကို ခေါ်ယူမည်
                 auth.signInAnonymously().catch(() => {});
             }
             currentRole = 'Admin';
             document.getElementById('startupAdminPinModal').classList.add('hidden');
             showToast("Admin Mode သို့ အောင်မြင်စွာ ဝင်ရောက်ပါပြီ။", "success");
             updateRoleUI();
+
+            // 👉 PIN မှန်မှသာ Data များကို စတင် ချိတ်ဆက် ဆွဲထုတ်မည်
+            attachFirestoreListener();
         } else {
             showToast("Admin PIN နံပါတ် မှားယွင်းနေပါသည်။", "error");
         }
