@@ -45,8 +45,9 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <!-- Font Awesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Firebase SDKs (Compat version for App and Firestore) -->
+    <!-- Firebase SDKs (Compat version for App, Auth and Firestore) -->
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore-compat.js"></script>
     <!-- jsPDF Library for 3-inch Thermal Receipt PDF Generation -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
@@ -114,7 +115,7 @@
     <div class="text-center space-y-4 animate-pulse px-4">
         <i class="fa-solid fa-couch text-5xl text-amber-300"></i>
         <h1 class="text-2xl font-bold tracking-wide">စန်းမော် ပရိဘောဂ</h1>
-        <p class="text-xs text-amber-200">Stock, Sales & Daily Capital Tracker (v2.9.37)</p>
+        <p class="text-xs text-amber-200">Stock, Sales & Daily Capital Tracker (v3.0.1)</p>
         <div class="w-8 h-8 border-4 border-amber-300 border-t-transparent rounded-full animate-spin mx-auto mt-4"></div>
     </div>
     <div class="absolute bottom-6 text-[11px] text-amber-200/80 font-medium">
@@ -1336,6 +1337,7 @@
 
     let firebaseApp = null;
     let dbFirestore = null;
+    let auth = null;
     let isCloudSynced = false;
 
     let db = {
@@ -1436,48 +1438,59 @@
                 firebaseApp = firebase.app();
             }
             dbFirestore = firebase.firestore();
+            auth = firebase.auth();
 
-            const docRef = dbFirestore.collection('sanmaw_furniture_store').doc('main_data');
-
-            docRef.onSnapshot((docSnap) => {
-                if (docSnap.exists) {
-                    const cloudData = docSnap.data();
-                    if (cloudData && typeof cloudData === 'object') {
-                        db.stocks = cloudData.stocks || [];
-                        db.sales = cloudData.sales || [];
-                        db.preorders = cloudData.preorders || [];
-                        db.expenses = cloudData.expenses || [];
-                        db.purchases = cloudData.purchases || [];
-                        db.suppliers = cloudData.suppliers || [];
-                        db.workers = cloudData.workers || [];
-                        db.approvals = cloudData.approvals || [];
-
-                        if (cloudData.settings) {
-                            db.settings = { ...db.settings, ...cloudData.settings };
-                        }
-                        if (!db.settings.adminPin) db.settings.adminPin = '0000';
-                        if (!db.settings.staffPin) db.settings.staffPin = '0000';
-                    }
-                    isCloudSynced = true;
-                    updateSyncIndicator(true);
-                    renderAll();
-                } else {
-                    docRef.set(db).then(() => {
-                        isCloudSynced = true;
-                        updateSyncIndicator(true);
-                        renderAll();
-                    });
-                }
-            }, (error) => {
-                console.warn("Firestore listener error:", error);
-                isCloudSynced = false;
-                updateSyncIndicator(false);
+            // Sign in anonymously first to satisfy security rules before loading shared main data
+            auth.signInAnonymously().then(() => {
+                attachFirestoreListener();
+            }).catch(err => {
+                console.warn("Auth sign-in warning:", err);
+                attachFirestoreListener();
             });
         } catch (e) {
             console.error("Firestore init failed:", e);
             isCloudSynced = false;
             updateSyncIndicator(false);
         }
+    }
+
+    function attachFirestoreListener() {
+        const docRef = dbFirestore.collection('sanmaw_furniture_store').doc('main_data');
+
+        docRef.onSnapshot((docSnap) => {
+            if (docSnap.exists) {
+                const cloudData = docSnap.data();
+                if (cloudData && typeof cloudData === 'object') {
+                    db.stocks = cloudData.stocks || [];
+                    db.sales = cloudData.sales || [];
+                    db.preorders = cloudData.preorders || [];
+                    db.expenses = cloudData.expenses || [];
+                    db.purchases = cloudData.purchases || [];
+                    db.suppliers = cloudData.suppliers || [];
+                    db.workers = cloudData.workers || [];
+                    db.approvals = cloudData.approvals || [];
+
+                    if (cloudData.settings) {
+                        db.settings = { ...db.settings, ...cloudData.settings };
+                    }
+                    if (!db.settings.adminPin) db.settings.adminPin = '0000';
+                    if (!db.settings.staffPin) db.settings.staffPin = '0000';
+                }
+                isCloudSynced = true;
+                updateSyncIndicator(true);
+                renderAll();
+            } else {
+                docRef.set(db).then(() => {
+                    isCloudSynced = true;
+                    updateSyncIndicator(true);
+                    renderAll();
+                });
+            }
+        }, (error) => {
+            console.warn("Firestore listener error:", error);
+            isCloudSynced = false;
+            updateSyncIndicator(false);
+        });
     }
 
     function updateSyncIndicator(synced) {
@@ -1531,6 +1544,9 @@
     function verifyStartupStaffPin() {
         const pin = document.getElementById('startupStaffPinInput').value.trim();
         if (pin === getStaffPin()) {
+            if (auth) {
+                auth.signInAnonymously().catch(() => {});
+            }
             currentRole = 'Staff';
             document.getElementById('startupStaffPinModal').classList.add('hidden');
             showToast("Staff Mode သို့ အောင်မြင်စွာ ဝင်ရောက်ပါပြီ။", "success");
@@ -1555,6 +1571,9 @@
     function verifyStartupAdminPin() {
         const pin = document.getElementById('startupPinInput').value.trim();
         if (pin === getAdminPin()) {
+            if (auth) {
+                auth.signInAnonymously().catch(() => {});
+            }
             currentRole = 'Admin';
             document.getElementById('startupAdminPinModal').classList.add('hidden');
             showToast("Admin Mode သို့ အောင်မြင်စွာ ဝင်ရောက်ပါပြီ။", "success");
@@ -1974,9 +1993,15 @@
             totalCogs += (s.qty || 0) * unitC;
         });
 
+        // Preorders with deposit alone should not count towards Total Gross Profit until completed, and if completed, count fullPrice.
         filteredPreorders.forEach(p => {
-            let collected = p.isCompleted ? (p.fullPrice || 0) : (p.deposit || 0);
-            totalRev += collected;
+            if (p.isCompleted) {
+                let collected = p.fullPrice || 0;
+                totalRev += collected;
+            } else {
+                let dep = p._originalDeposit !== undefined ? p._originalDeposit : (parseFloat(p.deposit) || 0);
+                totalRev += dep;
+            }
         });
 
         let grossProfit = totalRev - totalCogs;
@@ -2026,7 +2051,7 @@
         });
 
         filteredPreorders.forEach(p => {
-            let amt = p.isCompleted ? (p.fullPrice || 0) : (p.deposit || 0);
+            let amt = p.isCompleted ? (p.fullPrice || 0) : (p._originalDeposit !== undefined ? p._originalDeposit : (parseFloat(p.deposit) || 0));
             totalCashInflow += amt;
         });
 
@@ -3234,7 +3259,7 @@
         let p = db.preorders[activeCompletePreorderIdx];
         if (!p) return;
 
-        let remainingAmt = Math.max(0, (p.fullPrice || 0) - (p.deposit || 0));
+        p._originalDeposit = p.deposit;
         p.deposit = p.fullPrice;
         p.remaining = 0;
         p.isCompleted = true;
