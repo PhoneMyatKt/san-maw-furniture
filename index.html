@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>စန်းမော် ပရိဘောဂ - Stock & Preorder Tracker (v3.1)</title>
+    <title>စန်းမော် ပရိဘောဂ - Stock & Preorder Tracker (v3.2)</title>
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -122,7 +122,24 @@
         Developed by Agoon
     </div>
 </div>
-
+    
+<!-- Google Login Modal (Startup အစတွင် ပေါ်မည်) -->
+<div id="googleLoginModal" class="fixed inset-0 bg-slate-900/90 backdrop-blur-md z-[80] flex items-center justify-center p-3 sm:p-4">
+    <div class="bg-white dark:bg-slate-900 rounded-3xl w-full max-w-sm p-6 space-y-5 shadow-2xl text-center border border-slate-200 dark:border-slate-800">
+        <div class="w-16 h-16 bg-amber-100 dark:bg-amber-950/50 rounded-2xl flex items-center justify-center mx-auto text-amber-800 dark:text-amber-300 shadow-inner">
+            <i class="fa-solid fa-lock text-2xl"></i>
+        </div>
+        <div class="space-y-1.5">
+            <h2 class="text-lg font-bold text-slate-900 dark:text-slate-100">စန်းမော် ပရိဘောဂဆိုင်</h2>
+            <p class="text-xs text-slate-500 dark:text-slate-400">စနစ်ကို အသုံးပြုရန် Google Account ဖြင့် အရင် ဝင်ရောက်ပါ</p>
+        </div>
+        <button onclick="loginWithGoogle()" class="w-full bg-white hover:bg-slate-50 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-100 py-3.5 px-4 rounded-2xl text-xs font-bold transition flex items-center justify-center space-x-3 border border-slate-300 dark:border-slate-700 shadow-md">
+            <i class="fa-brands fa-google text-red-500 text-base"></i>
+            <span>Sign in with Google</span>
+        </button>
+    </div>
+</div>
+    
 <!-- Startup Role Selection Modal -->
 <div id="startupRoleModal" class="fixed inset-0 bg-slate-900/80 backdrop-blur-md hidden z-[60] flex items-center justify-center p-3 sm:p-4">
     <div class="bg-white dark:bg-slate-900 rounded-3xl w-full max-w-sm p-6 space-y-5 shadow-2xl text-center transform transition-all border border-slate-200 dark:border-slate-800">
@@ -1437,42 +1454,47 @@
 
     function initFirebase() {
         try {
-        if (!firebase.apps.length) {
-            firebaseApp = firebase.initializeApp(firebaseConfig);
-        } else {
-            firebaseApp = firebase.app();
+            if (!firebase.apps.length) {
+                firebaseApp = firebase.initializeApp(firebaseConfig);
+            } else {
+                firebaseApp = firebase.app();
+            }
+            dbFirestore = firebase.firestore();
+            auth = firebase.auth();
+
+            // အလိုအလျောက် Anonymous ဝင်ခိုင်းခြင်းကို ဖြုတ်ပြီး 
+            // အောက်ပါ loginWithGoogle() ကို အသုံးပြုမည်
+        } catch (e) {
+            console.error("Firestore init failed:", e);
+            isCloudSynced = false;
+            updateSyncIndicator(false);
         }
-        dbFirestore = firebase.firestore();
-        auth = firebase.auth();
-
-        // 1️⃣ Anonymous ဖြင့် Token အရင်ယူမည်
-        auth.signInAnonymously().then(() => {
-            // 2️⃣ Cloud Firestore ထဲမှ main_data (PIN များ) ကို ကြိုတင်ဖတ်ရှုမည် (Pre-fetch)
-            const docRef = dbFirestore.collection('sanmaw_furniture_store').doc('main_data');
-            docRef.get().then((docSnap) => {
-                if (docSnap.exists) {
-                    const cloudData = docSnap.data();
-                    if (cloudData && cloudData.settings) {
-                        db.settings = { ...db.settings, ...cloudData.settings };
-                    }
-                }
-                // 3️⃣ ဆက်လက်၍ Real-time Listener ချိတ်ဆက်မည်
-                attachFirestoreListener();
-            }).catch(err => {
-                console.warn("Pre-fetch settings error:", err);
-                attachFirestoreListener();
-            });
-
-        }).catch(err => {
-            console.warn("Auth sign-in warning:", err);
-        });
-
-    } catch (e) {
-        console.error("Firestore init failed:", e);
-        isCloudSynced = false;
-        updateSyncIndicator(false);
     }
-}
+
+    // Google Account ဖြင့် ဝင်ရောက်ရန် Function အသစ်
+    function loginWithGoogle() {
+        const provider = new firebase.auth.GoogleAuthProvider();
+        auth.signInWithPopup(provider).then((result) => {
+            const user = result.user;
+            const allowedEmail = "your-admin-email@gmail.com"; // 👈 သင့်ရဲ့ ခွင့်ပြုမည့် အီးမေးလ်ကို ထည့်ပါ
+
+            if (user.email === allowedEmail) {
+                showToast("ခွင့်ပြုထားသော အီးမေးလ်ဖြင့် အောင်မြင်စွာ ဝင်ရောက်ပြီးပါပြီ။", "success");
+                
+                document.getElementById('googleLoginModal').classList.add('hidden');
+                document.getElementById('startupRoleModal').classList.remove('hidden');
+
+                attachFirestoreListener();
+            } else {
+                // အကယ်၍ အခြားအီးမေးလ်ဖြင့် ဝင်လာပါက Sign out လုပ်ပြီး တားမြစ်မည်
+                auth.signOut();
+                showToast("ဤအီးမေးလ်ဖြင့် ဆိုင်စနစ်ကို ဝင်ရောက်ခွင့် မရှိပါ။", "error");
+            }
+        }).catch((error) => {
+            console.error("Google Sign-in Error:", error);
+            showToast("Google ဖြင့် ဝင်ရောက်မှု မအောင်မြင်ပါ။", "error");
+        });
+    }
     function attachFirestoreListener() {
         const docRef = dbFirestore.collection('sanmaw_furniture_store').doc('main_data');
 
@@ -3717,13 +3739,15 @@ function verifyStartupAdminPin() {
         if (toast) toast.classList.add('hidden');
     }
 
-    window.onload = function() {
+   window.onload = function() {
         initTheme();
         initFirebase();
         document.getElementById('splashScreen').style.opacity = '0';
         setTimeout(() => {
             document.getElementById('splashScreen').style.display = 'none';
-            document.getElementById('startupRoleModal').classList.remove('hidden');
+            // ❌ မူလ: document.getElementById('startupRoleModal').classList.remove('hidden');
+            // ✅ အသစ်: Google Login Modal ကို အစဆုံးပြမည်
+            document.getElementById('googleLoginModal').classList.remove('hidden');
         }, 300);
     };
 </script>
