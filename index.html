@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>စန်းမော် ပရိဘောဂ - Stock & Preorder Tracker (v3.2.3)</title>
+    <title>စန်းမော် ပရိဘောဂ - Stock & Preorder Tracker (v3.2.4)</title>
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -1583,28 +1583,47 @@
     }
 
     function verifyStartupStaffPin() {
-    const pin = document.getElementById('startupStaffPinInput').value.trim();
-    if (pin === getStaffPin() && pin !== '') { // 👈 pin !== '' ထပ်စစ်ထားသည်
-        currentRole = 'Staff';
-        document.getElementById('startupStaffPinModal').classList.add('hidden');
-        showToast("Staff Mode သို့ အောင်မြင်စွာ ဝင်ရောက်ပါပြီ။", "success");
-        updateRoleUI();
-    } else {
-        showToast("Staff PIN နံပါတ် မှားယွင်းနေပါသည် (သို့မဟုတ်) Cloud မှ Data မရောက်သေးပါ။", "error");
-    }
-}
+        const pin = document.getElementById('startupStaffPinInput').value.trim();
+        const actualStaffPin = getStaffPin();
 
-function verifyStartupAdminPin() {
-    const pin = document.getElementById('startupPinInput').value.trim();
-    if (pin === getAdminPin() && pin !== '') { // 👈 pin !== '' ထပ်စစ်ထားသည်
-        currentRole = 'Admin';
-        document.getElementById('startupAdminPinModal').classList.add('hidden');
-        showToast("Admin Mode သို့ အောင်မြင်စွာ ဝင်ရောက်ပါပြီ။", "success");
-        updateRoleUI();
-    } else {
-        showToast("Admin PIN နံပါတ် မှားယွင်းနေပါသည် (သို့မဟုတ်) Cloud မှ Data မရောက်သေးပါ။", "error");
+        // 👈 Cloud မှ Data ရောက်မရောက် စစ်ဆေးခြင်း
+        if (!actualStaffPin) {
+            showToast("Cloud မှ Data များ ဆွဲထုတ်နေဆဲ ဖြစ်ပါသည်။ ခဏစောင့်ပါ...", "error");
+            return;
+        }
+
+        if (pin === actualStaffPin) {
+            currentRole = 'Staff';
+            document.getElementById('startupStaffPinModal').classList.add('hidden');
+            showToast("Staff Mode သို့ အောင်မြင်စွာ ဝင်ရောက်ပါပြီ။", "success");
+            updateRoleUI();
+        } else {
+            showToast("Staff PIN နံပါတ် မှားယွင်းနေပါသည်။", "error");
+        }
     }
-}
+
+    function verifyStartupAdminPin() {
+        const pin = document.getElementById('startupPinInput').value.trim();
+        const actualAdminPin = getAdminPin();
+
+        // 👈 Cloud မှ Data ရောက်မရောက် စစ်ဆေးခြင်း
+        if (!actualAdminPin) {
+            showToast("Cloud မှ Data များ ဆွဲထုတ်နေဆဲ ဖြစ်ပါသည်။ ခဏစောင့်ပါ...", "error");
+            return;
+        }
+
+        if (pin === actualAdminPin) {
+            currentRole = 'Admin';
+            document.getElementById('startupAdminPinModal').classList.add('hidden');
+            showToast("Admin Mode သို့ အောင်မြင်စွာ ဝင်ရောက်ပါပြီ။", "success");
+            updateRoleUI();
+
+            // 👉 PIN မှန်မှသာ Data များကို စတင် ချိတ်ဆက် ဆွဲထုတ်မည်
+            attachFirestoreListener();
+        } else {
+            showToast("Admin PIN နံပါတ် မှားယွင်းနေပါသည်။", "error");
+        }
+    }
 
     function promptStartupAdminPin() {
         document.getElementById('startupRoleModal').classList.add('hidden');
