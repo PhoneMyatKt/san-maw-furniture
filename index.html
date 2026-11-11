@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>စန်းမော် ပရိဘောဂ - Stock & Preorder Tracker (v3.2.6)</title>
+    <title>စန်းမော် ပရိဘောဂ - Stock & Preorder Tracker (v3.2.7)</title>
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -1502,6 +1502,25 @@
         console.error("Google Sign-in Error:", error);
         showToast("Google ဖြင့် ဝင်ရောက်မှု မအောင်မြင်ပါ။", "error");
     });
+}
+    function signOutAndSwitchAccount() {
+    if (typeof auth !== 'undefined' && auth) {
+        auth.signOut().then(() => {
+            showToast("Google အကောင့်မှ ထွက်လိုက်ပါပြီ။", "success");
+            
+            // Modal အားလုံးကို ပိတ်ပြီး Google Login Modal ကို ပြန်ပြပါ
+            document.getElementById('startupRoleModal').classList.add('hidden');
+            document.getElementById('startupStaffPinModal').classList.add('hidden');
+            document.getElementById('startupAdminPinModal').classList.add('hidden');
+            document.getElementById('googleLoginModal').classList.remove('hidden');
+            
+        }).catch((error) => {
+            console.error("Sign out error:", error);
+            showToast("အကောင့်ထွက်ခြင်း မအောင်မြင်ပါ။", "error");
+        });
+    } else {
+        location.reload();
+    }
 }
     function attachFirestoreListener() {
         const docRef = dbFirestore.collection('sanmaw_furniture_store').doc('main_data');
