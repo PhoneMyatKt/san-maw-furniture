@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>စန်းမော် ပရိဘောဂ - Stock & Preorder Tracker (v3.2.1)</title>
+    <title>စန်းမော် ပရိဘောဂ - Stock & Preorder Tracker (v3.2.2)</title>
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -1461,7 +1461,14 @@
             }
             dbFirestore = firebase.firestore();
             auth = firebase.auth();
-
+            
+            auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL)
+              .then(() => {
+            console.log("Auth persistence set to LOCAL successfully.");
+          })
+              .catch((error) => {
+                console.error("Auth persistence error:", error);
+          });
             // အလိုအလျောက် Anonymous ဝင်ခိုင်းခြင်းကို ဖြုတ်ပြီး 
             // အောက်ပါ loginWithGoogle() ကို အသုံးပြုမည်
         } catch (e) {
