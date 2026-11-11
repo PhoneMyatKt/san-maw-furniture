@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>စန်းမော် ပရိဘောဂ - Stock & Preorder Tracker (v3.2.2)</title>
+    <title>စန်းမော် ပရိဘောဂ - Stock & Preorder Tracker (v3.2.3)</title>
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -3741,9 +3741,21 @@ function verifyStartupAdminPin() {
         document.getElementById('splashScreen').style.opacity = '0';
         setTimeout(() => {
             document.getElementById('splashScreen').style.display = 'none';
-            // ❌ မူလ: document.getElementById('startupRoleModal').classList.remove('hidden');
-            // ✅ အသစ်: Google Login Modal ကို အစဆုံးပြမည်
-            document.getElementById('googleLoginModal').classList.remove('hidden');
+            
+            // 👇 ဒီနေရာမှာ Auth State ကို စစ်ဆေးမည့် ကုဒ်ကို ထည့်ပါ
+            firebase.auth().onAuthStateChanged((user) => {
+                if (user) {
+                    // ✅ အကယ်၍ Login ဝင်ထားပြီးသား ဆိုရင် Google Login Modal ကို ပိတ်ပြီး Role Modal ကို ပြမည်
+                    document.getElementById('googleLoginModal').classList.add('hidden');
+                    document.getElementById('startupRoleModal').classList.remove('hidden');
+                    attachFirestoreListener();
+                } else {
+                    // ❌ မဝင်ရသေးဘူးဆိုမှ Google Login Modal ကို ပြမည်
+                    document.getElementById('googleLoginModal').classList.remove('hidden');
+                    document.getElementById('startupRoleModal').classList.add('hidden');
+                }
+            });
+
         }, 300);
     };
 </script>
