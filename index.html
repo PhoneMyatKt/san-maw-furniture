@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>စန်းမော် ပရိဘောဂ - Stock & Preorder Tracker (v3.2)</title>
+    <title>စန်းမော် ပရိဘောဂ - Stock & Preorder Tracker (v3.2.1)</title>
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -1471,30 +1471,23 @@
         }
     }
 
-    // Google Account ဖြင့် ဝင်ရောက်ရန် Function အသစ်
+    
     function loginWithGoogle() {
-        const provider = new firebase.auth.GoogleAuthProvider();
-        auth.signInWithPopup(provider).then((result) => {
-            const user = result.user;
-            const allowedEmail = "your-admin-email@gmail.com"; // 👈 သင့်ရဲ့ ခွင့်ပြုမည့် အီးမေးလ်ကို ထည့်ပါ
+    const provider = new firebase.auth.GoogleAuthProvider();
+    auth.signInWithPopup(provider).then((result) => {
+    
+        
+        showToast("Google ဖြင့် အောင်မြင်စွာ ဝင်ရောက်ပြီးပါပြီ။", "success");
+        
+        document.getElementById('googleLoginModal').classList.add('hidden');
+        document.getElementById('startupRoleModal').classList.remove('hidden');
 
-            if (user.email === allowedEmail) {
-                showToast("ခွင့်ပြုထားသော အီးမေးလ်ဖြင့် အောင်မြင်စွာ ဝင်ရောက်ပြီးပါပြီ။", "success");
-                
-                document.getElementById('googleLoginModal').classList.add('hidden');
-                document.getElementById('startupRoleModal').classList.remove('hidden');
-
-                attachFirestoreListener();
-            } else {
-                // အကယ်၍ အခြားအီးမေးလ်ဖြင့် ဝင်လာပါက Sign out လုပ်ပြီး တားမြစ်မည်
-                auth.signOut();
-                showToast("ဤအီးမေးလ်ဖြင့် ဆိုင်စနစ်ကို ဝင်ရောက်ခွင့် မရှိပါ။", "error");
-            }
-        }).catch((error) => {
-            console.error("Google Sign-in Error:", error);
-            showToast("Google ဖြင့် ဝင်ရောက်မှု မအောင်မြင်ပါ။", "error");
-        });
-    }
+        attachFirestoreListener();
+    }).catch((error) => {
+        console.error("Google Sign-in Error:", error);
+        showToast("Google ဖြင့် ဝင်ရောက်မှု မအောင်မြင်ပါ။", "error");
+    });
+}
     function attachFirestoreListener() {
         const docRef = dbFirestore.collection('sanmaw_furniture_store').doc('main_data');
 
@@ -1618,24 +1611,20 @@ function verifyStartupAdminPin() {
         document.getElementById('startupRoleModal').classList.remove('hidden');
     }
 
-    function verifyStartupAdminPin() {
-        const pin = document.getElementById('startupPinInput').value.trim();
-        if (pin === getAdminPin()) {
-            if (auth) {
-                // 👇 ဤနေရာတွင် Anonymous Sign-in ကို ခေါ်ယူမည်
-                auth.signInAnonymously().catch(() => {});
-            }
-            currentRole = 'Admin';
-            document.getElementById('startupAdminPinModal').classList.add('hidden');
-            showToast("Admin Mode သို့ အောင်မြင်စွာ ဝင်ရောက်ပါပြီ။", "success");
-            updateRoleUI();
+   function verifyStartupAdminPin() {
+    const pin = document.getElementById('startupPinInput').value.trim();
+    if (pin === getAdminPin()) {
+        currentRole = 'Admin';
+        document.getElementById('startupAdminPinModal').classList.add('hidden');
+        showToast("Admin Mode သို့ အောင်မြင်စွာ ဝင်ရောက်ပါပြီ။", "success");
+        updateRoleUI();
 
-            // 👉 PIN မှန်မှသာ Data များကို စတင် ချိတ်ဆက် ဆွဲထုတ်မည်
-            attachFirestoreListener();
-        } else {
-            showToast("Admin PIN နံပါတ် မှားယွင်းနေပါသည်။", "error");
-        }
+        // 👉 PIN မှန်မှသာ Data များကို စတင် ချိတ်ဆက် ဆွဲထုတ်မည်
+        attachFirestoreListener();
+    } else {
+        showToast("Admin PIN နံပါတ် မှားယွင်းနေပါသည်။", "error");
     }
+}
 
     function updateRoleUI() {
         document.getElementById('currentRoleDisplay').innerText = `Mode: ${currentRole} ${currentRole === 'Admin' ? '(Full Access)' : '(Restricted Access)'}`;
