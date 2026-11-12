@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>စန်းမော် ပရိဘောဂ - Stock & Preorder Tracker (v3.3.1)</title>
+    <title>စန်းမော် ပရိဘောဂ - Stock & Preorder Tracker (v3.3.2)</title>
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -765,6 +765,7 @@
 </div>
 
 <!-- PIN Settings Modal အထဲမှ Staff PIN ပါသည့် div ကို ဖျက်ပြီး ဤကဲ့သို့ ပြင်ပါ -->
+<!-- MODAL: PIN Settings Modal -->
 <div id="pinSettingsModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm hidden z-50 flex items-center justify-center p-3 sm:p-4">
     <div class="bg-white dark:bg-slate-900 rounded-2xl w-full max-w-sm p-5 space-y-4 shadow-xl text-left border border-slate-200 dark:border-slate-800">
         <div class="flex justify-between items-center border-b dark:border-slate-800 pb-2">
@@ -776,6 +777,8 @@
                 <label class="block font-semibold text-slate-600 dark:text-slate-400 mb-1">Admin PIN အသစ်</label>
                 <input type="password" id="inputNewAdminPin" maxlength="6" placeholder="Admin PIN အသစ်" class="w-full border dark:border-slate-700 rounded-xl p-2.5 outline-none focus:ring-2 focus:ring-amber-600 font-bold text-sm bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-slate-100">
             </div>
+            <!-- Staff PIN ဖြုတ်ထားသဖြင့် ဤနေရာတွင် Input မလိုအပ်တော့ပါ -->
+            <input type="hidden" id="inputNewStaffPin" value="">
         </div>
         <div class="flex space-x-2 pt-2 border-t dark:border-slate-800">
             <button onclick="closeModal('pinSettingsModal')" class="flex-1 bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 py-2.5 rounded-xl text-xs font-semibold">မလုပ်ပါ</button>
@@ -1386,22 +1389,21 @@
             return;
         }
         document.getElementById('inputNewAdminPin').value = getAdminPin();
-        document.getElementById('inputNewStaffPin').value = getStaffPin();
         document.getElementById('pinSettingsModal').classList.remove('hidden');
     }
 
     function stagePinSettingsSave() {
         const adminPinVal = document.getElementById('inputNewAdminPin').value.trim();
-        const staffPinVal = document.getElementById('inputNewStaffPin').value.trim();
 
-        if (!adminPinVal || !staffPinVal) {
-            showToast("Admin PIN နှင့် Staff PIN အလွတ်ထား၍ မရပါ။", "error");
+        if (!adminPinVal) {
+            showToast("Admin PIN အလွတ်ထား၍ မရပါ။", "error");
             return;
         }
 
         tempPendingAdminPin = adminPinVal;
-
         document.getElementById('confirmAdminPinDisplay').innerText = adminPinVal;
+        
+        // Staff PIN အပိုင်းကို ဖြုတ်ထားပါသည်
 
         document.getElementById('pinSettingsModal').classList.add('hidden');
         document.getElementById('pinConfirmModal').classList.remove('hidden');
