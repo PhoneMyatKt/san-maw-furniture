@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>စန်းမော် ပရိဘောဂ - Stock & Preorder Tracker (v3.4.0)</title>
+    <title>စန်းမော် ပရိဘောဂ - Stock & Preorder Tracker (v3.4.1)</title>
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -384,14 +384,14 @@
             <div id="categoryBreakdownGrid" class="grid grid-cols-2 sm:grid-cols-3 gap-2"></div>
         </div>
 
-        <div class="bg-white dark:bg-slate-900 p-3 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800 space-y-2.5 admin-only hidden">
+        <div class="bg-white dark:bg-slate-900 p-3 sm:p-4 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800 space-y-2.5 admin-only hidden">
             <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
                 <h3 class="text-[11px] font-bold text-slate-800 dark:text-slate-200 uppercase tracking-wide flex items-center">
-                    <i class="fa-solid fa-user-clock mr-1.5 text-amber-700 dark:text-amber-400"></i> ဝန်ထမ်း ပျက်ကွက် & ခွင့် မှတ်တမ်း
+                    <i class="fa-solid fa-user-clock mr-1.5 text-amber-700 dark:text-amber-400"></i> ဝန်ထမ်း ဤလအတွင်း ပျက်ကွက် မှတ်တမ်း
                 </h3>
-                <input type="month" id="dashboardWorkerMonthFilter" onchange="renderDashboardWorkersAttendance()" class="border border-slate-200 dark:border-slate-700 rounded-xl px-2 py-1 text-[11px] font-bold outline-none focus:ring-2 focus:ring-amber-600 bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-slate-100 w-full sm:w-auto">
+                <input type="month" id="dashboardWorkerMonthFilter" onchange="ခွင့်()" class="border border-slate-200 dark:border-slate-700 rounded-xl px-2 py-1 text-[11px] font-bold outline-none focus:ring-2 focus:ring-amber-600 bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-slate-100 w-full sm:w-auto">
             </div>
-            <div id="dashboardWorkersAttendanceGrid" class="grid grid-cols-2 gap-2"></div>
+            <div id="dashboardWorkersAttendanceGrid" class="space-y-2"></div>
         </div>
     </section>
 
@@ -1939,32 +1939,59 @@
 
     function renderDashboardWorkersAttendance() {
         const grid = document.getElementById('dashboardWorkersAttendanceGrid');
+        const monthFilterInput = document.getElementById('dashboardWorkerMonthFilter');
         if (!grid) return;
 
-        let todayStr = new Date().toISOString().split('T')[0];
-        let absentWorkers = [];
-        let leaveWorkers = [];
+        // အကယ်၍ Month Filter တွင် မရွေးရသေးပါက လက်ရှိလ (Current Month) ကို အလိုအလျောက် သတ်မှတ်မည်
+        if (monthFilterInput && !monthFilterInput.value) {
+            monthFilterInput.value = new Date().toISOString().slice(0, 7);
+        }
+        let targetMonth = monthFilterInput ? monthFilterInput.value : new Date().toISOString().slice(0, 7);
 
-        (db.workers || []).forEach(w => {
-            if (w.attendance && w.attendance[todayStr] === 'absent') {
-                absentWorkers.push(w.name);
-            } else if (w.attendance && w.attendance[todayStr] === 'leave') {
-                leaveWorkers.push(w.name);
+        grid.innerHTML = '';
+
+        if (!db.workers || db.workers.length === 0) {
+            grid.innerHTML = `<div class="text-center py-4 text-slate-400 text-xs">ဝန်ထမ်းစာရင်း မရှိသေးပါ။</div>`;
+            return;
+        }
+
+        db.workers.forEach(w => {
+            let absentDates = [];
+            let leaveDates = [];
+
+            if (w.attendance) {
+                Object.keys(w.attendance).forEach(dateStr => {
+                    // ရွေးချယ်ထားသော လ (Target Month, ဥပမာ - 2026-11) နှင့် ကိုက်ညီသော ရက်များကိုသာ စစ်ဆေးမည်
+                    if (dateStr.startsWith(targetMonth)) {
+                        let status = w.attendance[dateStr];
+                        if (status === 'absent') {
+                            absentDates.push(dateStr);
+                        } else if (status === 'leave') {
+                            leaveDates.push(dateStr);
+                        }
+                    }
+                });
             }
-        });
 
-        grid.innerHTML = `
-            <div class="bg-rose-50 border border-rose-200 p-2.5 rounded-xl space-y-1">
-                <span class="text-[9px] font-bold text-rose-900 block uppercase">ပျက်ကွက်သူ (Absent)</span>
-                <div class="text-base font-extrabold text-rose-600">${absentWorkers.length} ဦး</div>
-                <div class="text-[10px] text-slate-600 truncate">${absentWorkers.length > 0 ? absentWorkers.join(', ') : 'မရှိပါ။'}</div>
-            </div>
-            <div class="bg-amber-50 border border-amber-200 p-2.5 rounded-xl space-y-1">
-                <span class="text-[9px] font-bold text-amber-900 block uppercase">ခွင့်ယူသူ (Leave)</span>
-                <div class="text-base font-extrabold text-amber-700">${leaveWorkers.length} ဦး</div>
-                <div class="text-[10px] text-slate-600 truncate">${leaveWorkers.length > 0 ? leaveWorkers.join(', ') : 'မရှိပါ။'}</div>
-            </div>
-        `;
+            let div = document.createElement('div');
+            div.className = "bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700/80 p-3 rounded-xl space-y-1.5 text-xs";
+            div.innerHTML = `
+                <div class="flex justify-between items-center border-b border-slate-200 dark:border-slate-700 pb-1">
+                    <span class="font-bold text-slate-900 dark:text-slate-100">${w.name} <span class="text-[10px] text-slate-500 font-normal">(${w.role || 'Staff'})</span></span>
+                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-1 text-[11px]">
+                    <div class="bg-rose-50 dark:bg-rose-950/40 border border-rose-200 dark:border-rose-900/50 p-2 rounded-lg">
+                        <span class="font-bold text-rose-900 dark:text-rose-300 block mb-0.5">❌ ပျက်ကွက်ရက်များ (${absentDates.length} ရက်):</span>
+                        <span class="text-slate-700 dark:text-slate-300 font-mono">${absentDates.length > 0 ? absentDates.join(', ') : 'မရှိပါ။'}</span>
+                    </div>
+                    <div class="bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-900/50 p-2 rounded-lg">
+                        <span class="font-bold text-amber-900 dark:text-amber-300 block mb-0.5">📌 နေ့ဝက်ပျက်ရက်များ (${leaveDates.length} ရက်):</span>
+                        <span class="text-slate-700 dark:text-slate-300 font-mono">${leaveDates.length > 0 ? leaveDates.join(', ') : 'မရှိပါ။'}</span>
+                    </div>
+                </div>
+            `;
+            grid.appendChild(div);
+        });
     }
 
     function renderReportDashboard() {
@@ -3680,7 +3707,7 @@
                     <div class="flex items-center space-x-1">
                         <button onclick="setAttendance(${idx}, '${targetDate}', 'present')" class="px-2.5 py-1 rounded-lg text-xs font-bold transition ${status === 'present' ? 'bg-emerald-600 text-white shadow' : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300'}">တက်</button>
                         <button onclick="setAttendance(${idx}, '${targetDate}', 'absent')" class="px-2.5 py-1 rounded-lg text-xs font-bold transition ${status === 'absent' ? 'bg-rose-600 text-white shadow' : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300'}">ပျက်</button>
-                        <button onclick="setAttendance(${idx}, '${targetDate}', 'leave')" class="px-2.5 py-1 rounded-lg text-xs font-bold transition ${status === 'leave' ? 'bg-amber-600 text-white shadow' : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300'}">ခွင့်</button>
+                        <button onclick="setAttendance(${idx}, '${targetDate}', 'leave')" class="px-2.5 py-1 rounded-lg text-xs font-bold transition ${status === 'leave' ? 'bg-amber-600 text-white shadow' : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300'}">နေ့ဝက်</button>
                     </div>
                 </div>
                 <div class="text-[11px] text-slate-400 dark:text-slate-500 font-mono">ရက်စွဲ: ${targetDate} (${status.toUpperCase()})</div>
