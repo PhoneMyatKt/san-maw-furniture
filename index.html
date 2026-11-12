@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>စန်းမော် ပရိဘောဂ - Stock & Preorder Tracker (v3.2.9)</title>
+    <title>စန်းမော် ပရိဘောဂ - Stock & Preorder Tracker (v3.2.10)</title>
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -3746,8 +3746,15 @@
         let app = db.approvals[index];
 
         if (app.type === 'stock') {
+            // 👈 စတော့ဖျက်ခြင်းကို အတည်ပြုခြင်း
             db.stocks.splice(app.targetIndex, 1);
+        } else if (app.type === 'stock_edit') {
+            // 👈 စတော့ပြင်ဆင်မှုကို အတည်ပြုခြင်း
+            if (app.targetIndex !== null && app.targetIndex !== undefined && db.stocks[app.targetIndex]) {
+                db.stocks[app.targetIndex] = app.newData;
+            }
         } else if (app.type === 'sale') {
+            // 👈 အရောင်းဖျက်ခြင်းကို အတည်ပြုခြင်း (စတော့ပြန်ထည့်ပေးမည်)
             let s = db.sales[app.targetIndex];
             if (s && s.stockIndex !== null && s.stockIndex !== undefined && db.stocks[s.stockIndex]) {
                 db.stocks[s.stockIndex].qty = (db.stocks[s.stockIndex].qty || 0) + (s.qty || 0);
@@ -3757,8 +3764,17 @@
             db.sales[app.targetIndex] = app.newData;
         } else if (app.type === 'expense_edit') {
             db.expenses[app.targetIndex] = app.newData;
+        } else if (app.type === 'expense_delete') {
+            // 👈 ဆိုင်သုံးစရိတ်ဖျက်ခြင်းကို အတည်ပြုခြင်း
+            db.expenses.splice(app.targetIndex, 1);
         } else if (app.type === 'preorder') {
+            // 👈 Deli / Preorder ဖျက်ခြင်းကို အတည်ပြုခြင်း
             db.preorders.splice(app.targetIndex, 1);
+        } else if (app.type === 'preorder_edit') {
+            // 👈 Deli ပြင်ဆင်မှုကို အတည်ပြုခြင်း
+            if (app.targetIndex !== null && app.targetIndex !== undefined && db.preorders[app.targetIndex]) {
+                db.preorders[app.targetIndex] = app.newData;
+            }
         }
 
         db.approvals.splice(index, 1);
