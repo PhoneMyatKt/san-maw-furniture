@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>စန်းမော် ပရိဘောဂ - Stock & Preorder Tracker (v3.3.5)</title>
+    <title>စန်းမော် ပရိဘောဂ - Stock & Preorder Tracker (v3.3.6)</title>
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -824,6 +824,11 @@
                     <label class="block font-bold text-slate-800 dark:text-slate-200 flex items-center">
                         <i class="fa-solid fa-boxes-stacked mr-1.5 text-amber-700 dark:text-amber-400"></i> ၁။ စတော့ထဲမှ ပစ္စည်းရွေးချယ်ရန်
                     </label>
+                    <!-- 🔍 ပစ္စည်းရှာရန် Search Bar အသစ် -->
+                    <div class="relative">
+                        <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-xs"></i>
+                        <input type="text" id="saleModalSearchInput" oninput="filterSaleStockOptions()" placeholder="SKU သို့မဟုတ် အမည်ဖြင့် ရှာရန်..." class="w-full pl-9 pr-3 py-2 bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 border border-slate-200 dark:border-slate-700 rounded-xl text-xs outline-none focus:ring-2 focus:ring-amber-600 mb-2">
+                    </div>
                     <select id="saleStockSelect" onchange="onSaleStockSelected()" class="w-full border border-slate-200 dark:border-slate-700 rounded-xl p-3 outline-none focus:ring-2 focus:ring-amber-600 bg-white dark:bg-slate-800 font-medium text-slate-800 dark:text-slate-100">
                         <option value="">-- စတော့ပစ္စည်း ရွေးပါ --</option>
                     </select>
@@ -2419,6 +2424,10 @@
     }
 
     function openSaleModal(index = null) {
+        // Search Input ရှိပါက အစက ရှင်းလင်းပေးရန်
+        const searchInput = document.getElementById('saleModalSearchInput');
+        if (searchInput) searchInput.value = '';
+
         const select = document.getElementById('saleStockSelect');
         if (select) {
             let html = `<option value="">-- စတော့ပစ္စည်း ရွေးပါ --</option>`;
@@ -3757,6 +3766,21 @@
         setTimeout(() => {
             toast.classList.add('hidden');
         }, 2500);
+    }
+    // 🔍 Sale Modal ထဲတွင် စတော့ပစ္စည်းများကို Search ဖြင့် စစ်ထုတ်ရန်
+    function filterSaleStockOptions() {
+        const keyword = document.getElementById('saleModalSearchInput').value.toLowerCase();
+        const select = document.getElementById('saleStockSelect');
+        if (!select) return;
+
+        let html = `<option value="">-- စတော့ပစ္စည်း ရွေးပါ --</option>`;
+        db.stocks.forEach((st, idx) => {
+            let match = st.name.toLowerCase().includes(keyword) || st.sku.toLowerCase().includes(keyword);
+            if (match) {
+                html += `<option value="${idx}">${st.name} (SKU: ${st.sku} | လက်ကျန်: ${st.qty} | ဈေး: ${Number(st.salePrice).toLocaleString()} Ks)</option>`;
+            }
+        });
+        select.innerHTML = html;
     }
 
     function hideToast() {
