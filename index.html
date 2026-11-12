@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>စန်းမော် ပရိဘောဂ - Stock & Preorder Tracker (v3.3.2)</title>
+    <title>စန်းမော် ပရိဘောဂ - Stock & Preorder Tracker (v3.3.3)</title>
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -1258,7 +1258,6 @@
 
         <div class="bg-amber-50 dark:bg-amber-950/50 border border-amber-200 dark:border-amber-900 p-3 rounded-2xl text-left space-y-1.5 text-xs">
             <div class="flex justify-between"><span>Admin PIN အသစ်:</span> <strong id="confirmAdminPinDisplay" class="font-mono text-amber-900 dark:text-amber-200">****</strong></div>
-            <div class="flex justify-between"><span>Staff PIN အသစ်:</span> <strong id="confirmStaffPinDisplay" class="font-mono text-amber-900 dark:text-amber-200">****</strong></div>
         </div>
 
         <div class="flex space-x-2 pt-2">
@@ -1381,7 +1380,6 @@
     };
 
     let tempPendingAdminPin = '';
-    let tempPendingStaffPin = '';
 
     function openPinSettingsModal() {
         if (currentRole !== 'Admin') {
