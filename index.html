@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>စန်းမော် ပရိဘောဂ - Stock & Preorder Tracker (v3.2.10)</title>
+    <title>စန်းမော် ပရိဘောဂ - Stock & Preorder Tracker (v3.3.1)</title>
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -163,7 +163,7 @@
         </div>
 
         <div class="space-y-3 pt-1">
-            <button onclick="promptStartupStaffPin()" class="w-full bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 py-3.5 px-4 rounded-2xl text-xs font-bold transition flex items-center justify-center space-x-2.5 border border-slate-200 dark:border-slate-700 shadow-sm">
+            <button onclick="selectStartupRole('Staff')" class="w-full bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 py-3.5 px-4 rounded-2xl text-xs font-bold transition flex items-center justify-center space-x-2.5 border border-slate-200 dark:border-slate-700 shadow-sm">
                 <i class="fa-solid fa-user text-amber-800 dark:text-amber-400 text-base"></i>
                 <div class="text-left">
                     <div class="font-bold">ဆိုင်ဝန်ထမ်း (Staff Mode)</div>
@@ -185,23 +185,6 @@
     </div>
 </div>
 
-<!-- Startup Staff PIN Modal -->
-<div id="startupStaffPinModal" class="fixed inset-0 bg-slate-900/80 backdrop-blur-md hidden z-[70] flex items-center justify-center p-3 sm:p-4">
-    <div class="bg-white dark:bg-slate-900 rounded-3xl w-full max-w-sm p-5 sm:p-6 space-y-4 shadow-xl text-center border border-slate-200 dark:border-slate-800">
-        <div class="w-12 h-12 bg-amber-100 dark:bg-amber-950/50 rounded-2xl flex items-center justify-center mx-auto text-amber-800 dark:text-amber-300">
-            <i class="fa-solid fa-key text-lg sm:text-xl"></i>
-        </div>
-        <h3 class="text-sm sm:text-base font-bold text-slate-900 dark:text-slate-100">Staff PIN ထည့်ပါ</h3>
-        <p class="text-[11px] sm:text-xs text-slate-500 dark:text-slate-400">Firestore Cloud တွင် သတ်မှတ်ထားသော Staff PIN ကို ထည့်သွင်းပါ။</p>
-
-        <input type="password" id="startupStaffPinInput" maxlength="6" placeholder="Staff PIN နံပါတ်" class="w-full text-center px-4 py-3 sm:py-3.5 border border-slate-200 dark:border-slate-700 rounded-2xl tracking-widest text-base sm:text-lg font-bold focus:outline-none focus:ring-2 focus:ring-amber-600 bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-slate-100">
-
-        <div class="flex space-x-2 pt-2">
-            <button onclick="backToStartupRoleModalFromStaff()" class="flex-1 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 py-2.5 sm:py-3 rounded-xl text-[11px] sm:text-xs font-semibold">နောက်သို့</button>
-            <button onclick="verifyStartupStaffPin()" class="flex-1 bg-amber-800 hover:bg-amber-900 text-white py-2.5 sm:py-3 rounded-xl text-[11px] sm:text-xs font-semibold shadow">အတည်ပြုမည်</button>
-        </div>
-    </div>
-</div>
 
 <!-- Startup Admin PIN Modal -->
 <div id="startupAdminPinModal" class="fixed inset-0 bg-slate-900/80 backdrop-blur-md hidden z-[70] flex items-center justify-center p-3 sm:p-4">
@@ -781,7 +764,7 @@
     </div>
 </div>
 
-<!-- MODAL: PIN Settings Modal (Admin Only) -->
+<!-- PIN Settings Modal အထဲမှ Staff PIN ပါသည့် div ကို ဖျက်ပြီး ဤကဲ့သို့ ပြင်ပါ -->
 <div id="pinSettingsModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm hidden z-50 flex items-center justify-center p-3 sm:p-4">
     <div class="bg-white dark:bg-slate-900 rounded-2xl w-full max-w-sm p-5 space-y-4 shadow-xl text-left border border-slate-200 dark:border-slate-800">
         <div class="flex justify-between items-center border-b dark:border-slate-800 pb-2">
@@ -792,10 +775,6 @@
             <div>
                 <label class="block font-semibold text-slate-600 dark:text-slate-400 mb-1">Admin PIN အသစ်</label>
                 <input type="password" id="inputNewAdminPin" maxlength="6" placeholder="Admin PIN အသစ်" class="w-full border dark:border-slate-700 rounded-xl p-2.5 outline-none focus:ring-2 focus:ring-amber-600 font-bold text-sm bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-slate-100">
-            </div>
-            <div>
-                <label class="block font-semibold text-slate-600 dark:text-slate-400 mb-1">Staff PIN အသစ်</label>
-                <input type="password" id="inputNewStaffPin" maxlength="6" placeholder="Staff PIN အသစ်" class="w-full border dark:border-slate-700 rounded-xl p-2.5 outline-none focus:ring-2 focus:ring-amber-600 font-bold text-sm bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-slate-100">
             </div>
         </div>
         <div class="flex space-x-2 pt-2 border-t dark:border-slate-800">
@@ -1421,10 +1400,8 @@
         }
 
         tempPendingAdminPin = adminPinVal;
-        tempPendingStaffPin = staffPinVal;
 
         document.getElementById('confirmAdminPinDisplay').innerText = adminPinVal;
-        document.getElementById('confirmStaffPinDisplay').innerText = staffPinVal;
 
         document.getElementById('pinSettingsModal').classList.add('hidden');
         document.getElementById('pinConfirmModal').classList.remove('hidden');
@@ -1432,19 +1409,14 @@
 
     function confirmAndSavePins() {
         db.settings.adminPin = tempPendingAdminPin;
-        db.settings.staffPin = tempPendingStaffPin;
 
         saveData();
         closeModal('pinConfirmModal');
-        showToast("Admin PIN နှင့် Staff PIN ကို Cloud DB တွင် အောင်မြင်စွာ သိမ်းဆည်းပြီးပါပြီ။", "success");
+        showToast("Admin PIN ကို Cloud DB တွင် အောင်မြင်စွာ သိမ်းဆည်းပြီးပါပြီ။", "success");
     }
 
     function getAdminPin() {
         return String(db.settings?.adminPin || '').trim();
-    }
-
-    function getStaffPin() {
-        return String(db.settings?.staffPin || '').trim();
     }
 
     function toggleMenuDropdown(event) {
@@ -1613,38 +1585,6 @@
         document.getElementById('startupRoleModal').classList.add('hidden');
         showToast(`${role} Mode သို့ ဝင်ရောက်ပါပြီ။`, "success");
         updateRoleUI();
-    }
-
-    function promptStartupStaffPin() {
-        document.getElementById('startupRoleModal').classList.add('hidden');
-        document.getElementById('startupStaffPinModal').classList.remove('hidden');
-        document.getElementById('startupStaffPinInput').value = '';
-        document.getElementById('startupStaffPinInput').focus();
-    }
-
-    function backToStartupRoleModalFromStaff() {
-        document.getElementById('startupStaffPinModal').classList.add('hidden');
-        document.getElementById('startupRoleModal').classList.remove('hidden');
-    }
-
-    function verifyStartupStaffPin() {
-        const pin = document.getElementById('startupStaffPinInput').value.trim();
-        const actualStaffPin = getStaffPin();
-
-        // 👈 Cloud မှ Data ရောက်မရောက် စစ်ဆေးခြင်း
-        if (!actualStaffPin) {
-            showToast("Cloud မှ Data များ ဆွဲထုတ်နေဆဲ ဖြစ်ပါသည်။ ခဏစောင့်ပါ...", "error");
-            return;
-        }
-
-        if (pin === actualStaffPin) {
-            currentRole = 'Staff';
-            document.getElementById('startupStaffPinModal').classList.add('hidden');
-            showToast("Staff Mode သို့ အောင်မြင်စွာ ဝင်ရောက်ပါပြီ။", "success");
-            updateRoleUI();
-        } else {
-            showToast("Staff PIN နံပါတ် မှားယွင်းနေပါသည်။", "error");
-        }
     }
 
     function verifyStartupAdminPin() {
