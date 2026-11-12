@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>စန်းမော် ပရိဘောဂ - Stock & Preorder Tracker (v3.3.9)</title>
+    <title>စန်းမော် ပရိဘောဂ - Stock & Preorder Tracker (v3.4.0)</title>
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -2473,7 +2473,7 @@
     }
 
     // 🔍 Sale Modal ထဲတွင် စတော့ပစ္စည်းများကို Search ဖြင့် စစ်ထုတ်ရန် (Safe Version)
-    function filterSaleStockOptions() {
+   function filterSaleStockOptions() {
         const keyword = document.getElementById('saleModalSearchInput').value.toLowerCase().trim();
         const select = document.getElementById('saleStockSelect');
         if (!select) return;
@@ -2489,13 +2489,31 @@
             let name = String(st.name || '').toLowerCase();
             let sku = String(st.sku || '').toLowerCase();
             
-            // ရှာရမည့် စာသားနှင့် ကိုက်ညီမှု ရှိမရှိ စစ်ဆေးခြင်း
-            let match = name.includes(keyword) || sku.includes(keyword);
+            // ရှာရမည့် စာသားနှင့် ကိုက်ညီမှု ရှိမရှိ စစ်ဆေးခြင်း (သို့မဟုတ် Keyword အလွတ်ဆိုလျှင် အားလုံးပြမည်)
+            let match = !keyword || name.includes(keyword) || sku.includes(keyword);
             if (match) {
-                html += `<option value="${idx}">${st.name} (SKU: ${st.sku} | လက်ကျန်: ${st.qty} | ဈေး: ${Number(st.salePrice).toLocaleString()} Ks)</option>`;
+                html += `<option value="${idx}">${st.name} (SKU: ${st.sku} | လက်ကျန်: ${st.qty} | ဈေး: ${Number(st.salePrice || 0).toLocaleString()} Ks)</option>`;
             }
         });
         select.innerHTML = html;
+    }
+    function onSaleStockSelected() {
+        const select = document.getElementById('saleStockSelect');
+        const idx = select.value;
+        
+        if (idx !== '' && db.stocks[idx]) {
+            let st = db.stocks[idx];
+            document.getElementById('saleItemName').value = st.name || '';
+            document.getElementById('saleUnitPrice').value = st.salePrice || 0;
+            document.getElementById('saleQty').value = '1';
+            validateSaleQtyLimit();
+            calculateSaleRemaining();
+        } else {
+            document.getElementById('saleItemName').value = '';
+            document.getElementById('saleUnitPrice').value = '';
+            document.getElementById('saleQty').value = '1';
+            calculateSaleRemaining();
+        }
     }
 
     function onSaleDeliveryTypeChanged() {
