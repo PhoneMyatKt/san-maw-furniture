@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>စန်းမော် ပရိဘောဂ - Stock & Preorder Tracker (v3.3.4)</title>
+    <title>စန်းမော် ပရိဘောဂ - Stock & Preorder Tracker (v3.3.5)</title>
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -2359,21 +2359,23 @@
             tr.innerHTML = `
                 <td class="p-3">
                     <div class="font-bold text-slate-900">${st.name}</div>
-                    <div class="text-[10px] text-slate-400 font-mono">SKU: ${st.sku} | Added by: <span class="text-amber-800 font-semibold">${st.addedBy || 'Owner / Staff'}</span></div>
+                    <div class="text-[10px] text-slate-400 font-mono">SKU: ${st.sku}</div>
                 </td>
-                <td class="p-3"><span class="px-2 py-0.5 rounded-md text-[10px] font-bold bg-amber-50 text-amber-900 border border-amber-200">${st.category || 'General'}</span></td>
-                <td class="p-3 text-center font-bold text-amber-900">${st.qty}</td>
-                <td class="p-3 text-right font-bold text-slate-800">${Number(st.salePrice).toLocaleString()} Ks</td>
-                <td class="p-3 text-right font-bold text-slate-600 admin-only ${currentRole === 'Admin' ? '' : 'hidden'}">${Number(st.cogs || 0).toLocaleString()} Ks</td>
+                <td class="p-3">
+                    <span class="px-2 py-0.5 rounded-md text-[10px] font-bold bg-amber-50 dark:bg-amber-950 text-amber-900 dark:text-amber-200 border border-amber-200 dark:border-amber-900">${st.category || 'General'}</span>
+                </td>
+                <td class="p-3 text-center font-bold text-amber-900 dark:text-amber-300">${st.qty}</td>
+                <td class="p-3 text-right font-bold text-slate-800 dark:text-slate-200">${Number(st.salePrice).toLocaleString()} Ks</td>
+                <td class="p-3 text-right font-bold text-slate-600 dark:text-slate-400 admin-only ${currentRole === 'Admin' ? '' : 'hidden'}">${Number(st.cogs || 0).toLocaleString()} Ks</td>
                 <td class="p-3 text-right admin-only ${currentRole === 'Admin' ? '' : 'hidden'}">
-                    <div class="font-bold text-emerald-600">+${Number(profit).toLocaleString()} Ks</div>
-                    <div class="text-[10px] text-indigo-600 font-medium">${margin}% margin</div>
+                    <div class="font-bold text-emerald-600 dark:text-emerald-400">+${Number(profit).toLocaleString()} Ks</div>
+                    <div class="text-[10px] text-indigo-600 dark:text-indigo-400 font-medium">${margin}% margin</div>
                 </td>
                 <td class="p-3 text-center">
                     <div class="flex items-center justify-center space-x-1">
                         ${isPending && currentRole !== 'Admin' ? `<button disabled class="px-2 py-1 bg-amber-400 text-amber-950 rounded-lg text-xs font-bold animate-pulse cursor-not-allowed">Pending</button>` : `
-                            <button onclick="editStock(${realIdx})" class="px-2 py-1 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg text-xs font-medium">ပြင်</button>
-                            <button onclick="deleteStock(${realIdx})" class="px-2 py-1 bg-red-50 hover:bg-red-100 text-red-600 rounded-lg text-xs font-medium">ဖျက်</button>
+                            <button onclick="editStock(${realIdx})" class="px-2 py-1 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 rounded-lg text-xs font-medium">ပြင်</button>
+                            <button onclick="deleteStock(${realIdx})" class="px-2 py-1 bg-red-50 hover:bg-red-100 dark:bg-red-950/50 text-red-600 rounded-lg text-xs font-medium">ဖျက်</button>
                         `}
                     </div>
                 </td>
