@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>စန်းမော် ပရိဘောဂ - Stock & Preorder Tracker (v3.3.8)</title>
+    <title>စန်းမော် ပရိဘောဂ - Stock & Preorder Tracker (v3.3.9)</title>
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -2472,18 +2472,30 @@
         document.getElementById('saleModal').classList.remove('hidden');
     }
 
-    function onSaleStockSelected() {
+    // 🔍 Sale Modal ထဲတွင် စတော့ပစ္စည်းများကို Search ဖြင့် စစ်ထုတ်ရန် (Safe Version)
+    function filterSaleStockOptions() {
+        const keyword = document.getElementById('saleModalSearchInput').value.toLowerCase().trim();
         const select = document.getElementById('saleStockSelect');
-        const idx = select.value;
-        if (idx !== '') {
-            let st = db.stocks[idx];
-            if (st) {
-                document.getElementById('saleItemName').value = st.name;
-                document.getElementById('saleUnitPrice').value = st.salePrice;
-                document.getElementById('saleQty').value = '1';
-                calculateSaleRemaining();
-            }
+        if (!select) return;
+
+        let html = `<option value="">-- စတော့ပစ္စည်း ရွေးပါ --</option>`;
+        
+        if (!db.stocks || db.stocks.length === 0) {
+            select.innerHTML = html;
+            return;
         }
+
+        db.stocks.forEach((st, idx) => {
+            let name = String(st.name || '').toLowerCase();
+            let sku = String(st.sku || '').toLowerCase();
+            
+            // ရှာရမည့် စာသားနှင့် ကိုက်ညီမှု ရှိမရှိ စစ်ဆေးခြင်း
+            let match = name.includes(keyword) || sku.includes(keyword);
+            if (match) {
+                html += `<option value="${idx}">${st.name} (SKU: ${st.sku} | လက်ကျန်: ${st.qty} | ဈေး: ${Number(st.salePrice).toLocaleString()} Ks)</option>`;
+            }
+        });
+        select.innerHTML = html;
     }
 
     function onSaleDeliveryTypeChanged() {
@@ -2593,7 +2605,7 @@
             deposit,
             remaining,
             date,
-            cogs: sIdx !== null && db.stocks[sIdx] ? (db.stocks[sIdx].cogs || 0) : 0 // 👈 COGS ကိုပါ သိမ်းဆည်းရန် ထည့်ပါ
+            cogs: sIdx !== null && db.stocks[sIdx] ? (db.stocks[sIdx].cogs || 0) : 0
         };
 
         if (editIndex === '') {
