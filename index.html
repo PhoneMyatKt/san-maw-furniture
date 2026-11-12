@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>စန်းမော် ပရိဘောဂ - Stock & Preorder Tracker (v3.2.8)</title>
+    <title>စန်းမော် ပရိဘောဂ - Stock & Preorder Tracker (v3.2.9)</title>
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -137,7 +137,7 @@
         <div class="space-y-3 text-left">
             <div>
                 <label class="block text-[11px] font-semibold text-slate-600 dark:text-slate-400 mb-1">Email</label>
-                <input type="email" id="loginEmailInput" placeholder="admin@sanmaw.com" class="w-full border border-slate-200 dark:border-slate-700 rounded-xl p-2.5 text-xs outline-none focus:ring-2 focus:ring-amber-600 bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-slate-100">
+                <input type="email" id="loginEmailInput" placeholder="example@email.com" class="w-full border border-slate-200 dark:border-slate-700 rounded-xl p-2.5 text-xs outline-none focus:ring-2 focus:ring-amber-600 bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-slate-100">
             </div>
             <div>
                 <label class="block text-[11px] font-semibold text-slate-600 dark:text-slate-400 mb-1">Password</label>
@@ -179,7 +179,7 @@
             </button>
              <!-- ➕ အကောင့်အမှား ဝင်မိသူများအတွက်သာ လိုအပ်မှ နှိပ်ရန် ခလုတ် -->
             <button onclick="signOutAndSwitchAccount()" class="w-full text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200 py-1.5 text-[11px] font-semibold transition">
-                <i class="fa-solid fa-right-left mr-1"></i> အခြား Google အကောင့်ဖြင့် ပြန်ဝင်ရန်
+                <i class="fa-solid fa-right-left mr-1"></i> Sign Out ရန်
             </button>
         </div>
     </div>
@@ -457,6 +457,7 @@
                         <th class="p-3 text-center">Qty</th>
                         <th class="p-3 text-right">Total Price</th>
                         <th class="p-3 text-right admin-only hidden">Est. Profit</th>
+                        <th class="p-3 text-right admin-only hidden">Profit Margin</th>
                         <th class="p-3 text-center">Action</th>
                     </tr>
                     </thead>
@@ -493,6 +494,7 @@
                         <th class="p-3 text-center">Qty</th>
                         <th class="p-3 text-right">Total Price</th>
                         <th class="p-3 text-right admin-only ${currentRole === 'Admin' ? '' : 'hidden'}">Est. Profit</th>
+                        <th class="p-3 text-right admin-only ${currentRole === 'Admin' ? '' : 'hidden'}">Profit Margin</th>
                         <th class="p-3 text-center">Action / Voucher</th>
                     </tr>
                     </thead>
