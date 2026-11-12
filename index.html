@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>စန်းမော် ပရိဘောဂ - Stock & Preorder Tracker (v3.3.6)</title>
+    <title>စန်းမော် ပရိဘောဂ - Stock & Preorder Tracker (v3.3.7)</title>
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -281,7 +281,7 @@
                     <button onclick="switchTab('purchases'); closeMenuDropdown();" id="tab-purchases" class="tab-btn menu-tab-btn admin-only hidden w-full text-left px-4 py-2.5 text-xs font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 items-center space-x-2.5 transition">
                         <i class="fa-solid fa-bag-shopping w-5 text-amber-700 dark:text-amber-400 text-sm"></i> <span>ကုန်ဝယ်စာရင်း (Purchases)</span>
                     </button>
-                    <button onclick="switchTab('preorder'); closeMenuDropdown();" id="tab-preorder" class="tab-btn menu-tab-btn w-full text-left px-4 py-2.5 text-xs font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 flex items-center space-x-2.5 transition">
+                    <button onclick="switchTab('delivery'); closeMenuDropdown();" id="tab-delivery-list" class="tab-btn menu-tab-btn w-full text-left px-4 py-2.5 text-xs font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 flex items-center space-x-2.5 transition">
                         <i class="fa-solid fa-truck-fast w-5 text-amber-700 dark:text-amber-400 text-sm"></i> <span>ပို့ဆောင်မှု စာရင်း (Deli List)</span>
                     </button>
                     <button onclick="switchTab('suppliers'); closeMenuDropdown();" id="tab-suppliers" class="tab-btn menu-tab-btn w-full text-left px-4 py-2.5 text-xs font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 flex items-center space-x-2.5 transition">
@@ -3482,7 +3482,7 @@
                     </div>
                     <div class="flex flex-col items-end gap-1">
                         <span class="px-2.5 py-1 rounded-full text-[10px] font-bold ${p.isArrived ? 'bg-emerald-100 dark:bg-emerald-950 text-emerald-800 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-900' : 'bg-amber-100 dark:bg-amber-950 text-amber-800 dark:text-amber-300 border border-amber-200 dark:border-amber-900'}">
-                            ${p.isArrived ? 'ပို့ဆောင်ပြီး' : 'ပို့ရန်ကျန်'}
+                            ${p.isArrived ? 'စစ်ဆေးပြီး' : 'စစ်ရန်ကျန်'}
                         </span>
                     </div>
                 </div>
@@ -3509,11 +3509,11 @@
                 <div class="flex items-center justify-between pt-1 border-t border-slate-100 dark:border-slate-800">
                     <div class="flex items-center space-x-1.5 flex-wrap gap-y-1">
                         <button onclick="togglePreorderArrival(${idx})" class="px-3 py-1.5 rounded-lg text-xs font-bold ${p.isArrived ? 'bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-200 hover:bg-slate-300' : 'bg-emerald-600 text-white hover:bg-emerald-700'} transition">
-                            ${p.isArrived ? 'အခြေအနေ ပြန်ပြောင်းမည်' : 'ပို့ပြီးပါက နှိပ်ရန်'}
+                            ${p.isArrived ? 'အခြေအနေ ပြန်ပြောင်းမည်' : 'စစ်ပြီးပါက နှိပ်ရန်'}
                         </button>
                         ${currentRole === 'Admin' ? `
                             <button onclick="completePreorder(${idx})" class="px-3 py-1.5 rounded-lg text-xs font-bold bg-amber-800 hover:bg-amber-900 text-white shadow transition">
-                                ပြီးစီးပြီ (Complete)
+                            Deli Complete
                             </button>
                         ` : ''}
                     </div>
