@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>စန်းမော် ပရိဘောဂ - Stock & Preorder Tracker (v3.3.3)</title>
+    <title>စန်းမော် ပရိဘောဂ - Stock & Preorder Tracker (v3.3.4)</title>
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -2582,6 +2582,7 @@
             deposit,
             remaining,
             date
+            cogs: sIdx !== null && db.stocks[sIdx] ? (db.stocks[sIdx].cogs || 0) : 0 // 👈 COGS ကိုပါ သိမ်းဆည်းရန် ထည့်ပါ
         };
 
         if (editIndex === '') {
@@ -2660,6 +2661,9 @@
                 }
             }
             let profit = (s.qty || 0) * (s.unitPrice - unitC);
+            let totalRev = (s.qty || 0) * s.unitPrice;
+            let margin = totalRev > 0 ? ((profit / totalRev) * 100).toFixed(1) : '0.0'; // 👈 Profit Margin တွက်ချက်ရန်
+
             let isPendingDelete = db.approvals.some(a => a.type === 'sale' && a.targetId === s.id);
             let isPendingEdit = db.approvals.some(a => a.type === 'sale_edit' && a.targetId === s.id);
             let isPending = isPendingDelete || isPendingEdit;
@@ -2682,6 +2686,9 @@
                 </td>
                 <td class="p-3 text-right font-bold text-emerald-600 admin-only ${currentRole === 'Admin' ? '' : 'hidden'}">
                     +${Number(profit).toLocaleString()} Ks
+                </td>
+                <td class="p-3 text-right font-bold text-indigo-600 admin-only ${currentRole === 'Admin' ? '' : 'hidden'}">
+                    ${margin}%
                 </td>
                 <td class="p-3 text-center">
                     <div class="flex items-center justify-center space-x-1">
