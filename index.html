@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>စန်းမော် ပရိဘောဂ - Stock & Preorder Tracker (v3.4.2)</title>
+    <title>စန်းမော် ပရိဘောဂ - Stock & Preorder Tracker (v3.4.3)</title>
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -320,62 +320,6 @@
                     </button>
                 </div>
             </div>
-
-            <div class="grid grid-cols-1 sm:grid-cols-3 gap-2.5 pt-1">
-                <div class="bg-amber-50/70 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-900/50 p-2.5 rounded-xl">
-                    <span class="text-[9px] font-bold text-amber-900 dark:text-amber-300 block mb-0.5">Daily Petty Cash Target</span>
-                    <div id="displayPettyTarget" class="text-sm sm:text-base font-extrabold text-amber-950 dark:text-amber-100">200,000 Ks</div>
-                </div>
-                <div id="pettyBalanceCard" class="bg-emerald-50/70 dark:bg-emerald-950/30 border border-emerald-200 dark:border-emerald-900/50 p-2.5 rounded-xl">
-                    <span class="text-[9px] font-bold text-emerald-900 dark:text-emerald-300 block mb-0.5">လက်ကျန် Petty Cash</span>
-                    <div id="displayPettyBalance" class="text-sm sm:text-base font-extrabold text-emerald-700 dark:text-emerald-400">200,000 Ks</div>
-                    <span id="pettyStatusBadge" class="text-[9px] text-emerald-700 dark:text-emerald-400 font-bold">100% ပြည့်မီ</span>
-                </div>
-                <div id="advanceDrawCard" class="bg-rose-50/70 dark:bg-rose-950/30 border border-rose-200 dark:border-rose-900/50 p-2.5 rounded-xl">
-                    <span class="text-[9px] font-bold text-rose-900 dark:text-rose-300 block mb-0.5">အသုံးစရိတ်</span>
-                    <div id="displayAdvanceDraw" class="text-sm sm:text-base font-extrabold text-rose-600 dark:text-rose-400">0 Ks</div>
-                    <span id="advanceStatusBadge" class="text-[9px] text-rose-700 dark:text-rose-400">လိုငွေ (Deficit)</span>
-                </div>
-            </div>
-        </div>
-
-        <div class="grid grid-cols-1 sm:grid-cols-3 gap-2.5 sm:gap-3 admin-only hidden">
-            <div class="bg-white dark:bg-slate-900 p-3 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm space-y-1.5">
-                <div class="flex items-center justify-between">
-                    <span class="text-[11px] font-bold text-amber-900 dark:text-amber-300">ပင်မ လည်ပတ်ငွေ</span>
-                    <button onclick="openMainCapitalModal()" class="text-[9px] px-2 py-1 bg-amber-100 hover:bg-amber-200 dark:bg-amber-950 text-amber-900 dark:text-amber-200 font-bold rounded-lg transition border border-amber-300">
-                        ပြင်မည်
-                    </button>
-                </div>
-                <div id="displayMainCapital" class="text-base sm:text-lg font-extrabold text-slate-900 dark:text-slate-100">3,000,000 Ks</div>
-                <div class="flex justify-between items-center text-[9px] text-slate-500 dark:text-slate-400 pt-1 border-t border-slate-100 dark:border-slate-800">
-                    <span>Target: <strong class="text-slate-700 dark:text-slate-300">30 သိန်း</strong></span>
-                    <span id="mainCapStatusText" class="text-emerald-600 font-bold">100% ပြည့်မီ</span>
-                </div>
-            </div>
-
-            <div class="bg-white dark:bg-slate-900 p-3 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm space-y-1.5">
-                <div class="flex items-center justify-between">
-                    <span class="text-[11px] font-bold text-slate-700 dark:text-slate-300">Stock ဝယ်ရန် လက်ကျန်ငွေ</span>
-                    <div class="w-6 h-6 rounded-lg bg-emerald-100 dark:bg-emerald-950 text-emerald-800 flex items-center justify-center shrink-0">
-                        <i class="fa-solid fa-boxes-packing text-[10px]"></i>
-                    </div>
-                </div>
-                <div id="displaySalesCapital" class="text-base sm:text-lg font-extrabold text-emerald-600 dark:text-emerald-400">0 Ks</div>
-                <p class="text-[9px] text-slate-400">(COGS အရင်းမှ ကျန်ရှိငွေ)</p>
-            </div>
-
-            <div class="bg-white dark:bg-slate-900 p-3 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm space-y-1.5">
-                <div class="flex items-center justify-between">
-                    <span class="text-[11px] font-bold text-slate-700 dark:text-slate-300">စုစုပေါင်း ကုန်ဝယ်စရိတ်</span>
-                    <div class="w-6 h-6 rounded-lg bg-rose-100 dark:bg-rose-950 text-rose-800 flex items-center justify-center shrink-0">
-                        <i class="fa-solid fa-bag-shopping text-[10px]"></i>
-                    </div>
-                </div>
-                <div id="displayTotalPurchases" class="text-base sm:text-lg font-extrabold text-rose-600 dark:text-rose-400">0 Ks</div>
-                <p class="text-[9px] text-slate-400">ဝယ်ယူထားပြီးသော ကုန်စရိတ်</p>
-            </div>
-        </div>
 
         <div id="categoryBreakdownCard" class="bg-white dark:bg-slate-900 p-3 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800 space-y-2.5">
             <h3 class="text-[11px] font-bold text-slate-800 dark:text-slate-200 uppercase tracking-wide flex items-center">
@@ -720,46 +664,6 @@
             <button onclick="closeModal('voucherPreviewModal')" class="w-full bg-slate-200 hover:bg-slate-300 dark:bg-slate-700 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-200 py-2.5 px-3 rounded-xl text-xs font-bold transition">
                 ပိတ်မည်
             </button>
-        </div>
-    </div>
-</div>
-
-<!-- MODAL: Petty Cash Target Edit Modal (Admin Only) -->
-<div id="pettyCashTargetModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm hidden z-50 flex items-center justify-center p-3 sm:p-4">
-    <div class="bg-white dark:bg-slate-900 rounded-2xl w-full max-w-sm p-5 space-y-4 shadow-xl text-left border border-slate-200 dark:border-slate-800">
-        <div class="flex justify-between items-center border-b dark:border-slate-800 pb-2">
-            <h3 class="text-base font-bold text-slate-900 dark:text-slate-100">Petty Cash Target Limit ပြင်ရန်</h3>
-            <button onclick="closeModal('pettyCashTargetModal')" class="text-slate-400 font-bold text-xl">&times;</button>
-        </div>
-        <div class="space-y-3 text-xs">
-            <div>
-                <label class="block font-semibold text-slate-600 dark:text-slate-400 mb-1">Petty Cash Target Limit (Ks)</label>
-                <input type="number" id="inputPettyTarget" min="0" placeholder="200000" class="w-full border dark:border-slate-700 rounded-xl p-2.5 outline-none focus:ring-2 focus:ring-amber-600 font-bold text-sm bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-slate-100">
-            </div>
-        </div>
-        <div class="flex space-x-2 pt-2 border-t dark:border-slate-800">
-            <button onclick="closeModal('pettyCashTargetModal')" class="flex-1 bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 py-2.5 rounded-xl text-xs font-semibold">မလုပ်ပါ</button>
-            <button onclick="savePettyCashTarget()" class="flex-1 bg-amber-800 text-white py-2.5 rounded-xl text-xs font-semibold shadow">သိမ်းဆည်းမည်</button>
-        </div>
-    </div>
-</div>
-
-<!-- MODAL: Main Capital Edit Modal -->
-<div id="mainCapitalModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm hidden z-50 flex items-center justify-center p-3 sm:p-4">
-    <div class="bg-white dark:bg-slate-900 rounded-2xl w-full max-w-sm p-5 space-y-4 shadow-xl text-left border border-slate-200 dark:border-slate-800">
-        <div class="flex justify-between items-center border-b dark:border-slate-800 pb-2">
-            <h3 class="text-base font-bold text-slate-900 dark:text-slate-100">Main Capital (ပင်မ မတည်ငွေ) ပြင်ရန်</h3>
-            <button onclick="closeModal('mainCapitalModal')" class="text-slate-400 font-bold text-xl">&times;</button>
-        </div>
-        <div class="space-y-3 text-xs">
-            <div>
-                <label class="block font-semibold text-slate-600 dark:text-slate-400 mb-1">ပင်မ မတည်ငွေ ပမာဏ (Ks)</label>
-                <input type="number" id="inputMainCapital" min="0" placeholder="3000000" class="w-full border dark:border-slate-700 rounded-xl p-2.5 outline-none focus:ring-2 focus:ring-amber-600 font-bold text-sm bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-slate-100">
-            </div>
-        </div>
-        <div class="flex space-x-2 pt-2 border-t dark:border-slate-800">
-            <button onclick="closeModal('mainCapitalModal')" class="flex-1 bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 py-2.5 rounded-xl text-xs font-semibold">မလုပ်ပါ</button>
-            <button onclick="saveMainCapital()" class="flex-1 bg-amber-800 text-white py-2.5 rounded-xl text-xs font-semibold shadow">သိမ်းဆည်းမည်</button>
         </div>
     </div>
 </div>
@@ -1376,11 +1280,7 @@
         approvals: [],
         settings: {
             adminPin: '',
-            staffPin: '',
-            mainCapital: 3000000,
-            pettyCashTarget: 200000,
-            allocatedMainCapRepay: 0,
-            allocatedPettyRefill: 0
+            staffPin: ''
         }
     };
 
@@ -1809,91 +1709,7 @@
             }
         }
     }
-
-    function calculateFinancials() {
-        const pettyTarget = parseFloat(db.settings.pettyCashTarget) || 200000;
-        const mainCapTarget = parseFloat(db.settings.mainCapital) || 3000000;
-
-        let totalExpenses = 0;
-        (db.expenses || []).forEach(ex => totalExpenses += (parseFloat(ex.amount) || 0));
-
-        let totalPurchases = 0;
-        (db.purchases || []).forEach(p => totalPurchases += (parseFloat(p.amount) || 0));
-
-        let totalSalesCOGS = 0;
-        (db.sales || []).forEach(s => {
-            let unitC = parseFloat(s.cogs) || 0;
-            if (s.stockIndex !== null && s.stockIndex !== undefined && db.stocks && db.stocks[s.stockIndex]) {
-                if (db.stocks[s.stockIndex].cogs !== undefined && db.stocks[s.stockIndex].cogs !== null && db.stocks[s.stockIndex].cogs !== '') {
-                    unitC = parseFloat(db.stocks[s.stockIndex].cogs) || 0;
-                }
-            }
-            totalSalesCOGS += (parseFloat(s.qty) || 0) * unitC;
-        });
-
-        let totalPreorderDeposit = 0;
-        (db.preorders || []).forEach(p => {
-            totalPreorderDeposit += (parseFloat(p.deposit) || 0);
-        });
-
-        const allocatedPettyRefill = parseFloat(db.settings.allocatedPettyRefill) || 0;
-        const mainCapitalDrawnForPetty = parseFloat(db.settings.mainCapitalDrawnForPetty) || 0;
-        const unrefilledExpenses = Math.max(0, totalExpenses - allocatedPettyRefill);
-        const currentPettyCash = Math.max(0, pettyTarget - unrefilledExpenses);
-
-        const allocatedMainCapRepay = parseFloat(db.settings.allocatedMainCapRepay) || 0;
-
-        let availableStockBuyingCash = Math.max(0, totalSalesCOGS + totalPreorderDeposit - totalPurchases - allocatedMainCapRepay - allocatedPettyRefill);
-        let currentMainCapital = mainCapTarget + allocatedMainCapRepay - Math.max(0, totalPurchases - (totalSalesCOGS + totalPreorderDeposit - allocatedMainCapRepay - allocatedPettyRefill)) - mainCapitalDrawnForPetty;
-
-        return {
-            pettyTarget,
-            mainCapTarget,
-            totalExpenses,
-            totalSalesCOGS,
-            currentPettyCash,
-            unrefilledExpenses,
-            availableStockBuyingCash,
-            currentMainCapital,
-            totalPurchases,
-            allocatedMainCapRepay,
-            allocatedPettyRefill,
-            mainCapitalDrawnForPetty
-        };
-    }
-
-    function executeManualRefill() {
-        if (currentRole !== 'Admin') {
-            showToast("Refill ပြုလုပ်ရန် Admin Mode လိုအပ်ပါသည်။", "error");
-            return;
-        }
-
-        let financials = calculateFinancials();
-
-        if (financials.unrefilledExpenses <= 0) {
-            showToast("Petty Cash မလျော့သေးပါသဖြင့် Refill လုပ်၍မရပါ (၂ သိန်း ပြည့်နေပါသည်)။", "error");
-            return;
-        }
-
-        let unrefilled = financials.unrefilledExpenses;
-        let totalAllocatedSoFar = (parseFloat(db.settings.allocatedMainCapRepay) || 0) + 
-                                  (parseFloat(db.settings.allocatedPettyRefill) || 0);
-
-        let unallocatedPool = Math.max(0, financials.totalSalesCOGS - totalAllocatedSoFar);
-
-        let fromSales = Math.min(unallocatedPool, unrefilled);
-        let neededFromMainCap = unrefilled - fromSales;
-
-        db.settings.allocatedPettyRefill = (parseFloat(db.settings.allocatedPettyRefill) || 0) + unrefilled;
-
-        if (neededFromMainCap > 0) {
-            db.settings.mainCapitalDrawnForPetty = (parseFloat(db.settings.mainCapitalDrawnForPetty) || 0) + neededFromMainCap;
-        }
-
-        saveData();
-        renderAll();
-        showToast("Petty Cash ကို ၂ သိန်း အပြည့် အောင်မြင်စွာ Refill ပြီးပါပြီ။", "success");
-    }
+       
 
     function renderCategoryBreakdown() {
         const grid = document.getElementById('categoryBreakdownGrid');
@@ -2930,11 +2746,6 @@
             renderAll();
         } else {
             if (currentRole === 'Admin') {
-                let oldAmount = parseFloat(db.expenses[index].amount) || 0;
-                let diff = amount - oldAmount;
-                if (diff !== 0 && db.settings.allocatedPettyRefill && db.settings.allocatedPettyRefill > 0) {
-                    db.settings.allocatedPettyRefill = Math.max(0, (parseFloat(db.settings.allocatedPettyRefill) || 0) + diff);
-                }
                 db.expenses[index] = expObj;
                 showToast("ဆိုင်သုံးစရိတ် ပြင်ဆင်ပြီးပါပြီ။", "success");
                 saveData();
@@ -2989,20 +2800,6 @@
             filteredExpenses = db.expenses.filter(ex => ex.date && ex.date.startsWith(currentSelectedMonth));
         }
 
-        let financials = calculateFinancials();
-        const displayPettyTarget = document.getElementById('displayPettyTarget');
-        const displayPettyBalance = document.getElementById('displayPettyBalance');
-        const displayAdvanceDraw = document.getElementById('displayAdvanceDraw');
-        const pettyStatusBadge = document.getElementById('pettyStatusBadge');
-
-        if (displayPettyTarget) displayPettyTarget.innerText = Number(financials.pettyTarget).toLocaleString() + ' Ks';
-        if (displayPettyBalance) displayPettyBalance.innerText = Number(financials.currentPettyCash).toLocaleString() + ' Ks';
-        if (displayAdvanceDraw) displayAdvanceDraw.innerText = Number(financials.unrefilledExpenses).toLocaleString() + ' Ks';
-        if (pettyStatusBadge) {
-            let pct = Math.round((financials.currentPettyCash / financials.pettyTarget) * 100);
-            pettyStatusBadge.innerText = `${pct}% လက်ကျန်`;
-        }
-
         if (filteredExpenses.length === 0) {
             tbody.innerHTML = `<tr><td colspan="4" class="text-center py-6 text-slate-400 text-xs">ဆိုင်သုံးစရိတ် မရှိသေးပါ။</td></tr>`;
             return;
@@ -3043,15 +2840,6 @@
     function deleteExpense(index) {
         let ex = db.expenses[index];
         if (currentRole === 'Admin') {
-            let deletedAmt = parseFloat(ex.amount) || 0;
-
-            let drawnFromMain = parseFloat(db.settings.mainCapitalDrawnForPetty) || 0;
-            let reduceMain = Math.min(drawnFromMain, deletedAmt);
-            db.settings.mainCapitalDrawnForPetty = Math.max(0, drawnFromMain - reduceMain);
-            let remainderDelete = deletedAmt - reduceMain;
-            if (remainderDelete > 0 && db.settings.allocatedPettyRefill) {
-                db.settings.allocatedPettyRefill = Math.max(0, (parseFloat(db.settings.allocatedPettyRefill) || 0) - remainderDelete);
-            }
 
             db.expenses.splice(index, 1);
             saveData();
@@ -3174,11 +2962,6 @@
         const tbody = document.getElementById('purchasesTableBody');
         const monthFilter = document.getElementById('purchasesMonthFilter');
         if (!tbody) return;
-
-        let financials = calculateFinancials();
-        if (document.getElementById('displayMainCapital')) document.getElementById('displayMainCapital').innerText = Number(financials.currentMainCapital).toLocaleString() + ' Ks';
-        if (document.getElementById('displaySalesCapital')) document.getElementById('displaySalesCapital').innerText = Number(financials.availableStockBuyingCash).toLocaleString() + ' Ks';
-        if (document.getElementById('displayTotalPurchases')) document.getElementById('displayTotalPurchases').innerText = Number(financials.totalPurchases).toLocaleString() + ' Ks';
 
         let availableMonths = [];
         db.purchases.forEach(p => {
