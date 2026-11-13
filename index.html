@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>စန်းမော် ပရိဘောဂ - Stock & Preorder Tracker (v3.4.1)</title>
+    <title>စန်းမော် ပရိဘောဂ - Stock & Preorder Tracker (v3.4.2)</title>
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -389,7 +389,7 @@
                 <h3 class="text-[11px] font-bold text-slate-800 dark:text-slate-200 uppercase tracking-wide flex items-center">
                     <i class="fa-solid fa-user-clock mr-1.5 text-amber-700 dark:text-amber-400"></i> ဝန်ထမ်း ဤလအတွင်း ပျက်ကွက် မှတ်တမ်း
                 </h3>
-                <input type="month" id="dashboardWorkerMonthFilter" onchange="ခွင့်()" class="border border-slate-200 dark:border-slate-700 rounded-xl px-2 py-1 text-[11px] font-bold outline-none focus:ring-2 focus:ring-amber-600 bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-slate-100 w-full sm:w-auto">
+              <input type="month" id="dashboardWorkerMonthFilter" onchange="renderDashboardWorkersAttendance()" class="border border-slate-200 dark:border-slate-700 rounded-xl px-2 py-1 text-[11px] font-bold outline-none focus:ring-2 focus:ring-amber-600 bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-slate-100 w-full sm:w-auto">
             </div>
             <div id="dashboardWorkersAttendanceGrid" class="space-y-2"></div>
         </div>
@@ -556,7 +556,7 @@
     </section>
 
     <!-- DELI LIST TAB -->
-    <section id="section-preorder" class="space-y-4 hidden">
+    <section id="section-delivery" class="space-y-4 hidden">
         <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center bg-white dark:bg-slate-900 p-3.5 sm:p-4 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800 gap-2.5">
             <div>
                 <h2 class="text-sm sm:text-base font-bold text-slate-900 dark:text-slate-100"><i class="fa-solid fa-truck-fast mr-2 text-amber-700 dark:text-amber-400"></i>Deli List (ပို့ဆောင်မှု စာရင်း)</h2>
