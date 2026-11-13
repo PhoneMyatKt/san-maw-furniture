@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>စန်းမော် ပရိဘောဂ - Stock & Preorder Tracker (v3.4.4)</title>
+    <title>စန်းမော် ပရိဘောဂ - Stock & Preorder Tracker (v3.4.5)</title>
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -1860,11 +1860,10 @@
         let totalRev = 0;
         let totalCogs = 0;
         filteredSales.forEach(s => {
-            let unitP = s.unitPrice;
-            let unitC = s.cogs || 0;
+            let unitP = parseFloat(s.unitPrice) || 0;
+            let unitC = parseFloat(s.cogs) || 0;
             if (s.stockIndex !== null && s.stockIndex !== undefined && db.stocks[s.stockIndex]) {
-                unitP = db.stocks[s.stockIndex].salePrice;
-                unitC = db.stocks[s.stockIndex].cogs || 0;
+                unitC = parseFloat(db.stocks[s.stockIndex].cogs) || 0;
             }
             let fullTotal = (s.qty || 0) * unitP;
             let collectedRev = (s.remaining > 0) ? (parseFloat(s.deposit) || 0) : fullTotal;
