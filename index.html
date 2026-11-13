@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>စန်းမော် ပရိဘောဂ - Stock & Preorder Tracker (v3.4.3)</title>
+    <title>စန်းမော် ပရိဘောဂ - Stock & Preorder Tracker (v3.4.4)</title>
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -1917,44 +1917,12 @@
             }
         }
 
-        let totalCashInflow = 0;
-        filteredSales.forEach(s => {
-            let fullTotal = (s.qty || 1) * s.unitPrice;
-            let amt = (s.remaining > 0) ? (parseFloat(s.deposit) || 0) : fullTotal;
-            let pType = s.paymentType || 'Cash';
-            if (pType === 'Cash') {
-                totalCashInflow += amt;
-            } else if (pType === 'Half Cash with Half Banking') {
-                totalCashInflow += (amt / 2);
-            }
-        });
-
-        filteredPreorders.forEach(p => {
-            let amt = p.isCompleted ? (p.fullPrice || 0) : (p._originalDeposit !== undefined ? p._originalDeposit : (parseFloat(p.deposit) || 0));
-            totalCashInflow += amt;
-        });
-
-        let totalCashOutflow = 0;
-        filteredExpenses.forEach(ex => {
-            let pType = ex.paymentType || 'Cash';
-            let amt = parseFloat(ex.amount) || 0;
-            if (pType === 'Cash') {
-                totalCashOutflow += amt;
-            } else if (pType === 'Half Cash with Half Banking') {
-                totalCashOutflow += (amt / 2);
-            }
-        });
+        let totalPurch = 0;
         filteredPurchases.forEach(p => {
-            let pType = p.paymentType || 'Cash';
-            let amt = parseFloat(p.amount) || 0;
-            if (pType === 'Cash') {
-                totalCashOutflow += amt;
-            } else if (pType === 'Half Cash with Half Banking') {
-                totalCashOutflow += (amt / 2);
-            }
+            totalPurch += (parseFloat(p.amount) || 0);
         });
 
-        let expectedCash = totalCashInflow - totalCashOutflow;
+        let expectedCash = totalRev - totalPurch - totalExp;
         const expectedCashDisplay = document.getElementById('expectedCashDisplay');
         if (expectedCashDisplay) expectedCashDisplay.innerText = Number(expectedCash).toLocaleString() + ' Ks';
 
